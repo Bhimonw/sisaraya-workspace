@@ -1,0 +1,4 @@
+#!/bin/sh
+# Sample post-merge hook: reminds devs to update docs or run tools/update-docs.php
+echo "Post-merge: Please review changes and update docs/CHANGELOG.md if needed."
+echo "You can run: php tools/update-docs.php \"Your summary here\""

@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tui Calendar Custom Styling */
+@layer components {
+    /* Calendar container */
+    #calendar {
+        min-height: 650px;
+        background: white;
+    }
+    
+    /* Customize Tui Calendar theme */
+    .toastui-calendar-day-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .toastui-calendar-template-monthDayName {
+        font-size: 14px;
+    }
+    
+    .toastui-calendar-weekday-grid-date {
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    /* Today highlight */
+    .toastui-calendar-weekday-grid-date-decorator {
+        background-color: #3b82f6 !important;
+    }
+    
+    /* Month grid cells */
+    .toastui-calendar-panel.toastui-calendar-month {
+        height: 100%;
+    }
+    
+    .toastui-calendar-month-week-item {
+        min-height: 100px;
+    }
+}
+

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Tui Calendar</title>
+    <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        #calendar {
+            max-width: 1200px;
+            height: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Tui Calendar - Sisaraya</h1>
+    <div id="calendar"></div>
+
+    <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
+    <script>
+        console.log('📅 Initializing Tui Calendar test...');
+        
+        const Calendar = window.tui.Calendar;
+        
+        const calendar = new Calendar('#calendar', {
+            defaultView: 'month',
+            useDetailPopup: true,
+            useFormPopup: false,
+            month: {
+                startDayOfWeek: 1,
+                dayNames: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                visibleWeeksCount: 6,
+            },
+            calendars: [
+                {
+                    id: 'test',
+                    name: 'Test Events',
+                    backgroundColor: '#3b82f6',
+                    borderColor: '#3b82f6',
+                }
+            ],
+        });
+        
+        // Add test events
+        calendar.createEvents([
+            {
+                id: '1',
+                calendarId: 'test',
+                title: 'Test Event 1',
+                start: '2025-10-15T09:00:00',
+                end: '2025-10-15T10:00:00',
+                category: 'time',
+                backgroundColor: '#3b82f6',
+            },
+            {
+                id: '2',
+                calendarId: 'test',
+                title: 'Test Event 2',
+                start: '2025-10-20',
+                end: '2025-10-22',
+                category: 'allday',
+                backgroundColor: '#8b5cf6',
+            },
+            {
+                id: '3',
+                calendarId: 'test',
+                title: 'Test Event 3',
+                start: '2025-10-25',
+                end: '2025-10-25',
+                category: 'allday',
+                backgroundColor: '#22c55e',
+            }
+        ]);
+        
+        console.log('✅ Tui Calendar initialized with test events!');
+        console.log('📅 You should see dates 1-31 in the calendar');
+    </script>
+</body>
+</html>
