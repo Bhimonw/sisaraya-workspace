@@ -586,7 +586,7 @@
                                             @endforeach
                                         </div>
                                     </div>
-                                    <p class="text-xs text-gray-400 mt-1">✓ Centang satu atau beberapa user yang ingin ditargetkan</p>
+                                    <p class="text-xs text-gray-400 mt-1">Centang satu atau beberapa user yang ingin ditargetkan</p>
                                 </div>
                             </label>
                         </div>

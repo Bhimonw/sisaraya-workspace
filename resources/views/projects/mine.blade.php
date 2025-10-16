@@ -122,7 +122,7 @@
                                             {{ $project->status === 'completed' ? 'bg-blue-200 text-blue-800' : '' }}">
                                             @if($project->status === 'planning') Planning
                                             @elseif($project->status === 'active') Active
-                                            @elseif($project->status === 'on_hold') ⏸️ On Hold
+                                            @elseif($project->status === 'on_hold') On Hold
                                             @elseif($project->status === 'completed') Completed
                                             @endif
                                         </span>

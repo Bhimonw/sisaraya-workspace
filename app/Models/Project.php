@@ -58,7 +58,18 @@ class Project extends Model
     public function members()
     {
         return $this->belongsToMany(User::class, 'project_user')
-                    ->withPivot('role', 'event_roles')
+                    ->withPivot('role', 'event_roles', 'deleted_at')
+                    ->withTimestamps()
+                    ->wherePivotNull('deleted_at'); // Only active members
+    }
+
+    /**
+     * Get all members including past members (soft deleted)
+     */
+    public function allMembers()
+    {
+        return $this->belongsToMany(User::class, 'project_user')
+                    ->withPivot('role', 'event_roles', 'deleted_at')
                     ->withTimestamps();
     }
 
@@ -135,5 +146,12 @@ class Project extends Model
     {
         return $this->members()->where('user_id', $user->id)->exists();
     }
-}
 
+    /**
+     * Check if user was ever a member (including past members)
+     */
+    public function wasEverMember(User $user): bool
+    {
+        return $this->allMembers()->where('user_id', $user->id)->exists();
+    }
+}

@@ -24,11 +24,11 @@ class ProjectRatingController extends Controller
         }
 
         // Validate user is member or owner of the project
-        // Include soft-deleted members (withTrashed) so past members can still rate
-        $isMember = $project->members()->withTrashed()->where('user_id', auth()->id())->exists();
+        // Use wasEverMember() to include past members (soft deleted)
+        $wasEverMember = $project->wasEverMember(auth()->user());
         $isOwner = $project->owner_id === auth()->id();
         
-        if (!$isMember && !$isOwner) {
+        if (!$wasEverMember && !$isOwner) {
             return back()->with('error', 'Hanya anggota proyek yang bisa memberikan rating.');
         }
 

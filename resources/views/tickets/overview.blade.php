@@ -350,7 +350,7 @@
                                                     <form method="POST" action="{{ route('tickets.start', $ticket) }}" class="inline-block">
                                                         @csrf
                                                         <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs font-medium">
-                                                            ▶️ Mulai
+                                                            Mulai
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'doing')

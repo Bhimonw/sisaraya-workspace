@@ -120,6 +120,26 @@ Sistem rating proyek memungkinkan anggota tim untuk memberikan penilaian (1-5 bi
 
 ### Project Model
 ```php
+public function members()
+{
+    return $this->belongsToMany(User::class, 'project_user')
+                ->withPivot('role', 'event_roles', 'deleted_at')
+                ->withTimestamps()
+                ->wherePivotNull('deleted_at'); // Only active members
+}
+
+public function allMembers()
+{
+    return $this->belongsToMany(User::class, 'project_user')
+                ->withPivot('role', 'event_roles', 'deleted_at')
+                ->withTimestamps(); // All members including soft deleted
+}
+
+public function wasEverMember(User $user): bool
+{
+    return $this->allMembers()->where('user_id', $user->id)->exists();
+}
+
 public function ratings()
 {
     return $this->hasMany(ProjectRating::class);
@@ -229,6 +249,7 @@ php artisan test --filter=ProjectRatingTest
 - **2025-10-16**: Added average rating badge di header section
 - **2025-10-16**: Added soft deletes to project_user - past members can now rate ⭐ **NEW**
 - **2025-10-16**: Added test scenario for past members rating capability
+- **2025-10-16**: Fixed: Use `allMembers()` method instead of `withTrashed()` for BelongsToMany compatibility
 
 ## Kontributor
 - Development: GitHub Copilot AI Assistant

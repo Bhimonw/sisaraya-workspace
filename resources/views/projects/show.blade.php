@@ -274,7 +274,7 @@
                                                     <form method="POST" action="{{ route('tickets.start', $ticket) }}">
                                                         @csrf
                                                         <button type="submit" class="text-xs px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">
-                                                            ▶️ Mulai
+                                                            Mulai
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'doing')
@@ -427,7 +427,7 @@
                                                 <form method="POST" action="{{ route('tickets.start', $ticket) }}" class="flex-1">
                                                     @csrf
                                                     <button type="submit" class="w-full text-xs px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 transition font-medium">
-                                                        ▶️ Mulai Kerja
+                                                        Mulai Kerja
                                                     </button>
                                                 </form>
                                             @elseif($ticket->status === 'doing')
@@ -626,7 +626,7 @@
                                                         <form method="POST" action="{{ route('tickets.start', $ticket) }}" class="flex-1">
                                                             @csrf
                                                             <button type="submit" class="w-full text-xs px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 transition font-medium">
-                                                                ▶️ Mulai Kerja
+                                                                Mulai Kerja
                                                             </button>
                                                         </form>
                                                     @endif
@@ -1134,9 +1134,9 @@
                 <div class="p-6">
                     @php
                         // Check if user was ever a member (including past members who left)
-                        $isMember = $project->members()->withTrashed()->where('user_id', auth()->id())->exists();
+                        $wasEverMember = $project->wasEverMember(auth()->user());
                         $isOwner = $project->owner_id === auth()->id();
-                        $canRate = $isMember || $isOwner;
+                        $canRate = $wasEverMember || $isOwner;
                         $userRating = $project->ratings()->where('user_id', auth()->id())->first();
                     @endphp
                     
@@ -1349,7 +1349,7 @@
                                             Aktif
                                         </option>
                                         <option value="on_hold" {{ old('status', $project->status) === 'on_hold' ? 'selected' : '' }}>
-                                            ⏸️ Ditunda
+                                            Ditunda
                                         </option>
                                         <option value="completed" {{ old('status', $project->status) === 'completed' ? 'selected' : '' }}>
                                             Selesai

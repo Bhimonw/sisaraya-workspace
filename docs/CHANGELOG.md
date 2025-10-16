@@ -63,3 +63,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-16
 - Added soft deletes to project_user pivot - past members can now rate completed projects
+
+## 2025-10-16
+- Fixed: Use allMembers() method instead of withTrashed() for pivot table soft deletes compatibility
+
+## 2025-10-16
+- Removed pause emoji from on_hold status in project views
+
+## 2025-10-16
+- Final cleanup: Removed all remaining emoticons from views and JS files (play, checkmark, close buttons)

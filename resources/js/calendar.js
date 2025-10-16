@@ -2,18 +2,18 @@ import Calendar from '@toast-ui/calendar';
 import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📅 Calendar.js - Initializing Tui Calendar...');
+    console.log('[INIT] Calendar.js - Initializing Tui Calendar...');
     
     const calendarEl = document.getElementById('calendar');
     
     if (calendarEl && calendarEl.dataset.projectId) {
-        console.log('✅ Calendar element found with project ID:', calendarEl.dataset.projectId);
+        console.log('[INIT] Calendar element found with project ID:', calendarEl.dataset.projectId);
         
         const projectId = calendarEl.dataset.projectId;
         
         // Wait for Alpine.js to finish rendering
         setTimeout(() => {
-            console.log('🚀 Creating calendar instance...');
+            console.log('[CALENDAR] Creating calendar instance...');
             
             const calendar = new Calendar(calendarEl, {
                 defaultView: 'month',
@@ -58,17 +58,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
             });
             
-            console.log('✅ Calendar instance created');
+            console.log('[INIT] Calendar instance created');
             
             // Fetch events from API
-            console.log('📡 Fetching events from API...');
+            console.log('[API] Fetching events from API...');
             fetch(`/api/calendar/project/${projectId}/events`)
                 .then(response => {
-                    console.log('📥 API Response status:', response.status);
+                    console.log('[API] Response status:', response.status);
                     return response.json();
                 })
                 .then(data => {
-                    console.log('✅ Events loaded:', data.length, 'events');
+                    console.log('[API] Events loaded:', data.length, 'events');
                     
                     // Convert to Tui Calendar format
                     const tuiEvents = data.map(event => {
@@ -93,13 +93,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         };
                     });
                     
-                    console.log('📌 Adding events to calendar:', tuiEvents.length);
+                    console.log('[CALENDAR] Adding events to calendar:', tuiEvents.length);
                     calendar.createEvents(tuiEvents);
-                    console.log('✨ Calendar rendered with events!');
+                    console.log('[CALENDAR] Calendar rendered with events!');
                 })
                 .catch(error => {
-                    console.error('❌ Error loading events:', error);
-                    console.log('📅 Calendar rendered without events');
+                    console.error('[ERROR] Error loading events:', error);
+                    console.log('[CALENDAR] Calendar rendered without events');
                 });
             
             // Make calendar globally accessible

@@ -304,7 +304,7 @@
                             <div class="flex gap-2" @click.stop>
                                 <button @click="startTicket({{ $ticket->id }})" 
                                         class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                                    ▶️ Mulai
+                                    Mulai
                                 </button>
                             </div>
                         </div>
@@ -399,7 +399,7 @@
                             <div class="flex gap-2" @click.stop>
                                 <button @click="completeTicket({{ $ticket->id }})" 
                                         class="flex-1 px-3 py-2 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 transition-colors shadow-sm">
-                                    ✓ Selesai
+                                    Selesai
                                 </button>
                             </div>
                         </div>
