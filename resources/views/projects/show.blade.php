@@ -1190,7 +1190,7 @@
         {{-- CREATE TICKET TAB --}}
         @if($project->canManage(Auth::user()))
         <div x-show="activeTab === 'create-ticket'" x-transition>
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200" x-data="{ context: 'proyek' }">
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200" x-data="{ context: 'proyek', showCreateModal: false }">
             <div class="mb-6">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
                     <svg class="h-8 w-8 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1338,12 +1338,11 @@
                             
                             @forelse($projectMembers as $member)
                                 @php
-                                    // Get member's permanent role from Spatie roles
-                                    $permanentRole = $member->roles->first()?->name ?? null;
+                                    // Get ALL member's permanent roles from Spatie (user can have multiple roles)
+                                    $permanentRoles = $member->roles->pluck('name')->toArray();
                                     
-                                    // Get member's event role for this project
+                                    // Get member's event roles for this project
                                     $eventRolesArray = $member->pivot->event_roles ? json_decode($member->pivot->event_roles, true) : [];
-                                    $eventRole = !empty($eventRolesArray) ? $eventRolesArray[0] : null;
                                 @endphp
                                 
                                 <label class="flex items-center p-3 hover:bg-blue-50 cursor-pointer transition">
@@ -1354,19 +1353,19 @@
                                             <span class="text-xs text-gray-500">{{ $member->email }}</span>
                                         </div>
                                         <div class="flex flex-wrap gap-1 mt-1">
-                                            {{-- Permanent Role Badge --}}
-                                            @if($permanentRole)
+                                            {{-- Permanent Roles Badges (Multiple) --}}
+                                            @foreach($permanentRoles as $roleKey)
                                                 <span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full border border-blue-300">
-                                                    🔒 {{ $allRoles[$permanentRole] ?? ucfirst($permanentRole) }}
+                                                    🔒 {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
                                                 </span>
-                                            @endif
+                                            @endforeach
                                             
-                                            {{-- Event Role Badge --}}
-                                            @if($eventRole)
+                                            {{-- Event Roles Badges (Multiple) --}}
+                                            @foreach($eventRolesArray as $roleKey)
                                                 <span class="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full border border-amber-300">
-                                                    ⏱️ {{ $allRoles[$eventRole] ?? ucfirst($eventRole) }}
+                                                    ⏱️ {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
                                                 </span>
-                                            @endif
+                                            @endforeach
                                             
                                             {{-- Project Role Badge --}}
                                             @if($member->pivot->role === 'admin')
@@ -1390,46 +1389,88 @@
                         </div>
                     </div>
                     
-                    {{-- Target Role (as fallback) --}}
+                    {{-- Target Role & Due Date --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">
                                 Target Role (Opsional)
                                 <span class="text-xs text-gray-500">- jika tidak pilih user spesifik</span>
                             </label>
+                            @php
+                                // Collect all unique permanent roles from project members
+                                $permanentRolesInProject = collect();
+                                foreach($project->members as $member) {
+                                    // Get ALL roles from this member (user can have multiple permanent roles)
+                                    $memberRoles = $member->roles->pluck('name');
+                                    $permanentRolesInProject = $permanentRolesInProject->merge($memberRoles);
+                                }
+                                $permanentRolesInProject = $permanentRolesInProject->unique()->sort();
+                                
+                                // Collect all unique event roles from project members
+                                $eventRolesInProject = collect();
+                                foreach($project->members as $member) {
+                                    $roles = $member->pivot->event_roles ? json_decode($member->pivot->event_roles, true) : [];
+                                    if (!empty($roles)) {
+                                        $eventRolesInProject = $eventRolesInProject->merge($roles);
+                                    }
+                                }
+                                $eventRolesInProject = $eventRolesInProject->unique()->sort();
+                                
+                                $allRolesReference = \App\Models\Ticket::getAllRoles();
+                            @endphp
                             <select name="target_role" class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent">
                                 <option value="">-- Semua Role --</option>
-                                <optgroup label="Role Permanent">
-                                    <option value="pm">🔒 Project Manager</option>
-                                    <option value="hr">🔒 Human Resources</option>
-                                    <option value="sekretaris">🔒 Sekretaris</option>
-                                    <option value="bendahara">🔒 Bendahara</option>
-                                </optgroup>
-                                <optgroup label="Role Event (Project)">
-                                    @php
-                                        $eventRoles = \App\Models\Ticket::getEventRoles();
-                                        $membersWithEventRoles = $project->members->filter(function($m) {
-                                            $roles = $m->pivot->event_roles ? json_decode($m->pivot->event_roles, true) : [];
-                                            return !empty($roles);
-                                        });
-                                    @endphp
-                                    @foreach($eventRoles as $key => $label)
+                                
+                                @if($permanentRolesInProject->count() > 0)
+                                <optgroup label="🔒 Role Permanent ({{ $permanentRolesInProject->count() }} role)">
+                                    @foreach($permanentRolesInProject as $roleKey)
                                         @php
-                                            $hasThisRole = $membersWithEventRoles->filter(function($m) use ($key) {
-                                                $roles = json_decode($m->pivot->event_roles, true);
-                                                return in_array($key, $roles);
+                                            $memberCount = $project->members->filter(function($m) use ($roleKey) {
+                                                return $m->hasRole($roleKey);
                                             })->count();
                                         @endphp
-                                        <option value="{{ $key }}">⏱️ {{ $label }} @if($hasThisRole > 0)({{ $hasThisRole }} member)@endif</option>
+                                        <option value="{{ $roleKey }}">
+                                            {{ $allRolesReference[$roleKey] ?? ucfirst($roleKey) }} ({{ $memberCount }} member)
+                                        </option>
                                     @endforeach
                                 </optgroup>
+                                @endif
+                                
+                                @if($eventRolesInProject->count() > 0)
+                                <optgroup label="⏱️ Role Event ({{ $eventRolesInProject->count() }} role)">
+                                    @foreach($eventRolesInProject as $roleKey)
+                                        @php
+                                            $memberCount = $project->members->filter(function($m) use ($roleKey) {
+                                                $roles = $m->pivot->event_roles ? json_decode($m->pivot->event_roles, true) : [];
+                                                return in_array($roleKey, $roles);
+                                            })->count();
+                                        @endphp
+                                        <option value="{{ $roleKey }}">
+                                            {{ $allRolesReference[$roleKey] ?? ucfirst($roleKey) }} ({{ $memberCount }} member)
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                                @endif
+                                
+                                @if($permanentRolesInProject->count() === 0 && $eventRolesInProject->count() === 0)
+                                <option value="" disabled>Tidak ada role tersedia di project ini</option>
+                                @endif
                             </select>
-                            <p class="text-xs text-gray-500 mt-1">Filter berdasarkan role jika tidak pilih user spesifik</p>
+                            <p class="text-xs text-gray-500 mt-1">
+                                💡 Hanya menampilkan role yang ada pada anggota project ini
+                            </p>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Due Date (Opsional)</label>
-                            <input type="date" name="due_date" class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Due Date <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" 
+                                   name="due_date" 
+                                   required
+                                   min="{{ date('Y-m-d') }}"
+                                   class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+                            <p class="text-xs text-gray-500 mt-1">Batas waktu penyelesaian tiket</p>
                         </div>
                     </div>
                 </div>

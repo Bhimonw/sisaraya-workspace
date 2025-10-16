@@ -27,3 +27,18 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-13
 - Implementasi double role system - Bhimo (PM + Sekretaris). Dashboard dengan role badges, multi-role detection, quick actions per role. Sidebar menu support multiple roles. Seeder 14 anggota Sisaraya. Login: username only (no email). Dokumentasi lengkap di DOUBLE_ROLE_IMPLEMENTATION.md
+
+## 2025-10-16
+- Tampilkan bobot pada tabel dan detail tiket di manajemen tiket PM
+
+## 2025-10-16
+- Tambahkan slider bobot 1-10 pada form buat tiket umum di modal manajemen tiket PM
+
+## 2025-10-16
+- Tambahkan field bobot dengan slider 1-10 pada form buat tiket di project (tab create-ticket)
+
+## 2025-10-16
+- Target role pada form tiket project hanya menampilkan role yang ada pada anggota project (permanent & event role), due date menjadi wajib
+
+## 2025-10-16
+- Perbaiki logika permanent role untuk support multiple roles per user (user bisa memiliki banyak permanent role sekaligus)

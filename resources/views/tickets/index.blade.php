@@ -103,6 +103,9 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Prioritas
                         </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Bobot
+                            </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Context
                         </th>
@@ -150,6 +153,20 @@
                                     <span class="text-sm text-gray-400">—</span>
                                 @endif
                             </td>
+                                {{-- Bobot --}}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if($ticket->weight)
+                                        @php
+                                            $weightLabel = \App\Models\Ticket::getWeightLabel($ticket->weight);
+                                            $weightColor = $ticket->weight <= 3 ? 'bg-green-100 text-green-700' : ($ticket->weight <= 6 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700');
+                                        @endphp
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $weightColor }}">
+                                            {{ $ticket->weight }} - {{ $weightLabel }}
+                                        </span>
+                                    @else
+                                        <span class="text-sm text-gray-400">—</span>
+                                    @endif
+                                </td>
                             
                             {{-- Context --}}
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -347,6 +364,19 @@
                             </div>
                         </div>
 
+                            {{-- Bobot --}}
+                            <div x-show="selectedTicket.weight" class="bg-gray-50 rounded-lg p-3">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                                        <text x="12" y="16" text-anchor="middle" font-size="12" fill="currentColor">B</text>
+                                    </svg>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Bobot</p>
+                                        <p class="font-semibold text-gray-900" x-text="selectedTicket.weight + ' - ' + (selectedTicket.weight <= 3 ? 'Ringan' : (selectedTicket.weight <= 6 ? 'Sedang' : 'Berat'))"></p>
+                                    </div>
+                                </div>
+                            </div>
                         {{-- Claimed By --}}
                         <div x-show="selectedTicket.claimed_by" class="bg-gray-50 rounded-lg p-3">
                             <div class="flex items-center gap-2 text-sm">
@@ -429,8 +459,8 @@
                                   placeholder="Deskripsi detail tiket..."></textarea>
                     </div>
 
-                    {{-- Priority & Due Date --}}
-                    <div class="grid grid-cols-2 gap-4">
+                    {{-- Priority, Bobot & Due Date --}}
+                    <div class="grid grid-cols-3 gap-4">
                         <div>
                             <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Prioritas</label>
                             <select name="priority" 
@@ -441,6 +471,48 @@
                                 <option value="high">Tinggi</option>
                                 <option value="urgent">Mendesak</option>
                             </select>
+                        </div>
+
+                        <div x-data="{ 
+                            weight: 5,
+                            getLabel() {
+                                if (this.weight <= 3) return { text: 'Ringan', color: 'text-green-600', bg: 'bg-green-100', border: 'border-green-300' };
+                                if (this.weight <= 6) return { text: 'Sedang', color: 'text-yellow-600', bg: 'bg-yellow-100', border: 'border-yellow-300' };
+                                return { text: 'Berat', color: 'text-red-600', bg: 'bg-red-100', border: 'border-red-300' };
+                            }
+                        }">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Bobot
+                            </label>
+                            
+                            {{-- Weight Display --}}
+                            <div class="mb-2 p-2 rounded-lg border transition-all duration-200"
+                                 :class="getLabel().bg + ' ' + getLabel().border">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-600">Tingkat:</span>
+                                    <div class="flex items-center gap-1">
+                                        <span x-text="weight" 
+                                              class="text-lg font-bold"
+                                              :class="getLabel().color"></span>
+                                        <span class="text-xs font-semibold"
+                                              :class="getLabel().color"
+                                              x-text="getLabel().text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {{-- Slider --}}
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">1</span>
+                                <input type="range" 
+                                       name="weight" 
+                                       min="1" 
+                                       max="10" 
+                                       value="5"
+                                       x-model="weight"
+                                       class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                                <span class="text-xs text-gray-500">10</span>
+                            </div>
                         </div>
 
                         <div>
