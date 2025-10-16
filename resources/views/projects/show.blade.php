@@ -980,8 +980,80 @@
                 </div>
                 
                 <div class="p-6">
+                    {{-- Form untuk Researcher menambahkan evaluasi --}}
+                    @if(auth()->user()->hasRole('researcher'))
+                    <div class="mb-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-6 border-2 border-purple-200">
+                        <h4 class="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <svg class="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Tambah Catatan Evaluasi
+                        </h4>
+                        
+                        <form action="{{ route('evaluations.store') }}" method="POST" class="space-y-4">
+                            @csrf
+                            <input type="hidden" name="evaluable_type" value="App\Models\Project">
+                            <input type="hidden" name="evaluable_id" value="{{ $project->id }}">
+                            
+                            <div>
+                                <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Catatan Evaluasi <span class="text-red-500">*</span>
+                                </label>
+                                <textarea 
+                                    name="notes" 
+                                    id="notes" 
+                                    rows="4" 
+                                    required
+                                    placeholder="Tuliskan catatan evaluasi, analisis, atau rekomendasi untuk proyek ini..."
+                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"></textarea>
+                                @error('notes')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Status <span class="text-red-500">*</span>
+                                </label>
+                                <select 
+                                    name="status" 
+                                    id="status" 
+                                    required
+                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition">
+                                    <option value="draft">Draft (Hanya Researcher yang bisa lihat)</option>
+                                    <option value="published">Published (Semua anggota bisa lihat)</option>
+                                </select>
+                                @error('status')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button 
+                                    type="submit" 
+                                    class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium rounded-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all shadow-md hover:shadow-lg">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Simpan Evaluasi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    @endif
+                    
                     @php
-                        $evaluations = $project->evaluations()->orderBy('created_at', 'desc')->get();
+                        // Filter evaluations based on user role
+                        if (auth()->user()->hasRole('researcher')) {
+                            // Researcher can see all evaluations
+                            $evaluations = $project->evaluations()->orderBy('created_at', 'desc')->get();
+                        } else {
+                            // Other users only see published evaluations
+                            $evaluations = $project->evaluations()
+                                ->where('status', 'published')
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+                        }
                     @endphp
                     
                     @if($evaluations->count() > 0)
@@ -989,11 +1061,34 @@
                             @foreach($evaluations as $evaluation)
                             <div class="border-l-4 border-violet-500 pl-4 py-3 bg-violet-50 rounded-r hover:shadow-md transition">
                                 <p class="text-sm text-gray-800 leading-relaxed mb-2">{{ $evaluation->notes }}</p>
-                                <div class="flex items-center gap-3 text-xs text-gray-500">
-                                    <span class="font-medium">{{ $evaluation->user->name }}</span>
-                                    <span>•</span>
-                                    <span>{{ $evaluation->created_at->diffForHumans() }}</span>
+                                <div class="flex items-center justify-between gap-3 text-xs text-gray-500">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-medium">{{ $evaluation->researcher->name }}</span>
+                                        <span>•</span>
+                                        <span>{{ $evaluation->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    @if($evaluation->status === 'draft')
+                                        <span class="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded-full">Draft</span>
+                                    @endif
                                 </div>
+                                
+                                {{-- Actions for researcher who created this evaluation --}}
+                                @if(auth()->user()->hasRole('researcher') && $evaluation->researcher_id === auth()->id())
+                                <div class="mt-3 pt-3 border-t border-violet-200 flex gap-2">
+                                    <button 
+                                        @click="$dispatch('open-edit-evaluation-modal', { evaluation: {{ json_encode($evaluation) }} })"
+                                        class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                        Edit
+                                    </button>
+                                    <form action="{{ route('evaluations.destroy', $evaluation) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus evaluasi ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs text-red-600 hover:text-red-800 font-medium">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                                @endif
                             </div>
                             @endforeach
                         </div>
@@ -1009,6 +1104,162 @@
                 </div>
             </div>
         </div>{{-- End Evaluasi Section --}}
+
+        {{-- Rating Section (Only for completed projects) --}}
+        @if($project->status === 'completed')
+        <div class="mt-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            <h3 class="font-semibold text-white">Rating Proyek</h3>
+                        </div>
+                        @php
+                            $averageRating = $project->averageRating();
+                            $totalRatings = $project->ratings()->count();
+                        @endphp
+                        <div class="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
+                            <svg class="h-4 w-4 text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            <span class="text-white font-bold">{{ $averageRating }}</span>
+                            <span class="text-white/80 text-xs">({{ $totalRatings }} rating)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    @php
+                        // Check if user was ever a member (including past members who left)
+                        $isMember = $project->members()->withTrashed()->where('user_id', auth()->id())->exists();
+                        $isOwner = $project->owner_id === auth()->id();
+                        $canRate = $isMember || $isOwner;
+                        $userRating = $project->ratings()->where('user_id', auth()->id())->first();
+                    @endphp
+                    
+                    @if($canRate)
+                    {{-- Form Rating --}}
+                    <div class="mb-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-amber-200">
+                        <h4 class="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <svg class="h-5 w-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            {{ $userRating ? 'Edit Rating Anda' : 'Berikan Rating' }}
+                        </h4>
+                        
+                        <form action="{{ route('projects.ratings.store', $project) }}" method="POST" class="space-y-4" x-data="{ selectedRating: {{ $userRating ? $userRating->rating : 0 }} }">
+                            @csrf
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-3">
+                                    Rating <span class="text-red-500">*</span>
+                                </label>
+                                <div class="flex gap-2">
+                                    @for($i = 1; $i <= 5; $i++)
+                                    <button 
+                                        type="button"
+                                        @click="selectedRating = {{ $i }}"
+                                        class="transition-all transform hover:scale-110">
+                                        <svg class="h-10 w-10 transition-colors" 
+                                             :class="selectedRating >= {{ $i }} ? 'text-yellow-400' : 'text-gray-300'"
+                                             fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                    </button>
+                                    @endfor
+                                </div>
+                                <input type="hidden" name="rating" :value="selectedRating" required>
+                                @error('rating')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
+                            <div>
+                                <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Komentar (Opsional)
+                                </label>
+                                <textarea 
+                                    name="comment" 
+                                    id="comment" 
+                                    rows="3" 
+                                    placeholder="Bagikan pengalaman Anda dalam proyek ini..."
+                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition">{{ $userRating ? $userRating->comment : '' }}</textarea>
+                                @error('comment')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
+                            <div class="flex justify-between items-center pt-2">
+                                @if($userRating)
+                                <form action="{{ route('projects.ratings.destroy', $project) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus rating Anda?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                        Hapus Rating
+                                    </button>
+                                </form>
+                                @else
+                                <div></div>
+                                @endif
+                                
+                                <button 
+                                    type="submit" 
+                                    class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all shadow-md hover:shadow-lg">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    {{ $userRating ? 'Update Rating' : 'Simpan Rating' }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    @endif
+                    
+                    {{-- Display all ratings --}}
+                    @php
+                        $ratings = $project->ratings()->with('user')->latest()->get();
+                    @endphp
+                    
+                    @if($ratings->count() > 0)
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @foreach($ratings as $rating)
+                            <div class="border-l-4 border-amber-500 pl-4 py-3 bg-amber-50 rounded-r hover:shadow-md transition">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-medium text-gray-900">{{ $rating->user->name }}</span>
+                                        <div class="flex">
+                                            @for($i = 1; $i <= 5; $i++)
+                                            <svg class="h-4 w-4 {{ $i <= $rating->rating ? 'text-yellow-400' : 'text-gray-300' }}" 
+                                                 fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            </svg>
+                                            @endfor
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gray-500">{{ $rating->created_at->diffForHumans() }}</span>
+                                </div>
+                                @if($rating->comment)
+                                <p class="text-sm text-gray-700 leading-relaxed">{{ $rating->comment }}</p>
+                                @endif
+                            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-8 text-gray-500">
+                            <svg class="h-12 w-12 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                            </svg>
+                            <p class="text-sm font-medium text-gray-400">Belum ada rating</p>
+                            <p class="text-xs text-gray-400 mt-1">Jadilah yang pertama memberikan rating untuk proyek ini</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>{{-- End Rating Section --}}
+        @endif
 
         </div>{{-- End Overview Tab --}}
 
@@ -2258,6 +2509,80 @@
 </div>{{-- End Alpine x-data --}}
 
 @endsection
+
+{{-- Modal Edit Evaluation (for Researcher) --}}
+<div x-data="{ 
+    showEditModal: false, 
+    editEvaluation: null 
+}" 
+@open-edit-evaluation-modal.window="showEditModal = true; editEvaluation = $event.detail.evaluation">
+    <template x-if="showEditModal">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" 
+             @click.self="showEditModal = false">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                 @click.stop>
+                {{-- Modal Header --}}
+                <div class="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-white">Edit Evaluasi</h3>
+                    <button @click="showEditModal = false" 
+                            class="text-white hover:text-gray-200 transition-colors">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                {{-- Modal Body --}}
+                <form :action="'/evaluations/' + editEvaluation.id" method="POST" class="p-6 space-y-4">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div>
+                        <label for="edit_notes" class="block text-sm font-medium text-gray-700 mb-2">
+                            Catatan Evaluasi <span class="text-red-500">*</span>
+                        </label>
+                        <textarea 
+                            name="notes" 
+                            id="edit_notes" 
+                            rows="6" 
+                            required
+                            x-model="editEvaluation.notes"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label for="edit_status" class="block text-sm font-medium text-gray-700 mb-2">
+                            Status <span class="text-red-500">*</span>
+                        </label>
+                        <select 
+                            name="status" 
+                            id="edit_status" 
+                            required
+                            x-model="editEvaluation.status"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition">
+                            <option value="draft">Draft (Hanya Researcher yang bisa lihat)</option>
+                            <option value="published">Published (Semua anggota bisa lihat)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                        <button 
+                            type="button"
+                            @click="showEditModal = false" 
+                            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+                            Batal
+                        </button>
+                        <button 
+                            type="submit" 
+                            class="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-colors font-medium shadow-md">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </template>
+</div>
 
 {{-- Calendar rendered server-side with PHP - No JavaScript needed! --}}
 

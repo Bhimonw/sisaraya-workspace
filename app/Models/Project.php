@@ -72,6 +72,19 @@ class Project extends Model
         return $this->morphMany(Evaluation::class, 'evaluable');
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(ProjectRating::class);
+    }
+
+    /**
+     * Get average rating for this project
+     */
+    public function averageRating(): float
+    {
+        return round($this->ratings()->avg('rating') ?? 0, 1);
+    }
+
     /**
      * Check if user is project manager (owner)
      */

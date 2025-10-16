@@ -73,6 +73,16 @@ This folder contains project documentation.
 - API reference Spatie Permission
 - Color coding untuk semua 11 roles
 
+### 10. `PROJECT_RATING_SYSTEM.md` 🆕⭐
+**Panduan Project Rating System (Bahasa Indonesia)**
+- Rating 1-5 bintang untuk proyek yang sudah selesai
+- Komentar opsional dari anggota tim
+- Average rating calculation & display
+- Edit dan delete rating capability
+- 7 test scenarios dengan full coverage
+- UI dengan Alpine.js untuk interactive stars
+- Business rules & validation
+
 ---
 
 ## 🎯 Quick Links Berdasarkan Role
@@ -105,7 +115,8 @@ docs/
 ├── PANDUAN_SIDEBAR.md                ← Panduan sidebar navigation 🆕
 ├── STATUS_IMPLEMENTASI_SIDEBAR.md    ← Status detail implementasi 🆕
 ├── AUDIT_PROYEK_DAN_TODO.md          ← Audit lengkap & TODO list 🆕⭐
-└── DOUBLE_ROLE_IMPLEMENTATION.md     ← Double role system guide 🆕⭐
+├── DOUBLE_ROLE_IMPLEMENTATION.md     ← Double role system guide 🆕⭐
+└── PROJECT_RATING_SYSTEM.md          ← Project rating system guide 🆕⭐
 ```
 
 **Recommendation:** Start with `PROGRESS_IMPLEMENTASI.md` for complete overview in Indonesian.

@@ -51,3 +51,15 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-16
 - Dashboard statistics personalisasi: hanya menampilkan data proyek yang diikuti user dan tiket yang relevan dengan role-nya
+
+## 2025-10-16
+- Researcher dapat menambahkan, mengedit, dan menghapus evaluasi proyek dengan status draft/published
+
+## 2025-10-16
+- Added project rating system - members can rate completed projects with 1-5 stars and optional comments
+
+## 2025-10-16
+- Created comprehensive tests for project rating feature with 7 test scenarios
+
+## 2025-10-16
+- Added soft deletes to project_user pivot - past members can now rate completed projects

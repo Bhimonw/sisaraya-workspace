@@ -115,6 +115,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('evaluations/{evaluation}', [App\Http\Controllers\EvaluationController::class, 'update'])->name('evaluations.update');
     Route::delete('evaluations/{evaluation}', [App\Http\Controllers\EvaluationController::class, 'destroy'])->name('evaluations.destroy');
 
+    // Project Ratings (All members can rate completed projects)
+    Route::post('projects/{project}/ratings', [App\Http\Controllers\ProjectRatingController::class, 'store'])->name('projects.ratings.store');
+    Route::delete('projects/{project}/ratings', [App\Http\Controllers\ProjectRatingController::class, 'destroy'])->name('projects.ratings.destroy');
+
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', AdminUserController::class);
     });
