@@ -48,3 +48,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-16
 - Privacy pada kalender: kegiatan pribadi user lain di dashboard hanya ditampilkan sebagai 'Sibuk' tanpa detail, kalender pribadi tetap menampilkan detail lengkap
+
+## 2025-10-16
+- Dashboard statistics personalisasi: hanya menampilkan data proyek yang diikuti user dan tiket yang relevan dengan role-nya

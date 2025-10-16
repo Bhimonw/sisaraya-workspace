@@ -32,35 +32,43 @@
             {{-- Grid 1: Statistics Only --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
                         {{-- Tiket Saya --}}
                         <div class="text-center p-4 bg-blue-50 rounded-lg">
                             <div class="text-3xl font-bold text-blue-600">
-                                {{ auth()->user()->claimedTickets()->count() }}
+                                {{ $stats['my_tickets_count'] }}
                             </div>
                             <div class="text-xs text-gray-600 mt-1">Tiket Saya</div>
                         </div>
 
-                        {{-- Tiket Aktif --}}
+                        {{-- Tiket Dikerjakan --}}
                         <div class="text-center p-4 bg-green-50 rounded-lg">
                             <div class="text-3xl font-bold text-green-600">
-                                {{ auth()->user()->claimedTickets()->where('status', 'doing')->count() }}
+                                {{ $stats['doing_tickets_count'] }}
                             </div>
                             <div class="text-xs text-gray-600 mt-1">Dikerjakan</div>
                         </div>
 
-                        {{-- Total Proyek --}}
-                        <div class="text-center p-4 bg-purple-50 rounded-lg">
-                            <div class="text-3xl font-bold text-purple-600">
-                                {{ \App\Models\Project::count() }}
+                        {{-- Tiket Tersedia --}}
+                        <div class="text-center p-4 bg-amber-50 rounded-lg">
+                            <div class="text-3xl font-bold text-amber-600">
+                                {{ $stats['available_tickets_count'] }}
                             </div>
-                            <div class="text-xs text-gray-600 mt-1">Total Proyek</div>
+                            <div class="text-xs text-gray-600 mt-1">Tiket Tersedia</div>
                         </div>
 
-                        {{-- Proyek Aktif --}}
+                        {{-- Proyek Saya --}}
+                        <div class="text-center p-4 bg-purple-50 rounded-lg">
+                            <div class="text-3xl font-bold text-purple-600">
+                                {{ $stats['my_projects_count'] }}
+                            </div>
+                            <div class="text-xs text-gray-600 mt-1">Proyek Saya</div>
+                        </div>
+
+                        {{-- Proyek Aktif Saya --}}
                         <div class="text-center p-4 bg-orange-50 rounded-lg">
                             <div class="text-3xl font-bold text-orange-600">
-                                {{ \App\Models\Project::where('status', 'active')->count() }}
+                                {{ $stats['active_projects_count'] }}
                             </div>
                             <div class="text-xs text-gray-600 mt-1">Proyek Aktif</div>
                         </div>
