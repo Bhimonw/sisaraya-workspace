@@ -120,31 +120,31 @@
                                             {{ $project->status === 'active' ? 'bg-green-200 text-green-800' : '' }}
                                             {{ $project->status === 'on_hold' ? 'bg-gray-200 text-gray-800' : '' }}
                                             {{ $project->status === 'completed' ? 'bg-blue-200 text-blue-800' : '' }}">
-                                            @if($project->status === 'planning') 📋 Planning
-                                            @elseif($project->status === 'active') ⚡ Active
+                                            @if($project->status === 'planning') Planning
+                                            @elseif($project->status === 'active') Active
                                             @elseif($project->status === 'on_hold') ⏸️ On Hold
-                                            @elseif($project->status === 'completed') ✅ Completed
+                                            @elseif($project->status === 'completed') Completed
                                             @endif
                                         </span>
 
                                         {{-- Ticket Count --}}
                                         <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md bg-purple-200 text-purple-800">
-                                            🎫 {{ $project->tickets_count }} tiket
+                                            {{ $project->tickets_count }} tiket
                                         </span>
 
                                         {{-- Member Count --}}
                                         <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-200 text-indigo-800">
-                                            👥 {{ $project->members->count() }} anggota
+                                            {{ $project->members->count() }} anggota
                                         </span>
 
                                         {{-- Public/Private Badge --}}
                                         @if($project->is_public)
                                             <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md bg-green-200 text-green-800">
-                                                🌐 Publik
+                                                Publik
                                             </span>
                                         @else
                                             <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md bg-red-200 text-red-800">
-                                                🔒 Privat
+                                                Privat
                                             </span>
                                         @endif
                                     </div>
@@ -173,12 +173,12 @@
                             <div class="flex gap-2 pt-3 border-t border-gray-200">
                                 <a href="{{ route('projects.show', $project) }}" 
                                    class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors text-center">
-                                    👁️ Lihat Detail
+                                    Lihat Detail
                                 </a>
                                 @if($project->owner_id === auth()->id())
                                     <a href="{{ route('projects.edit', $project) }}" 
                                        class="flex-1 px-3 py-2 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 transition-colors text-center">
-                                        ✏️ Edit
+                                        Edit
                                     </a>
                                 @endif
                             </div>
@@ -231,24 +231,24 @@
                                     <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md
                                         {{ $project->status === 'planning' ? 'bg-amber-200 text-amber-800' : '' }}
                                         {{ $project->status === 'active' ? 'bg-green-200 text-green-800' : '' }}">
-                                        @if($project->status === 'planning') 📋 Planning
-                                        @elseif($project->status === 'active') ⚡ Active
+                                        @if($project->status === 'planning') Planning
+                                        @elseif($project->status === 'active') Active
                                         @endif
                                     </span>
 
                                     {{-- Ticket Count --}}
                                     <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md bg-purple-200 text-purple-800">
-                                        🎫 {{ $project->tickets_count }} tiket
+                                        {{ $project->tickets_count }} tiket
                                     </span>
 
                                     {{-- Member Count --}}
                                     <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-200 text-indigo-800">
-                                        👥 {{ $project->members->count() }} anggota
+                                        {{ $project->members->count() }} anggota
                                     </span>
 
                                     {{-- Public Badge --}}
                                     <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md bg-green-200 text-green-800">
-                                        🌐 Publik
+                                        Publik
                                     </span>
                                 </div>
 
@@ -275,7 +275,7 @@
                             <div class="pt-3 border-t border-gray-200">
                                 <a href="{{ route('projects.show', $project) }}" 
                                    class="block w-full px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors text-center">
-                                    👁️ Lihat Detail
+                                    Lihat Detail
                                 </a>
                             </div>
                         </div>

@@ -10,7 +10,7 @@
         this.showTicketModal = true;
     },
     init() {
-        console.log('✅ Alpine initialized with:', {
+        console.log('Alpine initialized with:', {
             activeTab: this.activeTab,
             showTicketModal: this.showTicketModal,
             selectedTicket: this.selectedTicket
@@ -21,7 +21,7 @@
                 // Trigger calendar refresh after a short delay
                 setTimeout(() => {
                     if (window.projectCalendar) {
-                        console.log('📐 Tab switched to overview - refreshing calendar');
+                        console.log('[TAB] Tab switched to overview - refreshing calendar');
                         // Tui Calendar doesn't need render() call
                         // Just log that tab is visible
                     }
@@ -265,7 +265,7 @@
                                                 <form method="POST" action="{{ route('tickets.claim', $ticket) }}">
                                                     @csrf
                                                     <button type="submit" class="text-xs px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
-                                                        🎯 Ambil
+                                                        Ambil
                                                     </button>
                                                 </form>
                                             @elseif($ticket->claimed_by === auth()->id())
@@ -281,12 +281,12 @@
                                                     <form method="POST" action="{{ route('tickets.complete', $ticket) }}">
                                                         @csrf
                                                         <button type="submit" class="text-xs px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">
-                                                            ✅ Selesai
+                                                            Selesai
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'done')
                                                     <span class="text-xs px-3 py-1 bg-green-100 text-green-700 rounded-lg font-medium">
-                                                        🎉 Selesai
+                                                        Selesai
                                                     </span>
                                                 @endif
                                             @else
@@ -434,12 +434,12 @@
                                                 <form method="POST" action="{{ route('tickets.complete', $ticket) }}" class="flex-1">
                                                     @csrf
                                                     <button type="submit" class="w-full text-xs px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 transition font-medium">
-                                                        ✅ Selesai
+                                                        Selesai
                                                     </button>
                                                 </form>
                                             @elseif($ticket->status === 'done')
                                                 <span class="flex-1 text-center text-xs px-3 py-1.5 bg-green-100 text-green-700 rounded font-medium">
-                                                    🎉 Selesai
+                                                    Selesai
                                                 </span>
                                             @endif
                                         </div>
@@ -599,7 +599,7 @@
                                                         @csrf
                                                         @method('PATCH')
                                                         <button type="submit" class="w-full text-xs px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded hover:from-yellow-600 hover:to-yellow-700 transition font-medium shadow-sm">
-                                                            🚀 Set Todo
+                                                            Set Todo
                                                         </button>
                                                     </form>
                                                 @endif
@@ -612,7 +612,7 @@
                                                         <form method="POST" action="{{ route('tickets.claim', $ticket) }}" class="flex-1">
                                                             @csrf
                                                             <button type="submit" class="w-full text-xs px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-medium">
-                                                                🎯 Ambil Tiket
+                                                                Ambil Tiket
                                                             </button>
                                                         </form>
                                                     @else
@@ -638,7 +638,7 @@
                                                     <form method="POST" action="{{ route('tickets.complete', $ticket) }}" class="flex-1">
                                                         @csrf
                                                         <button type="submit" class="w-full text-xs px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 transition font-medium">
-                                                            ✅ Selesai
+                                                            Selesai
                                                         </button>
                                                     </form>
                                                 @endif
@@ -646,7 +646,7 @@
                                             {{-- Status = DONE --}}
                                             @elseif($ticket->status === 'done')
                                                 <span class="flex-1 text-center text-xs px-3 py-1.5 bg-green-100 text-green-700 rounded font-medium">
-                                                    🎉 Selesai
+                                                    Selesai
                                                 </span>
                                             @endif
                                         </div>
@@ -770,7 +770,7 @@
                     <div class="p-4">
                         {{-- Info Box --}}
                         <div class="text-xs space-y-1 mb-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
-                            <p class="font-medium text-blue-900">📅 Kalender Proyek Ini:</p>
+                            <p class="font-medium text-blue-900">Kalender Proyek Ini:</p>
                             <ul class="text-[11px] text-blue-800 space-y-0.5 ml-2">
                                 <li>• <strong>Timeline Proyek</strong> - Rentang waktu proyek (highlight biru muda)</li>
                                 <li>• <strong>Event Proyek</strong> - Acara dan kegiatan proyek ini</li>
@@ -853,12 +853,12 @@
                                                     {{-- Timeline labels --}}
                                                     @if($isTimelineStart)
                                                         <div class="text-[10px] font-bold text-indigo-700 px-1 mb-1">
-                                                            📊 Mulai
+                                                            Mulai
                                                         </div>
                                                     @endif
                                                     @if($isTimelineEnd)
                                                         <div class="text-[10px] font-bold text-indigo-700 px-1 mb-1">
-                                                            🏁 Selesai
+                                                            Selesai
                                                         </div>
                                                     @endif
                                                     
@@ -890,7 +890,7 @@
                             {{-- Timeline Highlight --}}
                             @if($project->start_date && $project->end_date)
                             <div class="mb-3 pb-3 border-b border-gray-200">
-                                <p class="text-xs font-semibold text-indigo-900 mb-2">📊 Rentang Timeline Proyek:</p>
+                                <p class="text-xs font-semibold text-indigo-900 mb-2">Rentang Timeline Proyek:</p>
                                 <div class="space-y-1.5 text-xs">
                                     <div class="flex items-center gap-2">
                                         <div class="w-12 h-6 rounded bg-indigo-50 border border-indigo-300 relative">
@@ -900,13 +900,13 @@
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <div class="px-2 py-0.5 bg-white rounded text-[10px] font-bold text-indigo-700 border-l-4 border-indigo-600">
-                                            📊 Mulai
+                                            Mulai
                                         </div>
                                         <span class="text-gray-700">Tanggal mulai proyek</span>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <div class="px-2 py-0.5 bg-white rounded text-[10px] font-bold text-indigo-700 border-r-4 border-indigo-600">
-                                            🏁 Selesai
+                                            Selesai
                                         </div>
                                         <span class="text-gray-700">Tanggal selesai proyek</span>
                                     </div>
@@ -1092,16 +1092,16 @@
                                             required
                                             class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition">
                                         <option value="planning" {{ old('status', $project->status) === 'planning' ? 'selected' : '' }}>
-                                            📋 Perencanaan
+                                            Perencanaan
                                         </option>
                                         <option value="active" {{ old('status', $project->status) === 'active' ? 'selected' : '' }}>
-                                            🚀 Aktif
+                                            Aktif
                                         </option>
                                         <option value="on_hold" {{ old('status', $project->status) === 'on_hold' ? 'selected' : '' }}>
                                             ⏸️ Ditunda
                                         </option>
                                         <option value="completed" {{ old('status', $project->status) === 'completed' ? 'selected' : '' }}>
-                                            ✅ Selesai
+                                            Selesai
                                         </option>
                                     </select>
                                     @error('status')
@@ -1161,7 +1161,7 @@
                                 </div>
                             </div>
                             <p class="text-sm text-gray-600 mt-2">
-                                💡 Kosongkan jika proyek tidak memiliki batas waktu tertentu
+                                Kosongkan jika proyek tidak memiliki batas waktu tertentu
                             </p>
                         </div>
                         
@@ -1262,10 +1262,10 @@
                                 Prioritas <span class="text-red-500">*</span>
                             </label>
                             <select name="priority" required class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                                <option value="low">🟢 Rendah</option>
-                                <option value="medium" selected>🔵 Sedang</option>
-                                <option value="high">🟠 Tinggi</option>
-                                <option value="urgent">🔴 Mendesak</option>
+                                <option value="low">Rendah</option>
+                                <option value="medium" selected>Sedang</option>
+                                <option value="high">Tinggi</option>
+                                <option value="urgent">Mendesak</option>
                             </select>
                             <p class="text-xs text-gray-500 mt-1">Tingkat urgensi pekerjaan</p>
                         </div>
@@ -1356,21 +1356,21 @@
                                             {{-- Permanent Roles Badges (Multiple) --}}
                                             @foreach($permanentRoles as $roleKey)
                                                 <span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full border border-blue-300">
-                                                    🔒 {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
+                                                    {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
                                                 </span>
                                             @endforeach
                                             
                                             {{-- Event Roles Badges (Multiple) --}}
                                             @foreach($eventRolesArray as $roleKey)
                                                 <span class="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full border border-amber-300">
-                                                    ⏱️ {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
+                                                    {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
                                                 </span>
                                             @endforeach
                                             
                                             {{-- Project Role Badge --}}
                                             @if($member->pivot->role === 'admin')
                                                 <span class="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full border border-green-300">
-                                                    ⚡ Admin Project
+                                                    Admin Project
                                                 </span>
                                             @endif
                                         </div>
@@ -1422,7 +1422,7 @@
                                 <option value="">-- Semua Role --</option>
                                 
                                 @if($permanentRolesInProject->count() > 0)
-                                <optgroup label="🔒 Role Permanent ({{ $permanentRolesInProject->count() }} role)">
+                                <optgroup label="Role Permanent ({{ $permanentRolesInProject->count() }} role)">
                                     @foreach($permanentRolesInProject as $roleKey)
                                         @php
                                             $memberCount = $project->members->filter(function($m) use ($roleKey) {
@@ -1437,7 +1437,7 @@
                                 @endif
                                 
                                 @if($eventRolesInProject->count() > 0)
-                                <optgroup label="⏱️ Role Event ({{ $eventRolesInProject->count() }} role)">
+                                <optgroup label="Role Event ({{ $eventRolesInProject->count() }} role)">
                                     @foreach($eventRolesInProject as $roleKey)
                                         @php
                                             $memberCount = $project->members->filter(function($m) use ($roleKey) {
@@ -1457,7 +1457,7 @@
                                 @endif
                             </select>
                             <p class="text-xs text-gray-500 mt-1">
-                                💡 Hanya menampilkan role yang ada pada anggota project ini
+                                Hanya menampilkan role yang ada pada anggota project ini
                             </p>
                         </div>
                         
@@ -1708,7 +1708,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="px-4 py-2 text-sm font-bold rounded-full bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-md">
-                                👑 Project Manager
+                                Project Manager
                             </span>
                         </div>
                     </div>
@@ -1741,7 +1741,7 @@
                                 @if($eventRole)
                                 <div class="mt-2">
                                     <span class="text-xs px-2 py-1 {{ $hasPermanentRole ? 'bg-blue-100 text-blue-700 border-blue-300' : 'bg-amber-100 text-amber-700 border-amber-300' }} rounded-full border">
-                                        {{ $hasPermanentRole ? '🔒' : '⏱️' }} {{ $allRoles[$eventRole] ?? $eventRole }}
+                                        {{ $hasPermanentRole ? '' : '' }} {{ $allRoles[$eventRole] ?? $eventRole }}
                                         @if($hasPermanentRole)
                                             <span class="text-[10px] opacity-75">(Permanent)</span>
                                         @endif
@@ -1754,7 +1754,7 @@
                         <div class="flex items-center gap-2">
                             {{-- Role Badge --}}
                             <span class="px-3 py-1.5 text-xs font-semibold rounded-full {{ $member->pivot->role === 'admin' ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' : 'bg-gray-100 text-gray-700 border border-gray-300' }}">
-                                {{ $member->pivot->role === 'admin' ? '⚡ Admin Project' : '👤 Member' }}
+                                {{ $member->pivot->role === 'admin' ? 'Admin Project' : 'Member' }}
                             </span>
                             
                             @if($project->canManageMembers(Auth::user()))
@@ -1847,7 +1847,7 @@
                             <div class="flex items-center gap-2 mt-4">
                                 <button type="submit" 
                                         class="px-4 py-2 text-sm bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition">
-                                    💾 Simpan
+                                    Simpan
                                 </button>
                                 <button type="button" 
                                         @click="editMode = false"
@@ -2139,19 +2139,19 @@
                     <div class="mt-1">
                         <span x-show="selectedTicket.status === 'todo'" 
                               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                            📋 To Do
+                            To Do
                         </span>
                         <span x-show="selectedTicket.status === 'doing'" 
                               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                            ⚡ Sedang Dikerjakan
+                            Sedang Dikerjakan
                         </span>
                         <span x-show="selectedTicket.status === 'done'" 
                               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                            ✅ Selesai
+                            Selesai
                         </span>
                         <span x-show="selectedTicket.status === 'blackout'" 
                               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                            💡 Bank Ide
+                            Bank Ide
                         </span>
                     </div>
                 </div>
@@ -2160,7 +2160,7 @@
                     <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Target Role</span>
                     <div class="mt-1">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                            👥 <span x-text="selectedTicket.target_role"></span>
+                            <span x-text="selectedTicket.target_role"></span>
                         </span>
                     </div>
                 </div>
@@ -2169,7 +2169,7 @@
                     <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Konteks</span>
                     <div class="mt-1">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800"
-                              x-text="selectedTicket.context === 'event' ? '📅 Event' : selectedTicket.context === 'proyek' ? '🏢 Proyek' : '🌐 Umum'">
+                              x-text="selectedTicket.context === 'event' ? 'Event' : selectedTicket.context === 'proyek' ? 'Proyek' : 'Umum'">
                         </span>
                     </div>
                 </div>
@@ -2239,7 +2239,7 @@
                         @method('PATCH')
                         <button type="submit" 
                                 class="px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition font-medium shadow-md hover:shadow-lg">
-                            🚀 Set Todo - Mulai Mengerjakan
+                            Set Todo - Mulai Mengerjakan
                         </button>
                     </form>
                 </template>

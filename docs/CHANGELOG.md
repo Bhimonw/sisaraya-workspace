@@ -42,3 +42,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-16
 - Perbaiki logika permanent role untuk support multiple roles per user (user bisa memiliki banyak permanent role sekaligus)
+
+## 2025-10-16
+- Menghapus semua emoticon dan menggantinya dengan icon SVG atau text biasa untuk tampilan yang lebih profesional

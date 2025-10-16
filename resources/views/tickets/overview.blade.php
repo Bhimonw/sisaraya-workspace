@@ -207,12 +207,12 @@
                                     <div class="flex flex-wrap gap-1 mt-2">
                                         @if($ticket->type === 'permintaan_dana')
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700">
-                                                💰 Permintaan Dana
+                                                Permintaan Dana
                                             </span>
                                         @endif
                                         @if($ticket->type === 'broadcast')
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
-                                                📢 Broadcast
+                                                Broadcast
                                             </span>
                                         @endif
                                         @if($ticket->claimed_by === auth()->id())
@@ -313,11 +313,11 @@
                                         </div>
                                         @if($ticket->completed_at)
                                             <div class="text-xs text-gray-500 mt-0.5">
-                                                ✅ {{ $ticket->completed_at->diffForHumans() }}
+                                                {{ $ticket->completed_at->diffForHumans() }}
                                             </div>
                                         @elseif($ticket->claimed_at)
                                             <div class="text-xs text-gray-500 mt-0.5">
-                                                📌 {{ $ticket->claimed_at->diffForHumans() }}
+                                                {{ $ticket->claimed_at->diffForHumans() }}
                                             </div>
                                         @endif
                                     @else
@@ -341,7 +341,7 @@
                                                 <form method="POST" action="{{ route('tickets.claim', $ticket) }}" class="inline-block">
                                                     @csrf
                                                     <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs font-medium">
-                                                        🎯 Ambil
+                                                        Ambil
                                                     </button>
                                                 </form>
                                             @elseif($ticket->claimed_by === auth()->id())
@@ -357,7 +357,7 @@
                                                     <form method="POST" action="{{ route('tickets.complete', $ticket) }}" class="inline-block">
                                                         @csrf
                                                         <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs font-medium">
-                                                            ✅ Selesai
+                                                            Selesai
                                                         </button>
                                                     </form>
                                                 @endif

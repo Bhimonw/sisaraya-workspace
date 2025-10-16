@@ -162,16 +162,16 @@
                                         required
                                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     <option value="low" {{ old('priority') == 'low' ? 'selected' : '' }}>
-                                        🟢 Rendah
+                                        Rendah
                                     </option>
                                     <option value="medium" {{ old('priority', 'medium') == 'medium' ? 'selected' : '' }}>
-                                        🔵 Sedang
+                                        Sedang
                                     </option>
                                     <option value="high" {{ old('priority') == 'high' ? 'selected' : '' }}>
-                                        🟠 Tinggi
+                                        Tinggi
                                     </option>
                                     <option value="urgent" {{ old('priority') == 'urgent' ? 'selected' : '' }}>
-                                        🔴 Mendesak
+                                        Mendesak
                                     </option>
                                 </select>
                                 @error('priority')
@@ -264,7 +264,7 @@
 
             <!-- Example Box -->
             <div class="mt-6 rounded-lg bg-gray-50 p-6">
-                <h3 class="mb-3 font-semibold text-gray-900">💡 Contoh Penggunaan:</h3>
+                <h3 class="mb-3 font-semibold text-gray-900">Contoh Penggunaan:</h3>
                 <div class="space-y-2 text-sm text-gray-700">
                     <p><strong>Scenario 1:</strong> PM ingin semua Member membantu persiapan event → Pilih role "Member"</p>
                     <p><strong>Scenario 2:</strong> Butuh koordinasi Bendahara & Sekretaris untuk laporan keuangan → Pilih kedua role</p>

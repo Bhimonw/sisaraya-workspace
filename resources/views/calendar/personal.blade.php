@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('personal-calendar');
     
     if (calendarEl) {
-        console.log('🔍 Initializing Personal Calendar...');
+        console.log('[INIT] Initializing Personal Calendar...');
         
         calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
@@ -356,18 +356,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 day: 'Hari'
             },
             viewDidMount: function(info) {
-                console.log('🎨 Personal calendar view mounted:', info.view.type);
+                console.log('[VIEW] Personal calendar view mounted:', info.view.type);
             }
         });
         
-        console.log('🚀 Rendering personal calendar...');
+        console.log('[RENDER] Rendering personal calendar...');
         calendar.render();
         
         // Force update size after render
         setTimeout(() => {
             if (calendar) {
                 calendar.updateSize();
-                console.log('📏 Personal calendar size updated');
+                console.log('[RESIZE] Personal calendar size updated');
             }
         }, 100);
         
@@ -376,11 +376,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (calendar) {
                 calendar.render();
                 calendar.updateSize();
-                console.log('🔄 Personal calendar force re-rendered');
+                console.log('[REFRESH] Personal calendar force re-rendered');
             }
         }, 1000);
         
-        console.log('✅ Personal calendar initialized');
+        console.log('Personal calendar initialized');
     }
 });
 
@@ -508,37 +508,37 @@ function deleteActivity() {
 
 function showEventDetails(event) {
     const props = event.extendedProps;
-    let details = '📋 ' + event.title + '\n\n';
+    let details = '' + event.title + '\n\n';
     
     if (props.type) {
-        details += '🏷️ Jenis: ' + props.type + '\n';
+        details += 'Jenis: ' + props.type + '\n';
     }
     if (props.status) {
-        details += '📊 Status: ' + props.status + '\n';
+        details += 'Status: ' + props.status + '\n';
     }
     if (props.project_name) {
-        details += '📦 Proyek: ' + props.project_name + '\n';
+        details += 'Proyek: ' + props.project_name + '\n';
     }
     if (props.target_role) {
-        details += '👥 Target: ' + props.target_role + '\n';
+        details += 'Target: ' + props.target_role + '\n';
     }
     if (props.location) {
-        details += '📍 Lokasi: ' + props.location + '\n';
+        details += 'Lokasi: ' + props.location + '\n';
     }
     if (event.start) {
         const start = new Date(event.start);
-        details += '🕐 Mulai: ' + start.toLocaleString('id-ID') + '\n';
+        details += 'Mulai: ' + start.toLocaleString('id-ID') + '\n';
     }
     if (event.end && !props.type?.includes('Proyek')) {
         const end = new Date(event.end);
-        details += '🕐 Selesai: ' + end.toLocaleString('id-ID') + '\n';
+        details += 'Selesai: ' + end.toLocaleString('id-ID') + '\n';
     }
     if (props.description) {
-        details += '\n📝 Deskripsi:\n' + props.description;
+        details += '\nDeskripsi:\n' + props.description;
     }
     
     if (props.url) {
-        details += '\n\n💡 Klik OK untuk melihat detail lengkap';
+        details += '\n\nKlik OK untuk melihat detail lengkap';
         if (confirm(details)) {
             window.location.href = props.url;
         }

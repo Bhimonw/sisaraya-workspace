@@ -188,13 +188,25 @@
                                     </span>
 
                                     @if($ticket->context)
-                                        <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-md
                                             {{ $ticket->context === 'umum' ? 'bg-gray-200 text-gray-800' : '' }}
                                             {{ $ticket->context === 'event' ? 'bg-indigo-200 text-indigo-800' : '' }}
                                             {{ $ticket->context === 'proyek' ? 'bg-blue-200 text-blue-800' : '' }}">
-                                            @if($ticket->context === 'umum') 📝 Umum
-                                            @elseif($ticket->context === 'event') 📅 Event
-                                            @else 📁 Proyek
+                                            @if($ticket->context === 'umum')
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                                                </svg>
+                                                Umum
+                                            @elseif($ticket->context === 'event')
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                </svg>
+                                                Event
+                                            @else
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                                                </svg>
+                                                Proyek
                                             @endif
                                         </span>
                                     @endif
@@ -271,9 +283,9 @@
                                         {{ $ticket->context === 'umum' ? 'bg-gray-200 text-gray-800' : '' }}
                                         {{ $ticket->context === 'event' ? 'bg-indigo-200 text-indigo-800' : '' }}
                                         {{ $ticket->context === 'proyek' ? 'bg-blue-200 text-blue-800' : '' }}">
-                                        @if($ticket->context === 'umum') 📝 Umum
-                                        @elseif($ticket->context === 'event') 📅 Event
-                                        @else 📁 Proyek
+                                        @if($ticket->context === 'umum') Umum
+                                        @elseif($ticket->context === 'event') Event
+                                        @else Proyek
                                         @endif
                                     </span>
 
@@ -366,9 +378,9 @@
                                         {{ $ticket->context === 'umum' ? 'bg-gray-200 text-gray-800' : '' }}
                                         {{ $ticket->context === 'event' ? 'bg-indigo-200 text-indigo-800' : '' }}
                                         {{ $ticket->context === 'proyek' ? 'bg-blue-200 text-blue-800' : '' }}">
-                                        @if($ticket->context === 'umum') 📝 Umum
-                                        @elseif($ticket->context === 'event') 📅 Event
-                                        @else 📁 Proyek
+                                        @if($ticket->context === 'umum') Umum
+                                        @elseif($ticket->context === 'event') Event
+                                        @else Proyek
                                         @endif
                                     </span>
 
@@ -456,9 +468,9 @@
                                             {{ $ticket->context === 'umum' ? 'bg-gray-200 text-gray-800' : '' }}
                                             {{ $ticket->context === 'event' ? 'bg-indigo-200 text-indigo-800' : '' }}
                                             {{ $ticket->context === 'proyek' ? 'bg-blue-200 text-blue-800' : '' }}">
-                                            @if($ticket->context === 'umum') 📝 Umum
-                                            @elseif($ticket->context === 'event') 📅 Event
-                                            @else 📁 Proyek
+                                            @if($ticket->context === 'umum') Umum
+                                            @elseif($ticket->context === 'event') Event
+                                            @else Proyek
                                             @endif
                                         </span>
                                     @endif
@@ -545,9 +557,9 @@
                                                     {{ $ticket->context === 'umum' ? 'bg-gray-200 text-gray-800' : '' }}
                                                     {{ $ticket->context === 'event' ? 'bg-indigo-200 text-indigo-800' : '' }}
                                                     {{ $ticket->context === 'proyek' ? 'bg-blue-200 text-blue-800' : '' }}">
-                                                    @if($ticket->context === 'umum') 📝 Umum
-                                                    @elseif($ticket->context === 'event') 📅 Event
-                                                    @else 📁 Proyek
+                                                    @if($ticket->context === 'umum') Umum
+                                                    @elseif($ticket->context === 'event') Event
+                                                    @else Proyek
                                                     @endif
                                                 </span>
 
@@ -699,7 +711,7 @@
                                 @method('PATCH')
                                 <button type="submit" 
                                         class="px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition font-medium shadow-md hover:shadow-lg">
-                                    🚀 Set Todo - Mulai Mengerjakan
+                                    Set Todo - Mulai Mengerjakan
                                 </button>
                             </form>
                         </template>

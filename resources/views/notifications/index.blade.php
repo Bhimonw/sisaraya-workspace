@@ -80,15 +80,15 @@
                                         {{-- Ticket Type Badge --}}
                                         @if($notification->data['is_specific'] ?? false)
                                         <span class="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-700 font-medium border border-purple-300">
-                                            🎯 Khusus untuk Anda
+                                            Khusus untuk Anda
                                         </span>
                                         @elseif(isset($notification->data['target_role_label']))
                                         <span class="px-2 py-1 text-xs rounded-full bg-amber-100 text-amber-700 font-medium border border-amber-300">
-                                            👥 {{ $notification->data['target_role_label'] }}
+                                            {{ $notification->data['target_role_label'] }}
                                         </span>
                                         @else
                                         <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium border border-green-300">
-                                            🌐 Tiket Umum
+                                            Tiket Umum
                                         </span>
                                         @endif
                                         
@@ -105,7 +105,7 @@
                                         {{-- Due Date Badge --}}
                                         @if(isset($notification->data['due_date']) && $notification->data['due_date'])
                                         <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700">
-                                            📅 {{ \Carbon\Carbon::parse($notification->data['due_date'])->format('d M Y') }}
+                                            {{ \Carbon\Carbon::parse($notification->data['due_date'])->format('d M Y') }}
                                         </span>
                                         @endif
                                     </div>

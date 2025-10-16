@@ -485,18 +485,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             const userName = "{{ auth()->user()->name }}";
             const userRole = "{{ auth()->user()->getRoleNames()->first() }}";
-            showToast(`Selamat datang, ${userName}! 👋 Anda login sebagai ${userRole}`, 'success');
+            showToast(`Selamat datang, ${userName}!  Anda login sebagai ${userRole}`, 'success');
             
             // Initialize Calendar
-            console.log('🔍 Initializing Dashboard Calendar...');
+            console.log('[INIT] Initializing Dashboard Calendar...');
             const calendarEl = document.getElementById('dashboard-calendar');
             
             if (!calendarEl) {
-                console.error('❌ Calendar element not found!');
+                console.error('[ERROR] Calendar element not found!');
                 return;
             }
             
-            console.log('📅 Calendar element found, creating calendar instance...');
+            console.log('Calendar element found, creating calendar instance...');
             
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -525,30 +525,30 @@
                     {
                         url: '/api/calendar/user/events',
                         failure: function(error) {
-                            console.error('❌ Gagal memuat event:', error);
+                            console.error('[ERROR] Gagal memuat event:', error);
                         },
                         success: function(data) {
-                            console.log('✅ Event loaded:', data);
+                            console.log('Event loaded:', data);
                         }
                     },
                     @if(!auth()->user()->hasRole('guest'))
                     {
                         url: '/api/calendar/all-personal-activities',
                         failure: function(error) {
-                            console.error('❌ Gagal memuat kegiatan pribadi:', error);
+                            console.error('[ERROR] Gagal memuat kegiatan pribadi:', error);
                         },
                         success: function(data) {
-                            console.log('✅ Personal activities loaded:', data);
+                            console.log('Personal activities loaded:', data);
                         }
                     },
                     @endif
                     {
                         url: '/api/calendar/user/projects',
                         failure: function(error) {
-                            console.error('❌ Gagal memuat proyek:', error);
+                            console.error('[ERROR] Gagal memuat proyek:', error);
                         },
                         success: function(data) {
-                            console.log('✅ Projects loaded:', data);
+                            console.log('Projects loaded:', data);
                         }
                     }
                 ],
@@ -556,21 +556,21 @@
                     alert(info.event.title + '\n' + (info.event.extendedProps.description || ''));
                 },
                 viewDidMount: function(info) {
-                    console.log('🎨 Calendar view mounted:', info.view.type);
+                    console.log('[VIEW] Calendar view mounted:', info.view.type);
                 },
                 datesSet: function(info) {
-                    console.log('📆 Dates set:', info.startStr, 'to', info.endStr);
+                    console.log('[DATES] Dates set:', info.startStr, 'to', info.endStr);
                 }
             });
             
-            console.log('🚀 Rendering dashboard calendar...');
+            console.log('[RENDER] Rendering dashboard calendar...');
             calendar.render();
             
             // Force update size after render
             setTimeout(() => {
                 if (calendar) {
                     calendar.updateSize();
-                    console.log('📏 Dashboard calendar size updated');
+                    console.log('[RESIZE] Dashboard calendar size updated');
                 }
             }, 100);
             
@@ -579,11 +579,11 @@
                 if (calendar) {
                     calendar.render();
                     calendar.updateSize();
-                    console.log('🔄 Dashboard calendar force re-rendered');
+                    console.log('[REFRESH] Dashboard calendar force re-rendered');
                 }
             }, 500);
             
-            console.log('✅ Dashboard calendar initialized successfully');
+            console.log('Dashboard calendar initialized successfully');
         });
     </script>
 
