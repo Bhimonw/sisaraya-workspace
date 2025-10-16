@@ -45,3 +45,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-16
 - Menghapus semua emoticon dan menggantinya dengan icon SVG atau text biasa untuk tampilan yang lebih profesional
+
+## 2025-10-16
+- Privacy pada kalender: kegiatan pribadi user lain di dashboard hanya ditampilkan sebagai 'Sibuk' tanpa detail, kalender pribadi tetap menampilkan detail lengkap

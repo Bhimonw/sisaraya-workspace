@@ -553,7 +553,35 @@
                     }
                 ],
                 eventClick: function(info) {
-                    alert(info.event.title + '\n' + (info.event.extendedProps.description || ''));
+                    // Check if this is a privacy-protected event
+                    if (info.event.extendedProps.privacy_protected) {
+                        alert(
+                            info.event.title + '\n\n' +
+                            'Kegiatan: ' + (info.event.extendedProps.type || '-') + '\n' +
+                            'Waktu: ' + info.event.start.toLocaleString('id-ID') + 
+                            (info.event.end ? ' - ' + info.event.end.toLocaleString('id-ID') : '') + '\n\n' +
+                            'Detail kegiatan bersifat pribadi.'
+                        );
+                    } else {
+                        // Show full details
+                        let details = info.event.title + '\n\n';
+                        if (info.event.extendedProps.type) {
+                            details += 'Jenis: ' + info.event.extendedProps.type + '\n';
+                        }
+                        if (info.event.extendedProps.description) {
+                            details += 'Deskripsi: ' + info.event.extendedProps.description + '\n';
+                        }
+                        if (info.event.extendedProps.location) {
+                            details += 'Lokasi: ' + info.event.extendedProps.location + '\n';
+                        }
+                        if (info.event.start) {
+                            details += 'Mulai: ' + info.event.start.toLocaleString('id-ID') + '\n';
+                        }
+                        if (info.event.end) {
+                            details += 'Selesai: ' + info.event.end.toLocaleString('id-ID') + '\n';
+                        }
+                        alert(details);
+                    }
                 },
                 viewDidMount: function(info) {
                     console.log('[VIEW] Calendar view mounted:', info.view.type);

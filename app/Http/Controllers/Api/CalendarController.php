@@ -23,7 +23,7 @@ class CalendarController extends Controller
         foreach ($claimedTickets as $ticket) {
             $events[] = [
                 'id' => 'ticket-' . $ticket->id,
-                'title' => '📋 ' . $ticket->title,
+                'title' => $ticket->title,
                 'start' => $ticket->due_date,
                 'backgroundColor' => $this->getTicketColor($ticket->status),
                 'borderColor' => $this->getTicketColor($ticket->status),
@@ -51,7 +51,7 @@ class CalendarController extends Controller
         foreach ($availableTickets as $ticket) {
             $events[] = [
                 'id' => 'available-ticket-' . $ticket->id,
-                'title' => '🎫 ' . $ticket->title . ' (Tersedia)',
+                'title' => $ticket->title . ' (Tersedia)',
                 'start' => $ticket->due_date,
                 'backgroundColor' => '#f59e0b', // Orange for available tickets
                 'borderColor' => '#f59e0b',
@@ -96,7 +96,7 @@ class CalendarController extends Controller
         foreach ($projectEvents as $event) {
             $events[] = [
                 'id' => 'project-event-' . $event->id,
-                'title' => '📅 ' . $event->title,
+                'title' => $event->title,
                 'start' => $event->start_date . ' ' . $event->start_time,
                 'end' => $event->end_date . ' ' . ($event->end_time ?? $event->start_time),
                 'backgroundColor' => '#8b5cf6',
@@ -127,7 +127,7 @@ class CalendarController extends Controller
         foreach ($userProjects as $project) {
             $events[] = [
                 'id' => 'project-' . $project->id,
-                'title' => '📦 ' . $project->name,
+                'title' => $project->name,
                 'start' => $project->start_date ?? $project->created_at,
                 'end' => $project->end_date,
                 'backgroundColor' => $this->getProjectStatusColor($project->status),
@@ -236,7 +236,7 @@ class CalendarController extends Controller
             if ($project->start_date || $project->end_date) {
                 $events[] = [
                     'id' => 'project-' . $project->id,
-                    'title' => '📦 ' . $project->name,
+                    'title' => $project->name,
                     'start' => $project->start_date ?? $project->created_at,
                     'end' => $project->end_date,
                     'backgroundColor' => $this->getProjectStatusColor($project->status),
@@ -255,7 +255,7 @@ class CalendarController extends Controller
             foreach ($tickets as $ticket) {
                 $events[] = [
                     'id' => 'ticket-' . $ticket->id,
-                    'title' => '📋 ' . $ticket->title,
+                    'title' => $ticket->title,
                     'start' => $ticket->due_date,
                     'backgroundColor' => $this->getTicketColor($ticket->status),
                     'borderColor' => $this->getTicketColor($ticket->status),
@@ -273,6 +273,7 @@ class CalendarController extends Controller
 
     /**
      * Get all public personal activities from all members (for dashboard calendar)
+     * Privacy: Show full details for own activities, only "Sibuk" for others
      */
     public function allPersonalActivities(Request $request)
     {
@@ -289,20 +290,44 @@ class CalendarController extends Controller
 
         $events = [];
         foreach ($activities as $activity) {
-            $events[] = [
-                'id' => 'activity-' . $activity->id,
-                'title' => '👤 ' . $activity->user->name . ': ' . $activity->title,
-                'start' => $activity->start_time,
-                'end' => $activity->end_time,
-                'backgroundColor' => $activity->color,
-                'borderColor' => $activity->color,
-                'extendedProps' => [
-                    'type' => \App\Models\PersonalActivity::getTypeLabel($activity->type),
-                    'description' => $activity->description,
-                    'location' => $activity->location,
-                    'user_name' => $activity->user->name,
-                ]
-            ];
+            $isOwnActivity = $activity->user_id === $user->id;
+            
+            // Full details for own activities
+            if ($isOwnActivity) {
+                $events[] = [
+                    'id' => 'activity-' . $activity->id,
+                    'title' => $activity->title,
+                    'start' => $activity->start_time,
+                    'end' => $activity->end_time,
+                    'backgroundColor' => $activity->color,
+                    'borderColor' => $activity->color,
+                    'extendedProps' => [
+                        'type' => \App\Models\PersonalActivity::getTypeLabel($activity->type),
+                        'description' => $activity->description,
+                        'location' => $activity->location,
+                        'user_name' => $activity->user->name,
+                        'is_own' => true,
+                    ]
+                ];
+            } else {
+                // Privacy: Only show "Sibuk" for other members' activities
+                $events[] = [
+                    'id' => 'activity-' . $activity->id,
+                    'title' => $activity->user->name . ' - Sibuk',
+                    'start' => $activity->start_time,
+                    'end' => $activity->end_time,
+                    'backgroundColor' => '#94a3b8', // Neutral gray color
+                    'borderColor' => '#64748b',
+                    'extendedProps' => [
+                        'type' => 'Kegiatan Pribadi',
+                        'description' => null, // No description for privacy
+                        'location' => null, // No location for privacy
+                        'user_name' => $activity->user->name,
+                        'is_own' => false,
+                        'privacy_protected' => true,
+                    ]
+                ];
+            }
         }
 
         return response()->json($events);
