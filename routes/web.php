@@ -81,6 +81,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('businesses', App\Http\Controllers\BusinessController::class)->only(['index','create','store','show']);
     Route::post('businesses/{business}/approve', [App\Http\Controllers\BusinessController::class, 'approve'])->name('businesses.approve');
     Route::post('businesses/{business}/reject', [App\Http\Controllers\BusinessController::class, 'reject'])->name('businesses.reject');
+    
+    // Business Reports
+    Route::post('businesses/{business}/reports', [App\Http\Controllers\BusinessReportController::class, 'store'])->name('businesses.reports.store');
+    Route::get('businesses/{business}/reports/{report}/download', [App\Http\Controllers\BusinessReportController::class, 'download'])->name('businesses.reports.download');
+    Route::delete('businesses/{business}/reports/{report}', [App\Http\Controllers\BusinessReportController::class, 'destroy'])->name('businesses.reports.destroy');
 
     // Notes (Catatan Pribadi)
     Route::resource('notes', App\Http\Controllers\NoteController::class)->except(['show', 'create', 'edit']);

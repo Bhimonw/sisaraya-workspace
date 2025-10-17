@@ -60,7 +60,7 @@ class BusinessController extends Controller
 
     public function show(Business $business)
     {
-        $business->load(['creator', 'approver', 'project']);
+        $business->load(['creator', 'approver', 'project', 'reports.uploader']);
         return view('businesses.show', compact('business'));
     }
 

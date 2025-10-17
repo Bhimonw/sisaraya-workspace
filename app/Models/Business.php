@@ -40,6 +40,14 @@ class Business extends Model
     }
 
     /**
+     * Get all reports for this business
+     */
+    public function reports()
+    {
+        return $this->hasMany(BusinessReport::class);
+    }
+
+    /**
      * Scope: Only pending businesses
      */
     public function scopePending($query)

@@ -38,6 +38,14 @@ All notable changes to this project should be documented in this file.
 
 ### Added
 - Business approval workflow dengan auto-create project
+- Menu "Manajemen Usaha" untuk PM (sama dengan kewirausahaan)
+- Halaman detail usaha yang lengkap dengan section laporan
+- Upload laporan usaha (PDF, Word, Excel, Images max 10MB)
+- Download laporan usaha
+- Delete laporan usaha (uploader atau PM)
+- 4 jenis laporan: Penjualan, Keuangan, Operasional, Lainnya
+- Color-coded badges untuk jenis laporan
+- File size formatting untuk display
 
 ### Fixed
 - PM role sekarang memiliki permission `business.view` untuk akses halaman businesses - Kewirausahaan membuat usaha baru dengan status pending, PM dapat approve/reject melalui notifikasi database. **Ketika disetujui, otomatis create project dengan PM sebagai owner dan kewirausahaan sebagai admin member**. Status: pending/approved/rejected dengan rejection reason. Policy & permission: business.approve untuk PM. UI: status filters, approval buttons, reject modal, project link. Lihat `docs/BUSINESS_APPROVAL_AND_PROJECT_LABELS.md`.
