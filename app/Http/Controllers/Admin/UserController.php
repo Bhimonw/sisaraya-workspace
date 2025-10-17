@@ -131,4 +131,36 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
+
+    /**
+     * Show form to manage user roles
+     */
+    public function manageRoles(User $user)
+    {
+        $roles = Role::orderBy('name')->get();
+        return view('admin.users.manage-roles', compact('user', 'roles'));
+    }
+
+    /**
+     * Update user roles
+     */
+    public function updateRoles(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,name',
+        ]);
+
+        // Sync roles
+        if (isset($data['roles'])) {
+            $user->syncRoles($data['roles']);
+        } else {
+            // If no roles selected, remove all roles
+            $user->syncRoles([]);
+        }
+
+        return redirect()
+            ->route('admin.users.manage-roles', $user)
+            ->with('success', 'Role user berhasil diperbarui');
+    }
 }

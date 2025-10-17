@@ -28,6 +28,7 @@ require __DIR__.'/auth.php';
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\RoleChangeRequestController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 Route::middleware(['auth'])->group(function () {
@@ -126,7 +127,24 @@ Route::middleware(['auth'])->group(function () {
     Route::post('projects/{project}/ratings', [App\Http\Controllers\ProjectRatingController::class, 'store'])->name('projects.ratings.store');
     Route::delete('projects/{project}/ratings', [App\Http\Controllers\ProjectRatingController::class, 'destroy'])->name('projects.ratings.destroy');
 
+    // Role Change Requests (User request, HR approve)
+    Route::prefix('role-requests')->name('role-requests.')->group(function () {
+        Route::get('create', [RoleChangeRequestController::class, 'create'])->name('create');
+        Route::post('/', [RoleChangeRequestController::class, 'store'])->name('store');
+        Route::get('my-requests', [RoleChangeRequestController::class, 'myRequests'])->name('my-requests');
+    });
+
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::resource('users', AdminUserController::class);
+        // Role Change Requests Management (HR only)
+        Route::middleware('role:hr')->group(function () {
+            Route::get('role-requests', [RoleChangeRequestController::class, 'index'])->name('role-requests.index');
+            Route::post('role-requests/{roleChangeRequest}/approve', [RoleChangeRequestController::class, 'approve'])->name('role-requests.approve');
+            Route::post('role-requests/{roleChangeRequest}/reject', [RoleChangeRequestController::class, 'reject'])->name('role-requests.reject');
+        });
+        
+        // User Management (HR can only view users, not edit/delete)
+        Route::middleware('role:hr')->group(function () {
+            Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
+        });
     });
 });

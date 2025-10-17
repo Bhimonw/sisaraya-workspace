@@ -55,7 +55,7 @@
     {{-- ========================================
          USER TABLE
          ======================================== --}}
-    <x-users.user-table :users="$users" :canDelete="true" />
+    <x-users.user-table :users="$users" />
 
 </div>
 @endsection

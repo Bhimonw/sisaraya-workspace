@@ -5,7 +5,6 @@
     
     Props:
     - users (required): Collection dari User models
-    - canDelete (optional, default: true): User bisa dihapus atau tidak
     
     Layout:
     - Mobile (< 768px): 1 kolom
@@ -13,13 +12,13 @@
     - Desktop (> 1024px): 3 kolom
 --}}
 
-@props(['users', 'canDelete' => true])
+@props(['users'])
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     
     @forelse($users as $user)
         {{-- Render User Card --}}
-        <x-users.user-card :user="$user" :canDelete="$canDelete" />
+        <x-users.user-card :user="$user" />
         
     @empty
         {{-- Empty State --}}

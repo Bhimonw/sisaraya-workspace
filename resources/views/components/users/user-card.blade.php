@@ -5,11 +5,10 @@
     
     Props:
     - user (required): User model instance
-    - canDelete (optional, default: true): Tampilkan tombol delete
     - showActions (optional, default: true): Tampilkan action buttons
 --}}
 
-@props(['user', 'canDelete' => true, 'showActions' => true])
+@props(['user', 'showActions' => true])
 
 <div class="group relative overflow-hidden rounded-xl border-2 border-gray-200 bg-white p-6 hover:shadow-lg hover:border-violet-300 transition-all duration-300">
     
@@ -69,32 +68,14 @@
         {{-- RIGHT: Action Buttons --}}
         @if($showActions)
         <div class="flex flex-col gap-2 items-end">
-            {{-- Edit Button --}}
-            <a href="{{ route('admin.users.edit', $user) }}" 
-               class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 hover:scale-105 active:scale-95 transition-all shadow-sm">
+            {{-- Manage Roles Button --}}
+            <a href="{{ route('admin.users.manage-roles', $user) }}" 
+               class="inline-flex items-center gap-1 px-3 py-1.5 bg-violet-500 text-white text-sm font-medium rounded-lg hover:bg-violet-600 hover:scale-105 active:scale-95 transition-all shadow-sm">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                 </svg>
-                Edit
+                Kelola Role
             </a>
-
-            {{-- Delete Button (tidak muncul untuk user sendiri) --}}
-            @if($canDelete && $user->id !== auth()->id())
-            <form method="POST" 
-                  action="{{ route('admin.users.destroy', $user) }}" 
-                  class="inline" 
-                  onsubmit="return confirm('Yakin ingin menghapus user {{ $user->name }}?')">
-                @csrf
-                @method('DELETE')
-                <button type="submit" 
-                        class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 hover:scale-105 active:scale-95 transition-all shadow-sm">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                    Hapus
-                </button>
-            </form>
-            @endif
         </div>
         @endif
         

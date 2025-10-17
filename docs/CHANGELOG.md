@@ -161,3 +161,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Tambah kolom No (nomor urut) di tabel user untuk memudahkan identifikasi dan navigasi daftar anggota
+
+## 2025-10-17
+- Restrict HR permissions: HR hanya bisa kelola role user (approve/ubah role), tidak bisa edit detail akun atau hapus user. Tambah halaman manage-roles khusus untuk HR
+
+## 2025-10-17
+- Implement role change request system: User harus request perubahan role terlebih dahulu, HR hanya bisa approve/reject request, tidak bisa edit role secara langsung. Tambah migration, model, controller, dan views untuk request workflow
