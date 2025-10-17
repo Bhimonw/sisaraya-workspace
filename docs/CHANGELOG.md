@@ -119,3 +119,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Standarisasi UI dengan modern card-based design di semua halaman (votes, documents, dashboard)
+
+## 2025-10-17
+- Tambah fitur kelola label/tag di halaman detail proyek dengan UI yang modern dan interaktif
