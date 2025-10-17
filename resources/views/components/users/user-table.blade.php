@@ -25,6 +25,7 @@
             {{-- TABLE HEADER --}}
             <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
                 <tr>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">No</th>
                     <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">ID</th>
                     <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Anggota</th>
                     <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Username</th>
@@ -36,8 +37,13 @@
             
             {{-- TABLE BODY --}}
             <tbody class="bg-white divide-y divide-gray-100">
-                @forelse($users as $user)
+                @forelse($users as $index => $user)
                     <tr class="hover:bg-gradient-to-r hover:from-violet-50 hover:to-blue-50 transition-colors duration-150">
+                        
+                        {{-- No Column --}}
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm font-semibold text-gray-700">{{ $index + 1 }}</span>
+                        </td>
                         
                         {{-- ID Column --}}
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -58,7 +64,10 @@
                         
                         {{-- Username Column --}}
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-700 font-mono">@{{ $user->username }}</div>
+                            <div class="flex items-center gap-1">
+                                <span class="text-gray-400 text-sm">@</span>
+                                <span class="text-sm text-gray-900 font-medium">{{ $user->username }}</span>
+                            </div>
                         </td>
                         
                         {{-- Email Column --}}
@@ -115,7 +124,7 @@
                 @empty
                     {{-- Empty State Row --}}
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center">
+                        <td colspan="7" class="px-6 py-12 text-center">
                             <div class="flex flex-col items-center justify-center gap-3">
                                 <svg class="h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>

@@ -155,3 +155,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Simplify halaman Manajemen Anggota: hapus toggle grid/table view, gunakan tampilan tabel saja untuk konsistensi dan kesederhanaan
+
+## 2025-10-17
+- Perbaiki tampilan username: pisahkan simbol @ dengan warna abu-abu terang dan username dengan font medium untuk readability yang lebih baik
+
+## 2025-10-17
+- Tambah kolom No (nomor urut) di tabel user untuk memudahkan identifikasi dan navigasi daftar anggota

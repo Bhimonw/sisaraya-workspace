@@ -37,7 +37,10 @@
                 {{-- Name & Username --}}
                 <div class="flex items-center gap-2 mb-1">
                     <h3 class="text-lg font-bold text-gray-900 truncate">{{ $user->name }}</h3>
-                    <span class="text-sm text-gray-500 font-mono">@{{ $user->username }}</span>
+                    <span class="inline-flex items-center text-sm text-gray-500">
+                        <span class="text-gray-400">@</span>
+                        <span class="font-medium">{{ $user->username }}</span>
+                    </span>
                 </div>
                 
                 {{-- Email --}}
