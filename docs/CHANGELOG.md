@@ -125,3 +125,15 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Buat komponen reusable untuk label badge dan selector, refactor semua halaman proyek (index, show, create) menggunakan komponen
+
+## 2025-10-17
+- Refactor halaman RAB menjadi modular dengan komponen reusable (x-rab-status-badge, x-currency-input), desain card modern responsive, filter status dana (draft/pending/approved/rejected), layout konsisten untuk semua role termasuk bendahara
+
+## 2025-10-17
+- Fix error RoleDoesNotExist pada form tiket umum - ganti 'member' dengan 'talent' sesuai role yang ada di database, tambah role media/pr/talent_manager di form
+
+## 2025-10-17
+- Implementasi role 'member' sebagai universal role - semua user memiliki role ini, berguna untuk broadcast tiket ke seluruh anggota. Update seeder dan form tiket umum dengan UI yang lebih jelas
+
+## 2025-10-17
+- Klarifikasi logika tiket umum/broadcast: 1 tiket per role (bukan per orang), visible untuk semua user dengan role tersebut, bisa di-claim. Update UI dengan contoh penggunaan yang detail dan perbedaan dengan assignment langsung

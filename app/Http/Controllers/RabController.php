@@ -16,9 +16,19 @@ class RabController extends Controller
         $this->middleware('permission:finance.manage_rab')->only(['approve','reject','edit','update','destroy']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $rabs = Rab::with('project','creator')->latest()->paginate(12);
+        $status = $request->get('status', 'all');
+        
+        $query = Rab::with('project', 'creator', 'approver');
+        
+        // Filter by status
+        if ($status !== 'all') {
+            $query->where('funds_status', $status);
+        }
+        
+        $rabs = $query->latest()->paginate(12)->withQueryString();
+        
         return view('rab.index', compact('rabs'));
     }
 

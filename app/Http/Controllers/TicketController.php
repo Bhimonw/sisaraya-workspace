@@ -450,7 +450,13 @@ class TicketController extends Controller
     }
 
     /**
-     * Store general ticket broadcast to all main roles (PM only)
+     * Store general ticket broadcast to roles (PM only)
+     * 
+     * Logic:
+     * - 1 tiket dibuat per role yang dipilih
+     * - Tiket tersebut akan visible untuk SEMUA user dengan role tersebut
+     * - Notifikasi dikirim ke semua user dengan role tersebut (tanpa duplikasi)
+     * - User bisa "claim" tiket untuk assign ke diri sendiri
      */
     public function storeGeneral(Request $request)
     {
@@ -458,15 +464,17 @@ class TicketController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'target_roles' => 'required|array|min:1',
-            'target_roles.*' => 'required|in:member,pm,bendahara,sekretaris,hr,kewirausahaan,researcher',
+            'target_roles.*' => 'required|in:member,pm,bendahara,sekretaris,hr,kewirausahaan,researcher,media,pr,talent_manager,talent',
             'due_date' => 'nullable|date',
             'priority' => 'required|in:low,medium,high,urgent',
             'weight' => 'nullable|integer|min:1|max:10',
         ]);
 
-        // Create separate ticket for each selected role
+        // Create 1 ticket per role (NOT per person)
+        // Each ticket will be visible to all users with that role
         $ticketsCreated = 0;
         $notifiedUsers = [];
+        $totalNotifications = 0;
         
         foreach ($data['target_roles'] as $role) {
             $ticket = Ticket::create([
@@ -489,19 +497,23 @@ class TicketController extends Controller
             $ticketsCreated++;
             
             // Send notification to all users with this role
+            // Each user gets notification only once (even if they have multiple selected roles)
             $usersWithRole = User::role($role)->get();
             foreach ($usersWithRole as $user) {
-                // Skip creator and already notified users
+                // Skip creator and users already notified
                 if ($user->id === $request->user()->id || in_array($user->id, $notifiedUsers)) {
                     continue;
                 }
                 
                 $user->notify(new TicketAssigned($ticket, $request->user(), false));
                 $notifiedUsers[] = $user->id;
+                $totalNotifications++;
             }
         }
 
+        $uniqueUsers = count($notifiedUsers);
+        
         return redirect()->route('tickets.overview')
-            ->with('success', "Berhasil membuat {$ticketsCreated} tiket umum untuk role yang dipilih. Notifikasi telah dikirim.");
+            ->with('success', "Berhasil membuat {$ticketsCreated} tiket umum. Notifikasi dikirim ke {$uniqueUsers} anggota.");
     }
 }

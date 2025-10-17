@@ -130,7 +130,16 @@ class SisarayaMembersSeeder extends Seeder
                 $this->command->warn("⚠️  User already exists: {$memberData['name']} (@{$memberData['username']})");
             }
 
-            // Assign roles
+            // Assign 'member' role to all users (universal role)
+            if (!$user->hasRole('member')) {
+                $memberRole = Role::where('name', 'member')->first();
+                if ($memberRole) {
+                    $user->assignRole('member');
+                    $this->command->info("   └─ Assigned universal role: member");
+                }
+            }
+
+            // Assign specific roles
             foreach ($memberData['roles'] as $roleName) {
                 $role = Role::where('name', $roleName)->first();
                 
