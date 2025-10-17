@@ -63,8 +63,51 @@
     <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
         <h2 class="text-lg font-bold text-gray-900 mb-4">Ajukan Role Baru</h2>
         
-        <form method="POST" action="{{ route('role-requests.store') }}" x-data="{ selectedRoles: [] }">
+        <form method="POST" action="{{ route('role-requests.store') }}" x-data="{ 
+            selectedRoles: [],
+            get isGuestSelected() {
+                return this.selectedRoles.includes('guest');
+            },
+            get hasOtherRoles() {
+                return this.selectedRoles.some(role => role !== 'guest');
+            },
+            toggleRole(roleName, event) {
+                if (event.target.checked) {
+                    // If selecting guest, clear other roles
+                    if (roleName === 'guest') {
+                        this.selectedRoles = ['guest'];
+                        // Uncheck all other checkboxes
+                        document.querySelectorAll('input[name=\'requested_roles[]\']').forEach(cb => {
+                            if (cb.value !== 'guest') cb.checked = false;
+                        });
+                    } 
+                    // If selecting other role and guest is selected, remove guest
+                    else if (this.selectedRoles.includes('guest')) {
+                        this.selectedRoles = [roleName];
+                        // Uncheck guest checkbox
+                        document.querySelector('input[name=\'requested_roles[]\'][value=\'guest\']').checked = false;
+                    } 
+                    // Normal addition
+                    else {
+                        this.selectedRoles.push(roleName);
+                    }
+                } else {
+                    this.selectedRoles = this.selectedRoles.filter(r => r !== roleName);
+                }
+            }
+        }">
             @csrf
+
+            <div class="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                <div class="flex items-start gap-2">
+                    <svg class="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-sm text-amber-800">
+                        <strong>Penting:</strong> Role <strong>Guest</strong> tidak dapat digabung dengan role lainnya. Guest adalah role khusus dengan akses terbatas hanya ke proyek tertentu.
+                    </p>
+                </div>
+            </div>
 
             <div class="space-y-3 mb-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-3">
@@ -72,17 +115,28 @@
                 </label>
                 
                 @foreach($roles as $role)
-                <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-violet-300 hover:bg-gray-50">
-                    <input type="checkbox" 
-                           name="requested_roles[]" 
-                           value="{{ $role->name }}"
-                           {{ $pendingRequest ? 'disabled' : '' }}
-                           x-model="selectedRoles"
-                           class="h-5 w-5 text-violet-600 border-gray-300 rounded focus:ring-violet-500">
+                <label 
+                    class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-violet-300 hover:bg-gray-50"
+                    :class="{
+                        'opacity-50 cursor-not-allowed': (isGuestSelected && '{{ $role->name }}' !== 'guest') || (hasOtherRoles && '{{ $role->name }}' === 'guest')
+                    }"
+                >
+                    <input 
+                        type="checkbox" 
+                        name="requested_roles[]" 
+                        value="{{ $role->name }}"
+                        {{ $pendingRequest ? 'disabled' : '' }}
+                        :disabled="{{ $pendingRequest ? 'true' : 'false' }} || (isGuestSelected && '{{ $role->name }}' !== 'guest') || (hasOtherRoles && '{{ $role->name }}' === 'guest')"
+                        @change="toggleRole('{{ $role->name }}', $event)"
+                        class="h-5 w-5 text-violet-600 border-gray-300 rounded focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
                     <div class="ml-4 flex-1">
                         <div class="flex items-center gap-2">
                             <span class="font-semibold text-gray-900">{{ ucfirst($role->name) }}</span>
                             <x-users.role-badge :role="$role->name" />
+                            @if($role->name === 'guest')
+                                <span class="text-xs text-amber-600 font-normal ml-2">Tidak bisa dicampur dengan role lain</span>
+                            @endif
                         </div>
                     </div>
                 </label>

@@ -52,6 +52,13 @@ class RoleChangeRequestController extends Controller
             'reason' => 'required|string|min:10',
         ]);
 
+        // Validasi: Guest tidak bisa digabung dengan role lainnya
+        if (in_array('guest', $data['requested_roles'])) {
+            if (count($data['requested_roles']) > 1) {
+                return back()->withErrors(['requested_roles' => 'Role Guest tidak dapat digabung dengan role lainnya.'])->withInput();
+            }
+        }
+
         RoleChangeRequest::create([
             'user_id' => $user->id,
             'requested_roles' => $data['requested_roles'],

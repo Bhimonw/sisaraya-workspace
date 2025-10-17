@@ -5,6 +5,27 @@
     selectedRoles: {{ json_encode(old('roles', $user->roles->pluck('name')->toArray())) }},
     get isGuestSelected() {
         return this.selectedRoles.includes('guest');
+    },
+    get hasOtherRoles() {
+        return this.selectedRoles.some(role => role !== 'guest');
+    },
+    toggleRole(roleName) {
+        if (this.selectedRoles.includes(roleName)) {
+            this.selectedRoles = this.selectedRoles.filter(r => r !== roleName);
+        } else {
+            // If selecting guest, clear other roles
+            if (roleName === 'guest') {
+                this.selectedRoles = ['guest'];
+            } 
+            // If selecting other role and guest is selected, remove guest
+            else if (this.selectedRoles.includes('guest')) {
+                this.selectedRoles = [roleName];
+            } 
+            // Normal addition
+            else {
+                this.selectedRoles.push(roleName);
+            }
+        }
     }
 }">
     <div class="mb-6">
@@ -90,23 +111,44 @@
                 <label class="block text-sm font-medium text-gray-700 mb-3">
                     Role(s) <span class="text-gray-400">(Pilih satu atau lebih)</span>
                 </label>
+                <div class="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                    <div class="flex items-start gap-2">
+                        <svg class="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-sm text-amber-800">
+                            <strong>Penting:</strong> Role <strong>Guest</strong> tidak dapat digabung dengan role lainnya. Guest adalah role khusus dengan akses terbatas hanya ke proyek tertentu.
+                        </p>
+                    </div>
+                </div>
                 <div class="grid grid-cols-2 gap-3">
                     @php
                         $userRoles = $user->roles->pluck('name')->toArray();
                     @endphp
                     @foreach($roles as $role)
-                        <label class="flex items-center p-3 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer">
-                            <input type="checkbox" name="roles[]" value="{{ $role->name }}" 
-                                {{ in_array($role->name, old('roles', $userRoles)) ? 'checked' : '' }}
-                                @change="
-                                    if ($event.target.checked) {
-                                        selectedRoles.push('{{ $role->name }}');
-                                    } else {
-                                        selectedRoles = selectedRoles.filter(r => r !== '{{ $role->name }}');
-                                    }
-                                "
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700 capitalize">{{ $role->name }}</span>
+                        <label 
+                            class="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer transition-all"
+                            :class="{
+                                'bg-gray-50 hover:bg-gray-100': selectedRoles.includes('{{ $role->name }}'),
+                                'hover:bg-gray-50': !selectedRoles.includes('{{ $role->name }}'),
+                                'opacity-50 cursor-not-allowed': (isGuestSelected && '{{ $role->name }}' !== 'guest') || (hasOtherRoles && '{{ $role->name }}' === 'guest')
+                            }"
+                        >
+                            <input 
+                                type="checkbox" 
+                                name="roles[]" 
+                                value="{{ $role->name }}" 
+                                :checked="selectedRoles.includes('{{ $role->name }}')"
+                                :disabled="(isGuestSelected && '{{ $role->name }}' !== 'guest') || (hasOtherRoles && '{{ $role->name }}' === 'guest')"
+                                @change="toggleRole('{{ $role->name }}')"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                            <span class="ml-2 text-sm text-gray-700 capitalize flex-1">
+                                {{ $role->name }}
+                                @if($role->name === 'guest')
+                                    <span class="text-xs text-amber-600 block font-normal">Tidak bisa dicampur dengan role lain</span>
+                                @endif
+                            </span>
                         </label>
                     @endforeach
                 </div>

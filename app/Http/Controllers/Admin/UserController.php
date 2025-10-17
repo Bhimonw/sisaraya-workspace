@@ -43,8 +43,13 @@ class UserController extends Controller
             'projects.*' => 'exists:projects,id',
         ]);
 
-        // Validasi: jika role guest, harus pilih minimal 1 proyek
+        // Validasi: Guest tidak bisa digabung dengan role lainnya
         if (in_array('guest', $data['roles'] ?? [])) {
+            if (count($data['roles']) > 1) {
+                return back()->withErrors(['roles' => 'Role Guest tidak dapat digabung dengan role lainnya.'])->withInput();
+            }
+            
+            // Validasi: jika role guest, harus pilih minimal 1 proyek
             if (empty($data['projects'])) {
                 return back()->withErrors(['projects' => 'User dengan role Guest harus memilih minimal satu proyek.'])->withInput();
             }
@@ -90,8 +95,13 @@ class UserController extends Controller
             'projects.*' => 'exists:projects,id',
         ]);
 
-        // Validasi: jika role guest, harus pilih minimal 1 proyek
+        // Validasi: Guest tidak bisa digabung dengan role lainnya
         if (in_array('guest', $data['roles'] ?? [])) {
+            if (count($data['roles']) > 1) {
+                return back()->withErrors(['roles' => 'Role Guest tidak dapat digabung dengan role lainnya.'])->withInput();
+            }
+            
+            // Validasi: jika role guest, harus pilih minimal 1 proyek
             if (empty($data['projects'])) {
                 return back()->withErrors(['projects' => 'User dengan role Guest harus memilih minimal satu proyek.'])->withInput();
             }

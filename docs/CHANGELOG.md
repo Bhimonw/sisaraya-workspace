@@ -167,3 +167,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Implement role change request system: User harus request perubahan role terlebih dahulu, HR hanya bisa approve/reject request, tidak bisa edit role secara langsung. Tambah migration, model, controller, dan views untuk request workflow
+
+## 2025-10-17
+- Tambah route dan akses untuk HR membuat user baru: admin.users.create dan admin.users.store (hanya HR yang memiliki akses)
+
+## 2025-10-17
+- Tambah validasi: Role Guest tidak bisa digabung dengan role lainnya (mutually exclusive). Update form create/edit user dan role change request dengan UI logic untuk auto-disable role lain ketika Guest dipilih

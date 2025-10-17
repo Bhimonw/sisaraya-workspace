@@ -142,9 +142,11 @@ Route::middleware(['auth'])->group(function () {
             Route::post('role-requests/{roleChangeRequest}/reject', [RoleChangeRequestController::class, 'reject'])->name('role-requests.reject');
         });
         
-        // User Management (HR can only view users, not edit/delete)
+        // User Management (HR can view users and create new users)
         Route::middleware('role:hr')->group(function () {
             Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
+            Route::get('users/create', [AdminUserController::class, 'create'])->name('users.create');
+            Route::post('users', [AdminUserController::class, 'store'])->name('users.store');
         });
     });
 });
