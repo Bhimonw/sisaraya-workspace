@@ -146,3 +146,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Rapikan UI halaman RAB index: tambah background abu-abu, perbaiki spacing/padding, tingkatkan shadow & border, perbarui tab filter dengan gradient, polish card layout untuk visual hierarchy yang lebih baik
+
+## 2025-10-17
+- Modularisasi halaman Manajemen Anggota HR: buat komponen reusable user-card, user-table, user-grid, role-badge, page-header, dan view-toggle. Refactor admin/users/index.blade.php menggunakan komponen dengan toggle grid/table view
+
+## 2025-10-17
+- Improve readability: tambah komentar header dokumentasi di semua komponen users, tambah section dividers dengan garis, dan tambah komentar inline untuk setiap bagian penting
+
+## 2025-10-17
+- Simplify halaman Manajemen Anggota: hapus toggle grid/table view, gunakan tampilan tabel saja untuk konsistensi dan kesederhanaan
