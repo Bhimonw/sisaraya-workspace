@@ -137,3 +137,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Klarifikasi logika tiket umum/broadcast: 1 tiket per role (bukan per orang), visible untuk semua user dengan role tersebut, bisa di-claim. Update UI dengan contoh penggunaan yang detail dan perbedaan dengan assignment langsung
+
+## 2025-10-17
+- Ubah layout Tiket Tersedia di halaman mine menjadi responsive card grid (1-4 kolom) agar tiket tampil bersebelahan dalam satu frame, dengan desain konsisten terhadap overview page
+
+## 2025-10-17
+- Ubah layout halaman mine: Tiket Tersedia menjadi kolom ke-4 sejajar dengan Blackout/To Do/Doing dalam grid 1/4 lebar, konsisten dengan design pattern kolom status lainnya
+
+## 2025-10-17
+- Rapikan UI halaman RAB index: tambah background abu-abu, perbaiki spacing/padding, tingkatkan shadow & border, perbarui tab filter dengan gradient, polish card layout untuk visual hierarchy yang lebih baik

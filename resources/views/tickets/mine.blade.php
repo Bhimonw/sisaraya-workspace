@@ -132,15 +132,15 @@
                     </div>
                 </div>
 
-                {{-- Tiket Saya - 3 Kolom: Blackout | To Do | Doing --}}
+                {{-- Tiket Saya - 4 Kolom: Blackout | To Do | Doing | Tersedia --}}
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                         <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
                         Tiket Saya
                     </h2>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {{-- BLACKOUT COLUMN --}}
             <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
                 {{-- Header --}}
@@ -416,179 +416,103 @@
                 </div>
             </div>
 
-            </div>{{-- End 3-column grid --}}
-                </div>{{-- End Tiket Saya --}}
+            {{-- TIKET TERSEDIA COLUMN --}}
             <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
                 {{-- Header --}}
-                <div class="bg-gradient-to-r from-gray-600 to-gray-700 px-5 py-4 border-b-4 border-gray-800">
+                <div class="bg-gradient-to-r from-green-500 to-teal-500 px-5 py-4 border-b-4 border-green-600">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="bg-gray-800 bg-opacity-30 rounded-lg p-2 border border-gray-900 border-opacity-30">
+                            <div class="bg-green-600 bg-opacity-30 rounded-lg p-2 border border-green-700 border-opacity-30">
                                 <svg class="h-6 w-6 text-white drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                                 </svg>
                             </div>
-                            <h2 class="text-xl font-bold text-white drop-shadow-sm">Blackout</h2>
+                            <h2 class="text-xl font-bold text-white drop-shadow-sm">Tersedia</h2>
                         </div>
                         <div class="bg-white px-4 py-1.5 rounded-full shadow-sm">
-                            <span class="text-lg font-bold text-gray-600">{{ $myTickets->where('status', 'blackout')->count() }}</span>
+                            <span class="text-lg font-bold text-green-600">{{ $availableTickets->count() }}</span>
                         </div>
                     </div>
                 </div>
 
-                {{-- Blackout Tickets List --}}
+                {{-- Available Tickets List --}}
                 <div class="bg-gray-50 p-4 space-y-3 max-h-[600px] overflow-y-auto">
-                    @forelse($myTickets->where('status', 'blackout') as $ticket)
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-300 p-4 hover:shadow-md hover:border-gray-400 transition-all opacity-60">
+                    @forelse($availableTickets as $ticket)
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md hover:border-green-300 transition-all">
                             <div class="mb-3 cursor-pointer" @click="showTicket({
                                      id: {{ $ticket->id }},
                                      title: '{{ addslashes($ticket->title) }}',
                                      description: '{{ addslashes($ticket->description ?? '') }}',
-                                     status: '{{ $ticket->status }}',
+                                     status: 'tersedia',
                                      priority: '{{ $ticket->priority ?? '' }}',
                                      context: '{{ $ticket->context }}',
                                      due_date: '{{ $ticket->due_date ? $ticket->due_date->format('d M Y') : '' }}',
                                      created_at: '{{ $ticket->created_at->format('d M Y') }}',
-                                     claimed_by: {{ $ticket->claimed_by ?? 'null' }},
-                                     claimed_by_user: {{ $ticket->claimedBy ? json_encode(['name' => $ticket->claimedBy->name]) : 'null' }},
+                                     claimed_by: null,
+                                     claimed_by_user: null,
                                      creator: {{ $ticket->creator ? json_encode(['name' => $ticket->creator->name]) : 'null' }}
                                  })">
-                                <h3 class="text-base font-bold text-gray-700 mb-3 leading-tight line-through">{{ $ticket->title }}</h3>
+                                <h3 class="text-base font-bold text-gray-900 mb-3 leading-tight">{{ $ticket->title }}</h3>
                                 
                                 <div class="flex flex-wrap gap-2 mb-3">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-md bg-gray-600 text-white">
-                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                        </svg>
-                                        Dibatalkan
-                                    </span>
-
-                                    @if($ticket->context)
+                                    @if($ticket->priority)
                                         <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md
-                                            {{ $ticket->context === 'umum' ? 'bg-gray-200 text-gray-800' : '' }}
-                                            {{ $ticket->context === 'event' ? 'bg-indigo-200 text-indigo-800' : '' }}
-                                            {{ $ticket->context === 'proyek' ? 'bg-blue-200 text-blue-800' : '' }}">
-                                            @if($ticket->context === 'umum') Umum
-                                            @elseif($ticket->context === 'event') Event
-                                            @else Proyek
+                                            {{ $ticket->priority === 'low' ? 'bg-gray-200 text-gray-800' : '' }}
+                                            {{ $ticket->priority === 'medium' ? 'bg-blue-200 text-blue-800' : '' }}
+                                            {{ $ticket->priority === 'high' ? 'bg-orange-200 text-orange-800' : '' }}
+                                            {{ $ticket->priority === 'urgent' ? 'bg-red-200 text-red-800' : '' }}">
+                                            @if($ticket->priority === 'low') Rendah
+                                            @elseif($ticket->priority === 'medium') Sedang
+                                            @elseif($ticket->priority === 'high') Tinggi
+                                            @else Mendesak
                                             @endif
                                         </span>
                                     @endif
+
+                                    <span class="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-md
+                                        {{ $ticket->context === 'umum' ? 'bg-gray-200 text-gray-800' : '' }}
+                                        {{ $ticket->context === 'event' ? 'bg-indigo-200 text-indigo-800' : '' }}
+                                        {{ $ticket->context === 'proyek' ? 'bg-blue-200 text-blue-800' : '' }}">
+                                        @if($ticket->context === 'umum') Umum
+                                        @elseif($ticket->context === 'event') Event
+                                        @else Proyek
+                                        @endif
+                                    </span>
+
+                                    @if($ticket->due_date)
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-md
+                                            {{ $ticket->due_date->isPast() ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800' }}">
+                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            {{ $ticket->due_date->format('d M') }}
+                                        </span>
+                                    @endif
                                 </div>
+                            </div>
+
+                            <div class="flex gap-2" @click.stop>
+                                <button @click="claimTicket({{ $ticket->id }})" 
+                                        class="flex-1 px-3 py-2 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 transition-colors shadow-sm">
+                                    Ambil
+                                </button>
                             </div>
                         </div>
                     @empty
                         <div class="text-center py-12">
                             <div class="bg-gray-200 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
                                 <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                             </div>
-                            <p class="text-sm font-semibold text-gray-500">Tidak ada tiket di bank ide</p>
+                            <p class="text-sm font-semibold text-gray-500">Tidak ada tiket tersedia</p>
                         </div>
                     @endforelse
                 </div>
             </div>
 
-            {{-- Right Sidebar: Tiket Tersedia --}}
-            <div class="w-full lg:w-96 flex-shrink-0">
-                <div class="lg:sticky lg:top-4">
-                    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-                        {{-- Header --}}
-                        <div class="bg-gradient-to-r from-green-500 to-teal-500 px-5 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-green-600 bg-opacity-30 rounded-lg p-2 border border-green-700 border-opacity-30">
-                                    <svg class="h-6 w-6 text-white drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-lg font-bold text-white drop-shadow-sm">Tiket Tersedia</h3>
-                                    <p class="text-xs text-green-100">{{ $availableTickets->count() }} tiket bisa diambil</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Available Tickets List (Scrollable) --}}
-                        <div class="bg-gray-50 p-4 space-y-3 h-[680px] overflow-y-auto">
-                            @if($availableTickets->isEmpty())
-                                <div class="text-center py-12">
-                                    <div class="bg-gray-200 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                                        <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                    </div>
-                                    <p class="text-sm font-semibold text-gray-500">Tidak ada tiket tersedia</p>
-                                </div>
-                            @else
-                                @foreach($availableTickets as $ticket)
-                                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md hover:border-green-300 transition-all">
-                                        <div class="mb-3 cursor-pointer" @click="showTicket({
-                                                 id: {{ $ticket->id }},
-                                                 title: '{{ addslashes($ticket->title) }}',
-                                                 description: '{{ addslashes($ticket->description ?? '') }}',
-                                                 status: 'tersedia',
-                                                 priority: '{{ $ticket->priority ?? '' }}',
-                                                 context: '{{ $ticket->context }}',
-                                                 due_date: '{{ $ticket->due_date ? $ticket->due_date->format('d M Y') : '' }}',
-                                                 created_at: '{{ $ticket->created_at->format('d M Y') }}',
-                                                 claimed_by: null,
-                                                 claimed_by_user: null,
-                                                 creator: {{ $ticket->creator ? json_encode(['name' => $ticket->creator->name]) : 'null' }}
-                                             })">
-                                            <h3 class="text-sm font-bold text-gray-900 mb-2 leading-tight">{{ $ticket->title }}</h3>
-                                            
-                                            <div class="flex flex-wrap gap-2 mb-2">
-                                                @if($ticket->priority)
-                                                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-bold rounded-md
-                                                        {{ $ticket->priority === 'low' ? 'bg-gray-200 text-gray-800' : '' }}
-                                                        {{ $ticket->priority === 'medium' ? 'bg-blue-200 text-blue-800' : '' }}
-                                                        {{ $ticket->priority === 'high' ? 'bg-orange-200 text-orange-800' : '' }}
-                                                        {{ $ticket->priority === 'urgent' ? 'bg-red-200 text-red-800' : '' }}">
-                                                        @if($ticket->priority === 'low') Rendah
-                                                        @elseif($ticket->priority === 'medium') Sedang
-                                                        @elseif($ticket->priority === 'high') Tinggi
-                                                        @else Mendesak
-                                                        @endif
-                                                    </span>
-                                                @endif
-
-                                                <span class="inline-flex items-center px-2 py-0.5 text-xs font-bold rounded-md
-                                                    {{ $ticket->context === 'umum' ? 'bg-gray-200 text-gray-800' : '' }}
-                                                    {{ $ticket->context === 'event' ? 'bg-indigo-200 text-indigo-800' : '' }}
-                                                    {{ $ticket->context === 'proyek' ? 'bg-blue-200 text-blue-800' : '' }}">
-                                                    @if($ticket->context === 'umum') Umum
-                                                    @elseif($ticket->context === 'event') Event
-                                                    @else Proyek
-                                                    @endif
-                                                </span>
-
-                                                @if($ticket->due_date)
-                                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold rounded-md
-                                                        {{ $ticket->due_date->isPast() ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800' }}">
-                                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                        </svg>
-                                                        {{ $ticket->due_date->format('d M') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <button @click.stop="claimTicket({{ $ticket->id }})" 
-                                                class="w-full px-3 py-2 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition-colors shadow-sm flex items-center justify-center gap-2">
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                            </svg>
-                                            Ambil Tiket
-                                        </button>
-                                    </div>
-                                @endforeach
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </div>{{-- End 4-column grid --}}
+                </div>{{-- End Tiket Saya --}}
         </div>{{-- End Main Layout --}}
 
         {{-- Modal Detail Tiket --}}

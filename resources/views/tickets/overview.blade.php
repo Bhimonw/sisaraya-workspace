@@ -165,210 +165,138 @@
             </div>
 
             {{-- Tab Content --}}
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Tiket
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Prioritas
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Context
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Proyek/Event
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Diambil/Selesai
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Aksi
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($tickets as $ticket)
-                            <tr class="hover:bg-gray-50 transition-colors"
-                                x-show="activeStatus === 'all' || activeStatus === '{{ $ticket->status }}'">
-                                {{-- Tiket --}}
-                                <td class="px-6 py-4">
-                                    <div class="text-sm font-medium text-gray-900">{{ $ticket->title }}</div>
-                                    @if($ticket->description)
-                                        <div class="text-sm text-gray-500 line-clamp-2 mt-1">{{ Str::limit($ticket->description, 100) }}</div>
-                                    @endif
-                                    
-                                    {{-- Special Badges --}}
-                                    <div class="flex flex-wrap gap-1 mt-2">
-                                        @if($ticket->type === 'permintaan_dana')
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700">
-                                                Permintaan Dana
-                                            </span>
+            <div class="p-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($tickets as $ticket)
+                        <div x-show="activeStatus === 'all' || activeStatus === '{{ $ticket->status }}'" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                            <div class="p-5">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-bold text-gray-900">{{ $ticket->title }}</h3>
+                                        @if($ticket->description)
+                                            <p class="text-sm text-gray-500 mt-2 line-clamp-3">{{ Str::limit($ticket->description, 160) }}</p>
                                         @endif
-                                        @if($ticket->type === 'broadcast')
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
-                                                Broadcast
-                                            </span>
-                                        @endif
-                                        @if($ticket->claimed_by === auth()->id())
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-700">
-                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                                </svg>
-                                                Saya ambil
-                                            </span>
+                                        <div class="flex flex-wrap gap-2 mt-3">
+                                            @if($ticket->type === 'permintaan_dana')
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700">Permintaan Dana</span>
+                                            @endif
+                                            @if($ticket->type === 'broadcast')
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">Broadcast</span>
+                                            @endif
+                                            @if($ticket->claimed_by === auth()->id())
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                    Saya ambil
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                                    <div>
+                                        <div class="text-xs text-gray-500">Prioritas</div>
+                                        @if($ticket->priority)
+                                            @php
+                                                $priorityColor = \App\Models\Ticket::getPriorityColor($ticket->priority);
+                                                $priorityBadgeClasses = [
+                                                    'gray' => 'bg-gray-100 text-gray-700',
+                                                    'blue' => 'bg-blue-100 text-blue-700',
+                                                    'orange' => 'bg-orange-100 text-orange-700',
+                                                    'red' => 'bg-red-100 text-red-700',
+                                                ];
+                                            @endphp
+                                            <div class="mt-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $priorityBadgeClasses[$priorityColor] ?? 'bg-gray-100 text-gray-700' }}">
+                                                {{ \App\Models\Ticket::getPriorityLabel($ticket->priority) }}
+                                            </div>
+                                        @else
+                                            <div class="mt-1 text-gray-400">—</div>
                                         @endif
                                     </div>
-                                </td>
-                                
-                                {{-- Prioritas --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @if($ticket->priority)
+
+                                    <div>
+                                        <div class="text-xs text-gray-500">Context</div>
                                         @php
-                                            $priorityColor = \App\Models\Ticket::getPriorityColor($ticket->priority);
-                                            $priorityBadgeClasses = [
+                                            $contextColor = \App\Models\Ticket::getContextColor($ticket->context);
+                                            $contextColorClasses = [
                                                 'gray' => 'bg-gray-100 text-gray-700',
+                                                'indigo' => 'bg-indigo-100 text-indigo-700',
                                                 'blue' => 'bg-blue-100 text-blue-700',
-                                                'orange' => 'bg-orange-100 text-orange-700',
-                                                'red' => 'bg-red-100 text-red-700',
                                             ];
                                         @endphp
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $priorityBadgeClasses[$priorityColor] ?? 'bg-gray-100 text-gray-700' }}">
-                                            {{ \App\Models\Ticket::getPriorityLabel($ticket->priority) }}
-                                        </span>
-                                    @else
-                                        <span class="text-sm text-gray-400">—</span>
-                                    @endif
-                                </td>
-                                
-                                {{-- Context --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @php
-                                        $contextColor = \App\Models\Ticket::getContextColor($ticket->context);
-                                        $contextColorClasses = [
-                                            'gray' => 'bg-gray-100 text-gray-700',
-                                            'indigo' => 'bg-indigo-100 text-indigo-700',
-                                            'blue' => 'bg-blue-100 text-blue-700',
-                                        ];
-                                    @endphp
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $contextColorClasses[$contextColor] ?? 'bg-gray-100 text-gray-700' }}">
-                                        {{ \App\Models\Ticket::getContextLabel($ticket->context) }}
-                                    </span>
-                                </td>
-                                
-                                {{-- Proyek/Event --}}
-                                <td class="px-6 py-4">
-                                    @if($ticket->context === 'event' && $ticket->projectEvent)
-                                        <div>
+                                        <div class="mt-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $contextColorClasses[$contextColor] ?? 'bg-gray-100 text-gray-700' }}">
+                                            {{ \App\Models\Ticket::getContextLabel($ticket->context) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <div class="text-xs text-gray-500">Proyek / Event</div>
+                                    <div class="mt-1">
+                                        @if($ticket->context === 'event' && $ticket->projectEvent)
                                             <div class="text-sm font-medium text-indigo-700">{{ $ticket->projectEvent->title }}</div>
                                             @if($ticket->projectEvent->project)
-                                                <a href="{{ route('projects.show', $ticket->projectEvent->project) }}" class="text-xs text-blue-600 hover:text-blue-800">
-                                                    → {{ $ticket->projectEvent->project->name }}
-                                                </a>
+                                                <a href="{{ route('projects.show', $ticket->projectEvent->project) }}" class="text-xs text-blue-600 hover:text-blue-800">→ {{ $ticket->projectEvent->project->name }}</a>
                                             @endif
-                                        </div>
-                                    @elseif($ticket->project)
-                                        <a href="{{ route('projects.show', $ticket->project) }}" class="text-sm text-blue-600 hover:text-blue-800">
-                                            {{ $ticket->project->name }}
-                                        </a>
-                                    @else
-                                        <span class="text-sm text-gray-400">—</span>
-                                    @endif
-                                </td>
-                                
-                                {{-- Status --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @if($ticket->status === 'todo')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-600 text-white">
-                                            To Do
-                                        </span>
-                                    @elseif($ticket->status === 'doing')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-600 text-white">
-                                            Doing
-                                        </span>
-                                    @elseif($ticket->status === 'done')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600 text-white">
-                                            Done
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-white">
-                                            Blackout
-                                        </span>
-                                    @endif
-                                </td>
-                                
-                                {{-- Diambil/Selesai --}}
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    @if($ticket->isClaimed())
-                                        <div class="flex items-center gap-1">
-                                            <svg class="h-3 w-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            <span class="text-green-700 font-medium">{{ $ticket->claimedBy->name }}</span>
-                                        </div>
-                                        @if($ticket->completed_at)
-                                            <div class="text-xs text-gray-500 mt-0.5">
-                                                {{ $ticket->completed_at->diffForHumans() }}
-                                            </div>
-                                        @elseif($ticket->claimed_at)
-                                            <div class="text-xs text-gray-500 mt-0.5">
-                                                {{ $ticket->claimed_at->diffForHumans() }}
-                                            </div>
-                                        @endif
-                                    @else
-                                        <span class="text-xs text-orange-600 font-medium">Belum diambil</span>
-                                    @endif
-                                </td>
-                                
-                                {{-- Aksi --}}
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <div class="flex items-center gap-2">
-                                        {{-- Detail Button --}}
-                                        <button @click="selectedTicket = {{ \Illuminate\Support\Js::from($ticket) }}; showTicketModal = true" 
-                                                class="text-purple-600 hover:text-purple-800 font-medium">
-                                            Detail
-                                        </button>
-                                        
-                                        {{-- Action Button Based on Status --}}
-                                        @if($ticket->status !== 'done')
-                                            @if(!$ticket->isClaimed() && $ticket->canBeClaimedBy(auth()->user()))
-                                                {{-- Unclaimed: Show Ambil button --}}
-                                                <form method="POST" action="{{ route('tickets.claim', $ticket) }}" class="inline-block">
-                                                    @csrf
-                                                    <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs font-medium">
-                                                        Ambil
-                                                    </button>
-                                                </form>
-                                            @elseif($ticket->claimed_by === auth()->id())
-                                                {{-- Claimed by current user --}}
-                                                @if($ticket->status === 'todo')
-                                                    <form method="POST" action="{{ route('tickets.start', $ticket) }}" class="inline-block">
-                                                        @csrf
-                                                        <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs font-medium">
-                                                            Mulai
-                                                        </button>
-                                                    </form>
-                                                @elseif($ticket->status === 'doing')
-                                                    <form method="POST" action="{{ route('tickets.complete', $ticket) }}" class="inline-block">
-                                                        @csrf
-                                                        <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs font-medium">
-                                                            Selesai
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                            @endif
+                                        @elseif($ticket->project)
+                                            <a href="{{ route('projects.show', $ticket->project) }}" class="text-sm text-blue-600 hover:text-blue-800">{{ $ticket->project->name }}</a>
+                                        @else
+                                            <span class="text-sm text-gray-400">—</span>
                                         @endif
                                     </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                </div>
+
+                                <div class="mt-4 flex items-center justify-between">
+                                    <div>
+                                        @if($ticket->status === 'todo')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-600 text-white">To Do</span>
+                                        @elseif($ticket->status === 'doing')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-600 text-white">Doing</span>
+                                        @elseif($ticket->status === 'done')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600 text-white">Done</span>
+                                        @else
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-white">Blackout</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="text-right">
+                                        @if($ticket->isClaimed())
+                                            <div class="text-xs text-green-700 font-medium">{{ $ticket->claimedBy->name }}</div>
+                                            <div class="text-xs text-gray-500">{{ $ticket->claimed_at?->diffForHumans() ?? $ticket->completed_at?->diffForHumans() }}</div>
+                                        @else
+                                            <div class="text-xs text-orange-600 font-medium">Belum diambil</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-100 p-4 bg-gray-50 flex items-center gap-2">
+                                <button @click="selectedTicket = {{ \Illuminate\Support\Js::from($ticket) }}; showTicketModal = true" class="text-purple-600 hover:text-purple-800 text-sm font-medium">Detail</button>
+
+                                @if($ticket->status !== 'done')
+                                    @if(!$ticket->isClaimed() && $ticket->canBeClaimedBy(auth()->user()))
+                                        <form method="POST" action="{{ route('tickets.claim', $ticket) }}" class="inline-block">
+                                            @csrf
+                                            <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs font-medium">Ambil</button>
+                                        </form>
+                                    @elseif($ticket->claimed_by === auth()->id())
+                                        @if($ticket->status === 'todo')
+                                            <form method="POST" action="{{ route('tickets.start', $ticket) }}" class="inline-block">
+                                                @csrf
+                                                <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs font-medium">Mulai</button>
+                                            </form>
+                                        @elseif($ticket->status === 'doing')
+                                            <form method="POST" action="{{ route('tickets.complete', $ticket) }}" class="inline-block">
+                                                @csrf
+                                                <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs font-medium">Selesai</button>
+                                            </form>
+                                        @endif
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
     @endif
