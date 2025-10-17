@@ -1,7 +1,7 @@
 # Business Approval Workflow & Project Labels
 
 ## 📋 Overview
-Implementasi approval workflow untuk usaha baru (kewirausahaan → PM) dan sistem label untuk project (UMKM, DIVISI, Kegiatan).
+Implementasi approval workflow untuk usaha baru (kewirausahaan → PM) dengan **otomatis pembuatan project** saat disetujui, dan sistem label untuk project (UMKM, DIVISI, Kegiatan).
 
 ---
 
@@ -63,9 +63,18 @@ Policy: Only PM, only if status pending
 
 **Flow:**
 1. PM klik tombol "Setujui" di halaman detail business
-2. Status diubah ke `approved`
-3. `approved_by` dan `approved_at` diisi
-4. `rejection_reason` di-clear (null)
+2. **Otomatis create project** dengan:
+   - Name: Sama dengan business name
+   - Description: Sama dengan business description
+   - Owner: PM yang approve
+   - Label: UMKM (default)
+   - Status: active
+   - Members: Kewirausahaan (creator) sebagai admin
+3. Status business diubah ke `approved`
+4. `approved_by`, `approved_at`, dan `project_id` diisi
+5. `rejection_reason` di-clear (null)
+6. **PM memiliki akses penuh** sebagai owner project
+7. **Kewirausahaan memiliki akses admin** sebagai member
 
 #### 3. Reject Business (PM)
 ```php

@@ -51,7 +51,7 @@ class RolePermissionSeeder extends Seeder
 
         // assign sensible defaults
         Role::where('name', 'hr')->first()?->givePermissionTo(['users.manage', 'projects.view', 'tickets.view_all', 'documents.view_all']);
-        Role::where('name', 'pm')->first()?->givePermissionTo(['projects.create', 'projects.update', 'projects.view', 'projects.manage_members', 'tickets.create', 'tickets.update_status', 'documents.upload', 'business.approve']);
+        Role::where('name', 'pm')->first()?->givePermissionTo(['projects.create', 'projects.update', 'projects.view', 'projects.manage_members', 'tickets.create', 'tickets.update_status', 'documents.upload', 'business.approve', 'business.view']);
         Role::where('name', 'sekretaris')->first()?->givePermissionTo(['documents.upload', 'documents.view_all']);
         Role::where('name', 'media')->first()?->givePermissionTo(['documents.upload', 'tickets.update_status']);
         Role::where('name', 'pr')->first()?->givePermissionTo(['documents.view_all', 'tickets.update_status']);

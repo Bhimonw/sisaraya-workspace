@@ -34,7 +34,13 @@ All notable changes to this project should be documented in this file.
 - **Laravel 12 middleware fix** - Fix permission middleware registration untuk Laravel 12. Middleware harus didaftarkan di `bootstrap/app.php` (bukan `app/Http/Kernel.php`). Business module sekarang accessible untuk role kewirausahaan.
 
 ## 2025-10-17
-- **Business approval workflow** - Kewirausahaan membuat usaha baru dengan status pending, PM dapat approve/reject melalui notifikasi database. Status: pending/approved/rejected dengan rejection reason. Policy & permission: business.approve untuk PM. UI: status filters, approval buttons, reject modal. Lihat `docs/BUSINESS_APPROVAL_AND_PROJECT_LABELS.md`.
+## [Unreleased]
+
+### Added
+- Business approval workflow dengan auto-create project
+
+### Fixed
+- PM role sekarang memiliki permission `business.view` untuk akses halaman businesses - Kewirausahaan membuat usaha baru dengan status pending, PM dapat approve/reject melalui notifikasi database. **Ketika disetujui, otomatis create project dengan PM sebagai owner dan kewirausahaan sebagai admin member**. Status: pending/approved/rejected dengan rejection reason. Policy & permission: business.approve untuk PM. UI: status filters, approval buttons, reject modal, project link. Lihat `docs/BUSINESS_APPROVAL_AND_PROJECT_LABELS.md`.
 - **Project labels** - Proyek sekarang memiliki label enum: UMKM (purple), DIVISI (blue), Kegiatan (green). Filter by label di index page. Label badge di project card. Optional field di create/edit form.
 - Tampilkan bobot pada tabel dan detail tiket di manajemen tiket PM
 

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login - PM Access</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .credential-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            margin-bottom: 10px;
+        }
+        .label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .value {
+            font-size: 18px;
+            color: #333;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+        .check {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .link-btn {
+            padding: 12px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .link-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        .emoji {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Login - PM Access</h1>
+        <p class="subtitle">Test akses untuk role Project Manager (Bhimo)</p>
+
+        <div class="section">
+            <h2><span class="emoji">👤</span> Credentials untuk PM</h2>
+            <div class="credential-box">
+                <div class="label">Username</div>
+                <div class="value">bhimo</div>
+            </div>
+            <div class="credential-box">
+                <div class="label">Password</div>
+                <div class="value">password</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="emoji">✅</span> Verifikasi Database</h2>
+            <ul class="checklist">
+                <li><span class="check">✓</span> User bhimo exists</li>
+                <li><span class="check">✓</span> Role PM assigned</li>
+                <li><span class="check">✓</span> Role Sekretaris assigned</li>
+                <li><span class="check">✓</span> Password hash valid</li>
+                <li><span class="check">✓</span> Permission business.approve granted</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2><span class="emoji">🎯</span> Test Steps</h2>
+            <ol style="padding-left: 20px; line-height: 1.8;">
+                <li>Klik tombol "Go to Login Page" dibawah</li>
+                <li>Login dengan credentials diatas</li>
+                <li>Setelah login, klik "Test Business Access"</li>
+                <li>Anda harus bisa melihat daftar usaha</li>
+                <li>Jika ada usaha pending, tombol "Setujui" harus terlihat</li>
+            </ol>
+        </div>
+
+        <a href="/login" class="btn btn-primary">
+            🚀 Go to Login Page
+        </a>
+
+        <button onclick="testDirectAccess()" class="btn btn-secondary">
+            🔍 Test Business Access (After Login)
+        </button>
+
+        <div class="links">
+            <a href="/dashboard" class="link-btn">📊 Dashboard</a>
+            <a href="/businesses" class="link-btn">💼 Businesses</a>
+            <a href="/projects" class="link-btn">📁 Projects</a>
+            <a href="/notifications" class="link-btn">🔔 Notifications</a>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 10px; border: 2px solid #ffc107;">
+            <strong>⚠️ Troubleshooting:</strong>
+            <ul style="padding-left: 20px; margin-top: 10px; line-height: 1.8;">
+                <li>Jika login gagal → Clear browser cache & cookies</li>
+                <li>Jika CSRF error → Hard refresh (Ctrl+F5)</li>
+                <li>Jika redirect ke welcome → Check middleware di routes</li>
+                <li>Jika 403 forbidden → Check BusinessPolicy authorize method</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function testDirectAccess() {
+            // Try to access businesses page
+            fetch('/businesses')
+                .then(response => {
+                    if (response.redirected) {
+                        alert('❌ Not logged in! Redirecting to login page...');
+                        window.location.href = '/login';
+                    } else if (response.ok) {
+                        alert('✅ Access granted! Opening businesses page...');
+                        window.location.href = '/businesses';
+                    } else {
+                        alert('⚠️ Error: ' + response.status + ' ' + response.statusText);
+                    }
+                })
+                .catch(err => {
+                    alert('❌ Error: ' + err.message);
+                });
+        }
+
+        // Auto-copy credentials on click
+        document.querySelectorAll('.credential-box').forEach(box => {
+            box.style.cursor = 'pointer';
+            box.addEventListener('click', function() {
+                const value = this.querySelector('.value').textContent;
+                navigator.clipboard.writeText(value).then(() => {
+                    const originalBg = this.style.background;
+                    this.style.background = '#4caf50';
+                    this.querySelector('.value').style.color = 'white';
+                    setTimeout(() => {
+                        this.style.background = originalBg;
+                        this.querySelector('.value').style.color = '#333';
+                    }, 500);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

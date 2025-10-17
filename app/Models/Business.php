@@ -9,7 +9,7 @@ class Business extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','description','created_by','status','approved_by','approved_at','rejection_reason'];
+    protected $fillable = ['name','description','created_by','status','approved_by','approved_at','rejection_reason','project_id'];
 
     protected $casts = [
         'approved_at' => 'datetime',
@@ -29,6 +29,14 @@ class Business extends Model
     public function approver()
     {
         return $this->belongsTo(\App\Models\User::class, 'approved_by');
+    }
+
+    /**
+     * Get the project created from this business (if approved)
+     */
+    public function project()
+    {
+        return $this->belongsTo(\App\Models\Project::class, 'project_id');
     }
 
     /**

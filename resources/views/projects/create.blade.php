@@ -80,7 +80,7 @@
                                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition">
                             <option value="">-- Pilih Label --</option>
                             <option value="UMKM">UMKM</option>
-                            <option value="DIVISI">DIVISI</option>
+                            <option value="DIVISI">Divisi</option>
                             <option value="Kegiatan">Kegiatan</option>
                         </select>
                     </div>

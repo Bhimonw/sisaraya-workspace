@@ -63,6 +63,27 @@
                 </div>
             @endif
 
+            @if($business->isApproved() && $business->project)
+                <div class="bg-green-50 border border-green-200 rounded p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-sm font-semibold text-green-800 mb-1">Proyek Terkait</h4>
+                            <p class="text-green-700 mb-2">Usaha ini telah disetujui dan proyek telah dibuat.</p>
+                            <p class="text-sm text-gray-700">
+                                <span class="font-medium">Nama Proyek:</span> {{ $business->project->name }}
+                            </p>
+                        </div>
+                        <a href="{{ route('projects.show', $business->project) }}" 
+                           class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition">
+                            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                            Buka Proyek
+                        </a>
+                    </div>
+                </div>
+            @endif
+
             @if($business->isRejected() && $business->rejection_reason)
                 <div class="bg-red-50 border border-red-200 rounded p-3">
                     <h4 class="text-sm font-semibold text-red-800 mb-1">Alasan Penolakan:</h4>

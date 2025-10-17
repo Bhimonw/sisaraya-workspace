@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
+use App\Models\Project;
 use App\Models\User;
 use App\Notifications\BusinessNeedsApproval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
 
 class BusinessController extends Controller
 {
@@ -20,7 +22,7 @@ class BusinessController extends Controller
 
     public function index(Request $request)
     {
-        $query = Business::with(['creator', 'approver'])->latest();
+        $query = Business::with(['creator', 'approver', 'project'])->latest();
         
         // Filter by status
         if ($request->has('status')) {
@@ -58,7 +60,7 @@ class BusinessController extends Controller
 
     public function show(Business $business)
     {
-        $business->load(['creator', 'approver']);
+        $business->load(['creator', 'approver', 'project']);
         return view('businesses.show', compact('business'));
     }
 
@@ -66,15 +68,36 @@ class BusinessController extends Controller
     {
         $this->authorize('approve', $business);
         
-        $business->update([
-            'status' => 'approved',
-            'approved_by' => auth()->id(),
-            'approved_at' => now(),
-            'rejection_reason' => null,
-        ]);
+        DB::transaction(function () use ($business) {
+            // Create project from approved business
+            $project = Project::create([
+                'name' => $business->name,
+                'description' => $business->description,
+                'owner_id' => auth()->id(), // PM sebagai owner
+                'status' => 'active',
+                'label' => 'UMKM', // Default label untuk business
+                'is_public' => true,
+            ]);
+            
+            // Add business creator (kewirausahaan) as member with admin role
+            $project->members()->attach($business->created_by, [
+                'role' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            
+            // Update business with approved status and link to project
+            $business->update([
+                'status' => 'approved',
+                'approved_by' => auth()->id(),
+                'approved_at' => now(),
+                'rejection_reason' => null,
+                'project_id' => $project->id,
+            ]);
+        });
         
         return redirect()->route('businesses.show', $business)
-            ->with('success', 'Usaha berhasil disetujui.');
+            ->with('success', 'Usaha berhasil disetujui dan proyek telah dibuat!');
     }
 
     public function reject(Request $request, Business $business)

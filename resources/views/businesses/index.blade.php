@@ -31,7 +31,7 @@
 
     <div class="mt-4 space-y-3">
         @forelse($businesses as $b)
-            <div class="bg-white p-4 rounded shadow">
+            <div class="bg-white p-4 rounded shadow hover:shadow-md transition">
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
                         <div class="flex items-center gap-2">
@@ -39,6 +39,16 @@
                             <span class="px-2 py-1 text-xs rounded bg-{{ $b->getStatusColor() }}-100 text-{{ $b->getStatusColor() }}-800">
                                 {{ $b->getStatusLabel() }}
                             </span>
+                            @if($b->project_id)
+                                <a href="{{ route('projects.show', $b->project_id) }}" 
+                                   class="inline-flex items-center px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                                   title="Lihat proyek terkait">
+                                    <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                                    </svg>
+                                    Proyek
+                                </a>
+                            @endif
                         </div>
                         <div class="text-xs text-gray-500 mt-1">{{ Str::limit($b->description, 120) }}</div>
                         <div class="text-xs text-gray-400 mt-2">

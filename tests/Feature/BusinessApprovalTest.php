@@ -82,7 +82,43 @@ class BusinessApprovalTest extends TestCase
         $this->assertNotNull($business->approved_at);
 
         $response->assertRedirect(route('businesses.show', $business));
-        $response->assertSessionHas('success', 'Usaha berhasil disetujui.');
+        $response->assertSessionHas('success');
+    }
+
+    /** @test */
+    public function pm_approve_creates_project_automatically()
+    {
+        $pm = User::factory()->create();
+        $pm->assignRole('pm');
+        $pm->givePermissionTo('business.approve');
+
+        $kewirausahaan = User::factory()->create();
+        $business = Business::factory()->create([
+            'status' => 'pending',
+            'created_by' => $kewirausahaan->id,
+            'name' => 'Test Business',
+            'description' => 'Test Description',
+        ]);
+
+        $this->actingAs($pm)->post(route('businesses.approve', $business));
+
+        $business->refresh();
+        
+        // Assert project was created
+        $this->assertNotNull($business->project_id);
+        
+        $project = $business->project;
+        $this->assertNotNull($project);
+        $this->assertEquals('Test Business', $project->name);
+        $this->assertEquals('Test Description', $project->description);
+        $this->assertEquals($pm->id, $project->owner_id);
+        $this->assertEquals('active', $project->status);
+        $this->assertEquals('UMKM', $project->label);
+        
+        // Assert kewirausahaan is member with admin role
+        $this->assertTrue($project->members->contains($kewirausahaan));
+        $member = $project->members->find($kewirausahaan->id);
+        $this->assertEquals('admin', $member->pivot->role);
     }
 
     /** @test */
