@@ -52,23 +52,7 @@
                     </span>
                     
                     {{-- Label/Tag Badge --}}
-                    @if($project->label)
-                        @php
-                            $labelColor = \App\Models\Project::getLabelColor($project->label);
-                            $labelColorClasses = [
-                                'purple' => 'bg-purple-100 text-purple-700 border-purple-300',
-                                'blue' => 'bg-blue-100 text-blue-700 border-blue-300',
-                                'green' => 'bg-green-100 text-green-700 border-green-300',
-                                'gray' => 'bg-gray-100 text-gray-700 border-gray-300',
-                            ];
-                        @endphp
-                        <span class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full border {{ $labelColorClasses[$labelColor] ?? 'bg-gray-100 text-gray-700 border-gray-300' }}">
-                            <svg class="h-3.5 w-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                            </svg>
-                            {{ $project->label }}
-                        </span>
-                    @endif
+                    <x-project-label-badge :label="$project->label" />
                 </div>
                 <p class="text-gray-600 text-base leading-relaxed mb-3">{{ $project->description }}</p>
                 
@@ -1413,56 +1397,7 @@
                                 <p class="text-sm text-gray-600 mb-3">
                                     Label membantu mengkategorikan proyek berdasarkan jenis atau fungsinya
                                 </p>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    @foreach(\App\Models\Project::getLabels() as $labelOption)
-                                        @php
-                                            $labelColor = \App\Models\Project::getLabelColor($labelOption);
-                                            $isSelected = old('label', $project->label) === $labelOption;
-                                            $colorClasses = [
-                                                'purple' => 'border-purple-300 bg-purple-50 text-purple-700 hover:bg-purple-100',
-                                                'blue' => 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100',
-                                                'green' => 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100',
-                                                'gray' => 'border-gray-300 bg-gray-50 text-gray-700 hover:bg-gray-100',
-                                            ];
-                                            $selectedClasses = [
-                                                'purple' => 'border-purple-500 bg-purple-100 ring-2 ring-purple-500',
-                                                'blue' => 'border-blue-500 bg-blue-100 ring-2 ring-blue-500',
-                                                'green' => 'border-green-500 bg-green-100 ring-2 ring-green-500',
-                                                'gray' => 'border-gray-500 bg-gray-100 ring-2 ring-gray-500',
-                                            ];
-                                        @endphp
-                                        <label class="relative cursor-pointer">
-                                            <input type="radio" 
-                                                   name="label" 
-                                                   value="{{ $labelOption }}"
-                                                   {{ $isSelected ? 'checked' : '' }}
-                                                   class="sr-only peer">
-                                            <div class="flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-xl transition-all duration-200
-                                                        {{ $isSelected ? $selectedClasses[$labelColor] : $colorClasses[$labelColor] }}
-                                                        peer-checked:{{ $selectedClasses[$labelColor] }}">
-                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                                                </svg>
-                                                <span class="font-semibold">{{ $labelOption }}</span>
-                                                @if($isSelected)
-                                                    <svg class="h-4 w-4 ml-auto" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                                    </svg>
-                                                @endif
-                                            </div>
-                                        </label>
-                                    @endforeach
-                                </div>
-                                <div class="mt-3">
-                                    <label class="flex items-center cursor-pointer">
-                                        <input type="radio" 
-                                               name="label" 
-                                               value=""
-                                               {{ old('label', $project->label) === null || old('label', $project->label) === '' ? 'checked' : '' }}
-                                               class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500">
-                                        <span class="ml-2 text-sm text-gray-600">Tidak ada label</span>
-                                    </label>
-                                </div>
+                                <x-project-label-selector :selected="old('label', $project->label)" name="label" />
                                 @error('label')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                 @enderror

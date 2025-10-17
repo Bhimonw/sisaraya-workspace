@@ -182,14 +182,7 @@
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $colors['bg'] }} {{ $colors['text'] }} border {{ $colors['border'] }}">
                                     {{ \App\Models\Project::getStatusLabel($project->status) }}
                                 </span>
-                                @if($project->label)
-                                    @php
-                                        $labelColor = \App\Models\Project::getLabelColor($project->label);
-                                    @endphp
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-{{ $labelColor }}-100 text-{{ $labelColor }}-700 border border-{{ $labelColor }}-200">
-                                        {{ $project->label }}
-                                    </span>
-                                @endif
+                                <x-project-label-badge :label="$project->label" size="sm" />
                             </div>
                         </div>
 

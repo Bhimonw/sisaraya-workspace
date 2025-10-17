@@ -54,8 +54,8 @@
                     @enderror
                 </div>
 
-                <!-- Status, Label & Visibility -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Status & Visibility -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Status -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -68,20 +68,6 @@
                             <option value="active">Aktif</option>
                             <option value="on_hold">Ditunda</option>
                             <option value="completed">Selesai</option>
-                        </select>
-                    </div>
-
-                    <!-- Label -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Label Proyek
-                        </label>
-                        <select name="label" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition">
-                            <option value="">-- Pilih Label --</option>
-                            <option value="UMKM">UMKM</option>
-                            <option value="DIVISI">Divisi</option>
-                            <option value="Kegiatan">Kegiatan</option>
                         </select>
                     </div>
 
@@ -99,6 +85,17 @@
                             <label class="ml-2 text-sm text-gray-700">Proyek Publik (dapat dilihat semua)</label>
                         </div>
                     </div>
+                </div>
+
+                <!-- Label/Tag Proyek -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Label/Tag Proyek (Opsional)
+                    </label>
+                    <p class="text-xs text-gray-500 mb-3">
+                        Pilih label untuk mengkategorikan proyek Anda
+                    </p>
+                    <x-project-label-selector :selected="old('label')" name="label" />
                 </div>
 
                 <!-- Rentang Waktu (Optional) -->

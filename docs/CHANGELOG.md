@@ -122,3 +122,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Tambah fitur kelola label/tag di halaman detail proyek dengan UI yang modern dan interaktif
+
+## 2025-10-17
+- Buat komponen reusable untuk label badge dan selector, refactor semua halaman proyek (index, show, create) menggunakan komponen
