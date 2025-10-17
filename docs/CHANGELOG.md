@@ -29,6 +29,13 @@ All notable changes to this project should be documented in this file.
 - Implementasi double role system - Bhimo (PM + Sekretaris). Dashboard dengan role badges, multi-role detection, quick actions per role. Sidebar menu support multiple roles. Seeder 14 anggota Sisaraya. Login: username only (no email). Dokumentasi lengkap di DOUBLE_ROLE_IMPLEMENTATION.md
 
 ## 2025-10-16
+- **Project rating system** - Fitur rating proyek dengan bintang 1-5, average calculation, past members dapat memberikan rating (soft delete pivot table). View rating di project detail page.
+- **Cleanup emoticons** - Removed ALL emoticons dari aplikasi (21 instances di 7 files): status labels, buttons, console.log messages. Professional UI dengan text-only labels.
+- **Laravel 12 middleware fix** - Fix permission middleware registration untuk Laravel 12. Middleware harus didaftarkan di `bootstrap/app.php` (bukan `app/Http/Kernel.php`). Business module sekarang accessible untuk role kewirausahaan.
+
+## 2025-10-17
+- **Business approval workflow** - Kewirausahaan membuat usaha baru dengan status pending, PM dapat approve/reject melalui notifikasi database. Status: pending/approved/rejected dengan rejection reason. Policy & permission: business.approve untuk PM. UI: status filters, approval buttons, reject modal. Lihat `docs/BUSINESS_APPROVAL_AND_PROJECT_LABELS.md`.
+- **Project labels** - Proyek sekarang memiliki label enum: UMKM (purple), DIVISI (blue), Kegiatan (green). Filter by label di index page. Label badge di project card. Optional field di create/edit form.
 - Tampilkan bobot pada tabel dan detail tiket di manajemen tiket PM
 
 ## 2025-10-16
@@ -72,3 +79,15 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-16
 - Final cleanup: Removed all remaining emoticons from views and JS files (play, checkmark, close buttons)
+
+## 2025-10-16
+- Fixed: Added Spatie permission middleware to Kernel.php
+
+## 2025-10-16
+- Fixed: Added Spatie permission middleware to Kernel.php
+
+## 2025-10-16
+- Fixed: Added business permissions and assigned to kewirausahaan role
+
+## 2025-10-16
+- Fix permission middleware for Laravel 12 - register in bootstrap/app.php instead of Kernel.php

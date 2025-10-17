@@ -9,13 +9,45 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','description','owner_id','status','is_public','start_date','end_date'];
+    protected $fillable = ['name','description','owner_id','status','is_public','start_date','end_date','label'];
 
     protected $casts = [
         'is_public' => 'boolean',
         'start_date' => 'date',
         'end_date' => 'date',
     ];
+
+    /**
+     * Get available project labels
+     */
+    public static function getLabels(): array
+    {
+        return ['UMKM', 'DIVISI', 'Kegiatan'];
+    }
+
+    /**
+     * Get label badge color
+     */
+    public static function getLabelColor(?string $label): string
+    {
+        return match($label) {
+            'UMKM' => 'purple',
+            'DIVISI' => 'blue',
+            'Kegiatan' => 'green',
+            default => 'gray',
+        };
+    }
+
+    /**
+     * Scope: Filter by label
+     */
+    public function scopeByLabel($query, ?string $label)
+    {
+        if ($label) {
+            return $query->where('label', $label);
+        }
+        return $query;
+    }
 
     /**
      * Get status label

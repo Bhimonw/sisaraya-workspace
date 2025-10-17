@@ -108,6 +108,24 @@
         </nav>
     </div>
 
+    <!-- Label Filter -->
+    @if(isset($labels))
+    <div class="mb-6 flex items-center gap-2 flex-wrap">
+        <span class="text-sm font-medium text-gray-700">Filter Label:</span>
+        <a href="{{ route('projects.index', ['status' => $status]) }}" 
+           class="px-3 py-1.5 text-sm rounded-lg transition-colors {{ !$label ? 'bg-violet-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+            Semua
+        </a>
+        @foreach($labels as $labelOption)
+            <a href="{{ route('projects.index', ['status' => $status, 'label' => $labelOption]) }}" 
+               class="px-3 py-1.5 text-sm rounded-lg transition-colors 
+                      {{ $label === $labelOption ? 'bg-'.(\App\Models\Project::getLabelColor($labelOption)).'-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                {{ $labelOption }}
+            </a>
+        @endforeach
+    </div>
+    @endif
+
     @if($projects->isEmpty())
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-16 text-center">
             <div class="max-w-md mx-auto">
@@ -160,9 +178,19 @@
                                     {{ $project->name }}
                                 </h3>
                             </div>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $colors['bg'] }} {{ $colors['text'] }} border {{ $colors['border'] }}">
-                                {{ \App\Models\Project::getStatusLabel($project->status) }}
-                            </span>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $colors['bg'] }} {{ $colors['text'] }} border {{ $colors['border'] }}">
+                                    {{ \App\Models\Project::getStatusLabel($project->status) }}
+                                </span>
+                                @if($project->label)
+                                    @php
+                                        $labelColor = \App\Models\Project::getLabelColor($project->label);
+                                    @endphp
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-{{ $labelColor }}-100 text-{{ $labelColor }}-700 border border-{{ $labelColor }}-200">
+                                        {{ $project->label }}
+                                    </span>
+                                @endif
+                            </div>
                         </div>
 
                         <!-- Project Description -->

@@ -79,6 +79,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Businesses (Kewirausahaan)
     Route::resource('businesses', App\Http\Controllers\BusinessController::class)->only(['index','create','store','show']);
+    Route::post('businesses/{business}/approve', [App\Http\Controllers\BusinessController::class, 'approve'])->name('businesses.approve');
+    Route::post('businesses/{business}/reject', [App\Http\Controllers\BusinessController::class, 'reject'])->name('businesses.reject');
 
     // Notes (Catatan Pribadi)
     Route::resource('notes', App\Http\Controllers\NoteController::class)->except(['show', 'create', 'edit']);

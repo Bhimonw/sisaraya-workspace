@@ -32,13 +32,13 @@ class RolePermissionSeeder extends Seeder
             // finance permissions for Bendahara
             'finance.manage_rab',
             'finance.upload_documents',
-            'finance.view_reports'
-            ,
+            'finance.view_reports',
             // business / kewirausahaan permissions
             'business.create',
             'business.view',
             'business.manage_talent',
-            'business.upload_reports'
+            'business.upload_reports',
+            'business.approve', // PM can approve businesses
         ];
 
         foreach ($permissions as $perm) {
@@ -51,7 +51,7 @@ class RolePermissionSeeder extends Seeder
 
         // assign sensible defaults
         Role::where('name', 'hr')->first()?->givePermissionTo(['users.manage', 'projects.view', 'tickets.view_all', 'documents.view_all']);
-        Role::where('name', 'pm')->first()?->givePermissionTo(['projects.create', 'projects.update', 'projects.view', 'projects.manage_members', 'tickets.create', 'tickets.update_status', 'documents.upload']);
+        Role::where('name', 'pm')->first()?->givePermissionTo(['projects.create', 'projects.update', 'projects.view', 'projects.manage_members', 'tickets.create', 'tickets.update_status', 'documents.upload', 'business.approve']);
         Role::where('name', 'sekretaris')->first()?->givePermissionTo(['documents.upload', 'documents.view_all']);
         Role::where('name', 'media')->first()?->givePermissionTo(['documents.upload', 'tickets.update_status']);
         Role::where('name', 'pr')->first()?->givePermissionTo(['documents.view_all', 'tickets.update_status']);

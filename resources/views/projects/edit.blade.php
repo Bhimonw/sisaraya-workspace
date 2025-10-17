@@ -56,8 +56,8 @@
                     @enderror
                 </div>
 
-                <!-- Status & Visibility -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Status, Label & Visibility -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Status -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -70,6 +70,20 @@
                             <option value="active" {{ $project->status === 'active' ? 'selected' : '' }}>Aktif</option>
                             <option value="on_hold" {{ $project->status === 'on_hold' ? 'selected' : '' }}>Ditunda</option>
                             <option value="completed" {{ $project->status === 'completed' ? 'selected' : '' }}>Selesai</option>
+                        </select>
+                    </div>
+
+                    <!-- Label -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Label Proyek
+                        </label>
+                        <select name="label" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition">
+                            <option value="">-- Pilih Label --</option>
+                            <option value="UMKM" {{ $project->label === 'UMKM' ? 'selected' : '' }}>UMKM</option>
+                            <option value="DIVISI" {{ $project->label === 'DIVISI' ? 'selected' : '' }}>DIVISI</option>
+                            <option value="Kegiatan" {{ $project->label === 'Kegiatan' ? 'selected' : '' }}>Kegiatan</option>
                         </select>
                     </div>
 

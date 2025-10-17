@@ -86,6 +86,7 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('status', 'all');
+        $label = $request->get('label');
         
         $query = Project::withCount('tickets')->with(['owner', 'members']);
         
@@ -93,9 +94,14 @@ class ProjectController extends Controller
             $query->where('status', $status);
         }
         
-        $projects = $query->latest()->get();
+        if ($label) {
+            $query->where('label', $label);
+        }
         
-        return view('projects.index', compact('projects', 'status'));
+        $projects = $query->latest()->get();
+        $labels = Project::getLabels();
+        
+        return view('projects.index', compact('projects', 'status', 'label', 'labels'));
     }
 
     public function create()
@@ -109,6 +115,7 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:planning,active,on_hold,completed',
+            'label' => 'nullable|in:UMKM,DIVISI,Kegiatan',
             'is_public' => 'boolean',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -121,6 +128,7 @@ class ProjectController extends Controller
             'is_public' => $request->has('is_public'),
             'start_date' => $data['start_date'] ?? null,
             'end_date' => $data['end_date'] ?? null,
+            'label' => $data['label'] ?? null,
         ]);
         
         // Attach members with their roles
@@ -152,6 +160,7 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:planning,active,on_hold,completed',
+            'label' => 'nullable|in:UMKM,DIVISI,Kegiatan',
             'is_public' => 'boolean',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -164,6 +173,7 @@ class ProjectController extends Controller
             'name' => $data['name'],
             'description' => $data['description'] ?? null,
             'status' => $data['status'],
+            'label' => $data['label'] ?? null,
             'is_public' => $request->has('is_public'),
             'start_date' => $data['start_date'] ?? null,
             'end_date' => $data['end_date'] ?? null,
