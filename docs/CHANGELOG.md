@@ -46,9 +46,20 @@ All notable changes to this project should be documented in this file.
 - 4 jenis laporan: Penjualan, Keuangan, Operasional, Lainnya
 - Color-coded badges untuk jenis laporan
 - File size formatting untuk display
+- **Card-based design** untuk halaman index businesses dengan grid layout
+- Filter tabs dengan counter untuk setiap status
+- Report count badge di card
+- Responsive card grid (1/2/3 columns)
 
 ### Fixed
-- PM role sekarang memiliki permission `business.view` untuk akses halaman businesses - Kewirausahaan membuat usaha baru dengan status pending, PM dapat approve/reject melalui notifikasi database. **Ketika disetujui, otomatis create project dengan PM sebagai owner dan kewirausahaan sebagai admin member**. Status: pending/approved/rejected dengan rejection reason. Policy & permission: business.approve untuk PM. UI: status filters, approval buttons, reject modal, project link. Lihat `docs/BUSINESS_APPROVAL_AND_PROJECT_LABELS.md`.
+- PM role sekarang memiliki permission `business.view` untuk akses halaman businesses
+
+### Improved
+- Redesign halaman businesses index dengan card layout yang lebih modern
+- Better visual hierarchy dengan gradient headers
+- Icon-based status indicators
+- Hover effects dan smooth transitions
+- Empty state dengan ilustrasi dan call-to-action - Kewirausahaan membuat usaha baru dengan status pending, PM dapat approve/reject melalui notifikasi database. **Ketika disetujui, otomatis create project dengan PM sebagai owner dan kewirausahaan sebagai admin member**. Status: pending/approved/rejected dengan rejection reason. Policy & permission: business.approve untuk PM. UI: status filters, approval buttons, reject modal, project link. Lihat `docs/BUSINESS_APPROVAL_AND_PROJECT_LABELS.md`.
 - **Project labels** - Proyek sekarang memiliki label enum: UMKM (purple), DIVISI (blue), Kegiatan (green). Filter by label di index page. Label badge di project card. Optional field di create/edit form.
 - Tampilkan bobot pada tabel dan detail tiket di manajemen tiket PM
 
@@ -105,3 +116,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-16
 - Fix permission middleware for Laravel 12 - register in bootstrap/app.php instead of Kernel.php
+
+## 2025-10-17
+- Standarisasi UI dengan modern card-based design di semua halaman (votes, documents, dashboard)

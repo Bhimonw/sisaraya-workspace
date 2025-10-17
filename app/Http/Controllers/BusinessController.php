@@ -22,7 +22,9 @@ class BusinessController extends Controller
 
     public function index(Request $request)
     {
-        $query = Business::with(['creator', 'approver', 'project'])->latest();
+        $query = Business::with(['creator', 'approver', 'project'])
+            ->withCount('reports')
+            ->latest();
         
         // Filter by status
         if ($request->has('status')) {
