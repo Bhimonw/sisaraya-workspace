@@ -173,3 +173,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Tambah validasi: Role Guest tidak bisa digabung dengan role lainnya (mutually exclusive). Update form create/edit user dan role change request dengan UI logic untuk auto-disable role lain ketika Guest dipilih
+
+## 2025-10-17
+- Buat komponen reusable x-back-button dan tambahkan tombol kembali di semua halaman (admin users, role requests, projects). Konsistensi UI untuk navigasi

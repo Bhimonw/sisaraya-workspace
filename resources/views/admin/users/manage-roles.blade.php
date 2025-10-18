@@ -5,14 +5,8 @@
     
     {{-- Header --}}
     <div class="mb-6">
-        <div class="flex items-center gap-3 mb-4">
-            <a href="{{ route('admin.users.index') }}" 
-               class="inline-flex items-center text-gray-600 hover:text-gray-900">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                </svg>
-                Kembali
-            </a>
+        <div class="mb-4">
+            <x-back-button :url="route('admin.users.index')" />
         </div>
         
         <h1 class="text-3xl font-bold text-gray-900 mb-2">Kelola Role User</h1>

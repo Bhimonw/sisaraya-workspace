@@ -3,6 +3,10 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     
+    <div class="mb-6">
+        <x-back-button url="{{ route('dashboard') }}" />
+    </div>
+
     <h1 class="text-3xl font-bold text-gray-900 mb-2">Request Perubahan Role</h1>
     <p class="text-gray-600 mb-6">Ajukan permohonan perubahan role Anda kepada HR</p>
 

@@ -29,6 +29,10 @@
     }
 }">
     <div class="mb-6">
+        <x-back-button :url="route('admin.users.index')" />
+    </div>
+
+    <div class="mb-6">
         <h1 class="text-3xl font-bold text-gray-900">➕ Tambah User Baru</h1>
         <p class="text-gray-600 mt-2">Buat akun pengguna baru untuk Sisaraya</p>
     </div>
