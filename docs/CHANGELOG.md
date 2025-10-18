@@ -176,3 +176,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-17
 - Buat komponen reusable x-back-button dan tambahkan tombol kembali di semua halaman (admin users, role requests, projects). Konsistensi UI untuk navigasi
+
+## 2025-10-18
+- Tambah status Blackout untuk proyek: PM dapat membuat proyek dengan status blackout untuk kondisi kritis/darurat. Tambah section khusus Blackout Projects di workspace dengan alert merah dan animasi pulse. Update model, controller, form create/edit, dan filter tabs

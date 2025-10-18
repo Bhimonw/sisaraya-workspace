@@ -70,7 +70,11 @@
                             <option value="active" {{ $project->status === 'active' ? 'selected' : '' }}>Aktif</option>
                             <option value="on_hold" {{ $project->status === 'on_hold' ? 'selected' : '' }}>Ditunda</option>
                             <option value="completed" {{ $project->status === 'completed' ? 'selected' : '' }}>Selesai</option>
+                            <option value="blackout" {{ $project->status === 'blackout' ? 'selected' : '' }} class="text-red-600 font-semibold">⚫ Blackout</option>
                         </select>
+                        @if($project->status === 'blackout')
+                            <p class="mt-1 text-xs text-red-600 font-semibold">⚠️ Proyek dalam kondisi Blackout</p>
+                        @endif
                     </div>
 
                     <!-- Label -->

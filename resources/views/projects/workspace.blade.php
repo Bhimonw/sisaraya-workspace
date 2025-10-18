@@ -17,6 +17,77 @@
         </div>
     </div>
 
+    {{-- BLACKOUT PROJECTS SECTION (Priority Alert) --}}
+    @if($blackoutProjects->isNotEmpty())
+        <div class="mb-8">
+            <div class="bg-gradient-to-r from-red-600 to-rose-600 rounded-xl shadow-lg p-6 mb-4">
+                <div class="flex items-center gap-3 text-white">
+                    <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                    <div>
+                        <h2 class="text-2xl font-bold">⚠️ Proyek Blackout</h2>
+                        <p class="text-red-100">Proyek dalam kondisi kritis yang memerlukan perhatian segera</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                @foreach($blackoutProjects as $project)
+                    <div class="bg-white rounded-xl shadow-lg border-2 border-red-500 hover:shadow-xl transition-all duration-300 overflow-hidden group animate-pulse-slow">
+                        <div class="bg-gradient-to-r from-red-600 to-rose-600 p-4">
+                            <div class="flex items-center gap-2 text-white mb-2">
+                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"/>
+                                </svg>
+                                <span class="font-bold text-sm">BLACKOUT</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white">
+                                <a href="{{ route('projects.show', $project) }}" class="hover:underline">
+                                    {{ $project->name }}
+                                </a>
+                            </h3>
+                        </div>
+
+                        <div class="p-6">
+                            <!-- Project Description -->
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                                {{ $project->description ?? 'Tidak ada deskripsi' }}
+                            </p>
+
+                            <!-- Project Stats -->
+                            <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+                                <div class="flex items-center gap-2 text-sm text-gray-600">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                    <span>{{ $project->members->count() + 1 }}</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm text-gray-600">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                    <span>{{ $project->tickets_count ?? 0 }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Action Button -->
+                            <a href="{{ route('projects.show', $project) }}" 
+                               class="block w-full text-center px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors">
+                                Lihat Detail →
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    {{-- ACTIVE PROJECTS SECTION --}}
+    <div class="mb-4">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Proyek Aktif</h2>
+    </div>
+
     <!-- Projects Grid -->
     @if($projects->isEmpty())
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">

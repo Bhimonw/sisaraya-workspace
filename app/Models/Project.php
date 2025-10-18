@@ -50,6 +50,22 @@ class Project extends Model
     }
 
     /**
+     * Scope: Get blackout projects
+     */
+    public function scopeBlackout($query)
+    {
+        return $query->where('status', 'blackout');
+    }
+
+    /**
+     * Scope: Get active projects (excluding blackout)
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
      * Get status label
      */
     public static function getStatusLabel(string $status): string
@@ -59,6 +75,7 @@ class Project extends Model
             'active' => 'Aktif',
             'on_hold' => 'Tertunda',
             'completed' => 'Selesai',
+            'blackout' => 'Blackout',
             default => 'Perencanaan',
         };
     }
@@ -73,6 +90,7 @@ class Project extends Model
             'active' => 'blue',
             'on_hold' => 'yellow',
             'completed' => 'green',
+            'blackout' => 'red',
             default => 'gray',
         };
     }

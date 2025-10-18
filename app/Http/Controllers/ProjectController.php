@@ -46,6 +46,19 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         
+        // Get blackout projects where user is owner OR member (CRITICAL - shown first)
+        $blackoutProjects = Project::withCount('tickets')
+            ->with(['owner', 'members'])
+            ->where(function($q) use ($user) {
+                $q->where('owner_id', $user->id)
+                  ->orWhereHas('members', function($q2) use ($user) {
+                      $q2->where('user_id', $user->id);
+                  });
+            })
+            ->where('status', 'blackout')
+            ->latest()
+            ->get();
+        
         // Get active projects where user is owner OR member
         // This is "Projectku" - only ACTIVE projects user is participating in
         $projects = Project::withCount('tickets')
@@ -60,7 +73,7 @@ class ProjectController extends Controller
             ->latest()
             ->get();
         
-        return view('projects.workspace', compact('projects'));
+        return view('projects.workspace', compact('projects', 'blackoutProjects'));
     }
     
     // Semua Projectku: All projects (active + completed) where user is owner or member
@@ -114,7 +127,7 @@ class ProjectController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|in:planning,active,on_hold,completed',
+            'status' => 'required|in:planning,active,on_hold,completed,blackout',
             'label' => 'nullable|in:UMKM,DIVISI,Kegiatan',
             'is_public' => 'boolean',
             'start_date' => 'nullable|date',
@@ -159,7 +172,7 @@ class ProjectController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|in:planning,active,on_hold,completed',
+            'status' => 'required|in:planning,active,on_hold,completed,blackout',
             'label' => 'nullable|in:UMKM,DIVISI,Kegiatan',
             'is_public' => 'boolean',
             'start_date' => 'nullable|date',

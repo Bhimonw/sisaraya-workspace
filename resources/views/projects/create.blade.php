@@ -68,7 +68,11 @@
                             <option value="active">Aktif</option>
                             <option value="on_hold">Ditunda</option>
                             <option value="completed">Selesai</option>
+                            <option value="blackout" class="text-red-600 font-semibold">⚫ Blackout</option>
                         </select>
+                        <p class="mt-1 text-xs text-gray-500">
+                            <span class="text-red-600 font-semibold">Blackout</span>: Proyek dalam kondisi darurat atau kritis yang memerlukan perhatian khusus
+                        </p>
                     </div>
 
                     <!-- Visibility -->

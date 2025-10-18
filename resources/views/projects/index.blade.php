@@ -105,6 +105,21 @@
                     <span>Selesai</span>
                 </div>
             </a>
+            
+            <a href="{{ route('projects.index', ['status' => 'blackout']) }}" 
+               class="flex-1 min-w-[120px] text-center py-4 px-4 border-b-2 font-medium text-sm transition-colors
+                      @if($status === 'blackout') 
+                          border-red-600 text-red-600 bg-red-50 
+                      @else 
+                          border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50 
+                      @endif">
+                <div class="flex items-center justify-center gap-2">
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                    <span class="font-bold">Blackout</span>
+                </div>
+            </a>
         </nav>
     </div>
 
