@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'bio',
         'guest_expired_at',
+        'last_seen_at',
     ];
 
     /**
@@ -46,7 +47,36 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'guest_expired_at' => 'datetime',
+            'last_seen_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Check if user is currently online (active within last 3 minutes)
+     */
+    public function isOnline(): bool
+    {
+        if (!$this->last_seen_at) {
+            return false;
+        }
+        
+        return $this->last_seen_at->diffInMinutes(now()) < 3;
+    }
+
+    /**
+     * Get user's online status text
+     */
+    public function getOnlineStatusText(): string
+    {
+        if (!$this->last_seen_at) {
+            return 'Belum pernah online';
+        }
+        
+        if ($this->isOnline()) {
+            return 'Online sekarang';
+        }
+        
+        return 'Terakhir online ' . $this->last_seen_at->diffForHumans();
     }
 
     /**

@@ -111,6 +111,46 @@ Route::middleware(['auth'])->group(function () {
     Route::get('api/calendar/user/projects', [App\Http\Controllers\Api\CalendarController::class, 'userProjects']);
     Route::get('api/calendar/all-personal-activities', [App\Http\Controllers\Api\CalendarController::class, 'allPersonalActivities']);
     
+    // Test route to check last_seen_at (for debugging)
+    Route::get('api/test-last-seen', function() {
+        $user = auth()->user();
+        return response()->json([
+            'user_id' => $user->id,
+            'name' => $user->name,
+            'last_seen_at' => $user->last_seen_at,
+            'last_seen_at_formatted' => $user->last_seen_at ? $user->last_seen_at->toDateTimeString() : null,
+            'is_online' => $user->isOnline(),
+            'current_time' => now()->toDateTimeString(),
+        ]);
+    });
+    
+    // Online Users API
+    Route::get('api/online-users', function() {
+        $onlineUsers = \App\Models\User::whereNotNull('last_seen_at')
+            ->where('last_seen_at', '>=', now()->subMinutes(3))
+            ->where(function($q) {
+                $q->whereNull('guest_expired_at')
+                  ->orWhere('guest_expired_at', '>', now());
+            })
+            ->orderBy('last_seen_at', 'desc')
+            ->get()
+            ->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'roles' => $user->getRoleNames(),
+                    'last_seen_at' => $user->last_seen_at ? $user->last_seen_at->diffForHumans() : 'Baru saja',
+                    'is_online' => $user->isOnline(),
+                ];
+            });
+        
+        return response()->json([
+            'online_count' => $onlineUsers->count(),
+            'users' => $onlineUsers,
+        ]);
+    })->name('api.online-users');
+    
     // Calendar views - Personal only (Dashboard calendar integrated in main dashboard)
     Route::get('calendar/personal', [App\Http\Controllers\CalendarController::class, 'personal'])->name('calendar.personal');
 

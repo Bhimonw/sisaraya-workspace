@@ -185,3 +185,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-19
 - Simplifikasi fitur Availability: Hapus halaman terpisah dan banner, pertahankan hanya card compact di sidebar kanan dashboard yang menampilkan anggota tersedia hari ini
+
+## 2025-10-19
+- Tambah fitur Online Users: Tampilkan anggota yang sedang login/online di navbar (sebelah notifikasi). Badge hijau menampilkan jumlah user online. Dropdown menampilkan list user online dengan avatar, role, dan last seen. Auto-refresh setiap 30 detik. Tambah kolom last_seen_at di users table dan middleware UpdateLastSeen untuk tracking
+
+## 2025-10-19
+- Perbaiki fitur Online Users: Tambah last_seen_at ke fillable, ubah middleware ke web group, gunakan DB query langsung untuk performa, kurangi threshold online dari 5 menit ke 3 menit, update interval dari 30 detik ke 15 detik untuk real-time feel, tambah logging untuk debugging

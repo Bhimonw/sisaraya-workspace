@@ -182,6 +182,129 @@
             <!-- Right Side: Notifications & User -->
             @auth
             <div class="flex items-center gap-3">
+                <!-- Online Users Dropdown -->
+                <x-dropdown align="right" width="80" id="online-users-dropdown">
+                    <x-slot name="trigger">
+                        <button class="hidden sm:flex p-2 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition relative" x-data="{ onlineCount: 0 }" x-init="
+                            // Fetch initial count
+                            fetch('/api/online-users')
+                                .then(res => res.json())
+                                .then(data => {
+                                    onlineCount = data.online_count;
+                                    console.log('Online users loaded:', data.online_count);
+                                })
+                                .catch(err => console.error('Error loading online users:', err));
+                            
+                            // Update every 15 seconds for real-time feel
+                            setInterval(() => {
+                                fetch('/api/online-users')
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        onlineCount = data.online_count;
+                                        console.log('Online users refreshed:', data.online_count);
+                                    })
+                                    .catch(err => console.error('Error refreshing online users:', err));
+                            }, 15000);
+                        ">"
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <!-- Online count badge -->
+                            <span x-show="onlineCount > 0" class="absolute top-0.5 right-0.5 flex items-center justify-center h-5 w-5 bg-green-500 text-white text-[10px] font-bold rounded-full" x-text="onlineCount > 9 ? '9+' : onlineCount"></span>
+                        </button>
+                    </x-slot>
+
+                    <x-slot name="content">
+                        <div class="py-2 w-80" x-data="{ 
+                            onlineUsers: [],
+                            loading: true,
+                            
+                            fetchOnlineUsers() {
+                                this.loading = true;
+                                fetch('/api/online-users')
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        this.onlineUsers = data.users;
+                                        this.loading = false;
+                                    });
+                            }
+                        }" x-init="
+                            fetchOnlineUsers();
+                            // Auto refresh every 15 seconds
+                            setInterval(() => fetchOnlineUsers(), 15000);
+                        ">"
+                            {{-- Header --}}
+                            <div class="px-4 py-3 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-sm font-semibold text-gray-800">Anggota Online</h3>
+                                    <div class="flex items-center gap-1">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                        <span class="text-xs text-gray-600" x-text="onlineUsers.length + ' online'"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Online Users List --}}
+                            <div class="max-h-96 overflow-y-auto">
+                                <template x-if="loading">
+                                    <div class="px-4 py-8 text-center">
+                                        <svg class="animate-spin h-8 w-8 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <p class="text-sm text-gray-500 mt-2">Memuat...</p>
+                                    </div>
+                                </template>
+
+                                <template x-if="!loading && onlineUsers.length === 0">
+                                    <div class="px-4 py-8 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                        <p class="text-sm text-gray-500 mt-2">Tidak ada anggota online</p>
+                                    </div>
+                                </template>
+
+                                <template x-for="user in onlineUsers" :key="user.id">
+                                    <div class="px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0">
+                                        <div class="flex items-center gap-3">
+                                            <div class="relative flex-shrink-0">
+                                                <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold" x-text="user.name.charAt(0).toUpperCase()"></div>
+                                                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-semibold text-gray-900 truncate" x-text="user.name"></p>
+                                                <p class="text-xs text-gray-600 truncate" x-text="'@' + user.username"></p>
+                                                <div class="flex flex-wrap gap-1 mt-1">
+                                                    <template x-for="role in user.roles.slice(0, 2)" :key="role">
+                                                        <span class="px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded text-xs font-medium" x-text="role.toUpperCase()"></span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <div class="flex-shrink-0 text-right">
+                                                <div class="flex items-center gap-1 text-green-600">
+                                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                                    <span class="text-xs font-medium">Online</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-0.5" x-text="user.last_seen_at"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            {{-- Footer --}}
+                            <template x-if="!loading && onlineUsers.length > 0">
+                                <div class="px-4 py-2 border-t border-gray-200 bg-gray-50">
+                                    <p class="text-xs text-gray-500 text-center">
+                                        Terakhir diperbarui: <span x-text="new Date().toLocaleTimeString('id-ID')"></span>
+                                    </p>
+                                </div>
+                            </template>
+                        </div>
+                    </x-slot>
+                </x-dropdown>
+
                 <!-- Notifications Dropdown -->
                 <x-dropdown align="right" width="96">
                     <x-slot name="trigger">
