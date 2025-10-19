@@ -15,7 +15,11 @@
         </div>
     </div>
 
-    <form action="{{ route('projects.store') }}" method="POST" class="space-y-6" x-data="projectForm()">
+    <form action="{{ route('projects.store') }}" 
+          method="POST" 
+          class="space-y-6" 
+          x-data="projectForm()"
+          @submit="if (submitting) { $event.preventDefault(); return false; } submitting = true;">
         @csrf
 
         <!-- Informasi Proyek -->
@@ -239,8 +243,16 @@
             </a>
             
             <button type="submit" 
-                    class="px-8 py-3 bg-gradient-to-r from-violet-600 to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300">
-                <span>Buat Proyek</span>
+                    :disabled="submitting"
+                    class="px-8 py-3 bg-gradient-to-r from-violet-600 to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
+                <span x-show="!submitting">Buat Proyek</span>
+                <span x-show="submitting" class="flex items-center gap-2">
+                    <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Menyimpan...
+                </span>
             </button>
         </div>
     </form>
@@ -249,6 +261,7 @@
 <script>
 function projectForm() {
     return {
+        submitting: false,
         // Add any additional Alpine.js logic here if needed
     }
 }

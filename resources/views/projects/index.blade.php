@@ -186,12 +186,73 @@
                     <div class="h-2 bg-gradient-to-r from-violet-600 via-blue-600 to-emerald-500"></div>
                     
                     <div class="p-6">
-                        <!-- Project Title & Status -->
+                        <!-- Project Title & Status with Actions Menu -->
                         <div class="mb-4">
                             <div class="flex items-start justify-between gap-3 mb-3">
                                 <h3 class="text-lg font-bold text-gray-900 group-hover:text-violet-600 transition-colors line-clamp-2 flex-1">
                                     {{ $project->name }}
                                 </h3>
+                                
+                                {{-- Quick Actions Menu (PM only) --}}
+                                @if(auth()->user()->hasRole('pm') && $project->owner_id === auth()->id())
+                                    <div class="relative" x-data="{ open: false }">
+                                        <button @click="open = !open" 
+                                                @click.away="open = false"
+                                                class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                                type="button">
+                                            <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                                            </svg>
+                                        </button>
+                                        
+                                        {{-- Dropdown Menu --}}
+                                        <div x-show="open"
+                                             x-transition:enter="transition ease-out duration-100"
+                                             x-transition:enter-start="transform opacity-0 scale-95"
+                                             x-transition:enter-end="transform opacity-100 scale-100"
+                                             x-transition:leave="transition ease-in duration-75"
+                                             x-transition:leave-start="transform opacity-100 scale-100"
+                                             x-transition:leave-end="transform opacity-0 scale-95"
+                                             class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10"
+                                             style="display: none;">
+                                            
+                                            {{-- Edit --}}
+                                            <a href="{{ route('projects.edit', $project) }}" 
+                                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">
+                                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                </svg>
+                                                <span class="font-medium">Edit Proyek</span>
+                                            </a>
+                                            
+                                            {{-- View --}}
+                                            <a href="{{ route('projects.show', $project) }}" 
+                                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                </svg>
+                                                <span class="font-medium">Lihat Detail</span>
+                                            </a>
+                                            
+                                            <div class="border-t border-gray-100 my-1"></div>
+                                            
+                                            {{-- Delete --}}
+                                            <form action="{{ route('projects.destroy', $project) }}" method="POST" 
+                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus proyek ini? Semua tiket dan data terkait akan ikut terhapus!')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" 
+                                                        class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                    </svg>
+                                                    <span class="font-medium">Hapus Proyek</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                             <div class="flex flex-wrap gap-2">
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $colors['bg'] }} {{ $colors['text'] }} border {{ $colors['border'] }}">

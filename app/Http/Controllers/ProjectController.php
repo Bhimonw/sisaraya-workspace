@@ -272,4 +272,17 @@ class ProjectController extends Controller
         
         return view('projects.show', compact('project', 'calendar'));
     }
+
+    public function destroy(Project $project)
+    {
+        // Check if the authenticated user is the project owner
+        if ($project->owner_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki izin untuk menghapus proyek ini.');
+        }
+        
+        // Delete the project (cascade will handle related records)
+        $project->delete();
+        
+        return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus!');
+    }
 }
