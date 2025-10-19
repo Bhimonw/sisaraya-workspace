@@ -96,4 +96,86 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Note::class);
     }
+
+    /**
+     * Check if user is free on a specific date
+     * Free = no active tickets AND no personal activities on that date
+     */
+    public function isFreeOnDate($date): bool
+    {
+        // Convert to Carbon instance if string
+        $date = $date instanceof \Carbon\Carbon ? $date : \Carbon\Carbon::parse($date);
+
+        // Check for active tickets with due_date on this date
+        $hasActiveTickets = $this->claimedTickets()
+            ->whereDate('due_date', $date)
+            ->whereIn('status', ['todo', 'doing', 'blackout'])
+            ->exists();
+
+        if ($hasActiveTickets) {
+            return false;
+        }
+
+        // Check for personal activities on this date
+        $hasActivities = $this->personalActivities()
+            ->whereDate('date', $date)
+            ->exists();
+
+        return !$hasActivities;
+    }
+
+    /**
+     * Get user's workload for a specific date
+     * Returns array with tickets count and activities count
+     */
+    public function getWorkloadOnDate($date): array
+    {
+        $date = $date instanceof \Carbon\Carbon ? $date : \Carbon\Carbon::parse($date);
+
+        $activeTickets = $this->claimedTickets()
+            ->whereDate('due_date', $date)
+            ->whereIn('status', ['todo', 'doing', 'blackout'])
+            ->get();
+
+        $activities = $this->personalActivities()
+            ->whereDate('date', $date)
+            ->get();
+
+        return [
+            'tickets_count' => $activeTickets->count(),
+            'tickets' => $activeTickets,
+            'activities_count' => $activities->count(),
+            'activities' => $activities,
+            'is_free' => $activeTickets->isEmpty() && $activities->isEmpty(),
+        ];
+    }
+
+    /**
+     * Get user's availability for a date range
+     * Returns array of dates with availability status
+     */
+    public function getAvailabilityRange($startDate, $endDate): array
+    {
+        $start = $startDate instanceof \Carbon\Carbon ? $startDate : \Carbon\Carbon::parse($startDate);
+        $end = $endDate instanceof \Carbon\Carbon ? $endDate : \Carbon\Carbon::parse($endDate);
+        
+        $availability = [];
+        $currentDate = $start->copy();
+
+        while ($currentDate <= $end) {
+            $workload = $this->getWorkloadOnDate($currentDate);
+            
+            $availability[] = [
+                'date' => $currentDate->format('Y-m-d'),
+                'day_name' => $currentDate->locale('id')->isoFormat('dddd'),
+                'is_free' => $workload['is_free'],
+                'tickets_count' => $workload['tickets_count'],
+                'activities_count' => $workload['activities_count'],
+            ];
+
+            $currentDate->addDay();
+        }
+
+        return $availability;
+    }
 }

@@ -179,3 +179,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-18
 - Tambah status Blackout untuk proyek: PM dapat membuat proyek dengan status blackout untuk kondisi kritis/darurat. Tambah section khusus Blackout Projects di workspace dengan alert merah dan animasi pulse. Update model, controller, form create/edit, dan filter tabs
+
+## 2025-10-19
+- Tambah fitur Availability di Dashboard: Tampilkan anggota yang tersedia/free hari ini (tidak ada tiket aktif atau aktivitas pribadi). Tambah method isFreeOnDate(), getWorkloadOnDate(), getAvailabilityRange() di User model. Card availability ditampilkan di sidebar kanan bawah section Proyek Saya
+
+## 2025-10-19
+- Simplifikasi fitur Availability: Hapus halaman terpisah dan banner, pertahankan hanya card compact di sidebar kanan dashboard yang menampilkan anggota tersedia hari ini

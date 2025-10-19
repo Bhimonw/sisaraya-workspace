@@ -54,6 +54,17 @@ class DashboardController extends Controller
                 })->count(),
         ];
         
-        return view('dashboard', compact('activeTickets', 'userProjects', 'stats'));
+        // Get availability data for today
+        $today = today();
+        $freeUsersToday = \App\Models\User::where(function($q) {
+            $q->whereNull('guest_expired_at')
+              ->orWhere('guest_expired_at', '>', now());
+        })
+        ->get()
+        ->filter(function($u) use ($today) {
+            return $u->isFreeOnDate($today);
+        });
+        
+        return view('dashboard', compact('activeTickets', 'userProjects', 'stats', 'freeUsersToday', 'today'));
     }
 }
