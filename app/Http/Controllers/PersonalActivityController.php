@@ -13,14 +13,19 @@ class PersonalActivityController extends Controller
      */
     public function index(Request $request)
     {
-        // Get all public activities or user's own activities
         $query = PersonalActivity::with('user');
         
-        if ($request->has('user_only') && $request->user_only) {
-            // Only user's own activities
+        // Handle view_mode filter
+        $viewMode = $request->input('view_mode', 'all');
+        
+        if ($viewMode === 'own') {
+            // Only user's own activities (both public and private)
             $query->where('user_id', Auth::id());
+        } elseif ($viewMode === 'public') {
+            // All public activities from all users
+            $query->where('is_public', true);
         } else {
-            // All public activities + user's private activities
+            // Default 'all': All public activities + user's private activities
             $query->where(function($q) {
                 $q->where('is_public', true)
                   ->orWhere('user_id', Auth::id());
@@ -33,9 +38,31 @@ class PersonalActivityController extends Controller
         }
 
         $activities = $query->get()->map(function($activity) {
+            $isOwn = $activity->user_id === Auth::id();
+            
+            // Hide details for other users' activities - show only "Sibuk"
+            if (!$isOwn) {
+                return [
+                    'id' => 'personal-' . $activity->id,
+                    'title' => 'Sibuk - ' . $activity->user->name,
+                    'start' => $activity->start_time->toIso8601String(),
+                    'end' => $activity->end_time->toIso8601String(),
+                    'backgroundColor' => '#6b7280', // Gray color for privacy
+                    'borderColor' => '#4b5563',
+                    'extendedProps' => [
+                        'description' => null,
+                        'location' => null,
+                        'type' => 'busy',
+                        'userName' => $activity->user->name,
+                        'isPublic' => true,
+                        'isOwn' => false,
+                    ],
+                ];
+            }
+            
             return [
                 'id' => 'personal-' . $activity->id,
-                'title' => $activity->title . ' (' . $activity->user->name . ')',
+                'title' => $activity->title,
                 'start' => $activity->start_time->toIso8601String(),
                 'end' => $activity->end_time->toIso8601String(),
                 'backgroundColor' => $activity->color,
@@ -46,12 +73,35 @@ class PersonalActivityController extends Controller
                     'type' => $activity->type,
                     'userName' => $activity->user->name,
                     'isPublic' => $activity->is_public,
-                    'isOwn' => $activity->user_id === Auth::id(),
+                    'isOwn' => $isOwn,
                 ],
             ];
         });
 
         return response()->json($activities);
+    }
+
+    /**
+     * Get statistics for user's personal activities
+     */
+    public function stats()
+    {
+        $userId = Auth::id();
+        $now = now();
+        
+        $total = PersonalActivity::where('user_id', $userId)->count();
+        $public = PersonalActivity::where('user_id', $userId)->where('is_public', true)->count();
+        $private = PersonalActivity::where('user_id', $userId)->where('is_public', false)->count();
+        $upcoming = PersonalActivity::where('user_id', $userId)
+            ->where('start_time', '>=', $now)
+            ->count();
+        
+        return response()->json([
+            'total' => $total,
+            'public' => $public,
+            'private' => $private,
+            'upcoming' => $upcoming,
+        ]);
     }
 
     /**

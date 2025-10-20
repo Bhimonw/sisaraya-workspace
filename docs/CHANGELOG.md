@@ -301,3 +301,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Modernized Catatan Pribadi (Notes) page with gradient purple header, 4 stats cards (total/pinned/yellow/other), Alpine.js color and pin filters, modal create form with emoji pickers, inline edit form with color selection, modern action buttons with hover effects and color-coded styling
+
+## 2025-10-20
+- Modernized Personal Calendar (Kalender Pribadi) with gradient indigo header, 4 stats cards (total/public/private/upcoming), Alpine.js view mode filters (all/own/public), privacy-first approach (default private), modern modal form with radio privacy selector, stats endpoint, and improved UX with emoji indicators
+
+## 2025-10-20
+- Enhanced privacy in Personal Calendar: activities from other users now show as 'Sibuk - [Name]' without details, replaced all emoji with proper SVG icons for professional appearance, improved privacy explanation in UI

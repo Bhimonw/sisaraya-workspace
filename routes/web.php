@@ -170,6 +170,7 @@ Route::middleware(['auth'])->group(function () {
     // Personal Activities
     Route::resource('personal-activities', App\Http\Controllers\PersonalActivityController::class)->except(['create', 'edit']);
     Route::get('api/personal-activities', [App\Http\Controllers\PersonalActivityController::class, 'index'])->name('api.personal-activities.index');
+    Route::get('api/personal-activities/stats', [App\Http\Controllers\PersonalActivityController::class, 'stats'])->name('api.personal-activities.stats');
 
     // Evaluations (Researcher only for create/edit, others can view)
     Route::post('evaluations', [App\Http\Controllers\EvaluationController::class, 'store'])->name('evaluations.store');
