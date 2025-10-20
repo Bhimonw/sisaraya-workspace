@@ -541,16 +541,31 @@
 
                     {{-- Badges Row --}}
                     <div class="flex flex-wrap items-center gap-2">
-                        {{-- Status Badge --}}
-                        <span class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full"
+                        {{-- Status Badge with Gradient --}}
+                        <span class="inline-flex items-center gap-1 px-3 py-1 text-sm font-bold rounded-full shadow-sm"
                               :class="{
-                                  'bg-amber-600 text-white': selectedTicket.status === 'todo',
-                                  'bg-purple-600 text-white': selectedTicket.status === 'doing',
-                                  'bg-green-600 text-white': selectedTicket.status === 'done',
-                                  'bg-gray-700 text-white': selectedTicket.status === 'blackout',
-                                  'bg-teal-600 text-white': selectedTicket.status === 'tersedia'
-                              }"
-                              x-text="selectedTicket.status === 'todo' ? 'To Do' : (selectedTicket.status === 'doing' ? 'Doing' : (selectedTicket.status === 'done' ? 'Done' : (selectedTicket.status === 'blackout' ? 'Blackout' : 'Tersedia')))">
+                                  'bg-gradient-to-r from-amber-400 to-orange-500 text-white': selectedTicket.status === 'todo',
+                                  'bg-gradient-to-r from-purple-500 to-indigo-600 text-white': selectedTicket.status === 'doing',
+                                  'bg-gradient-to-r from-green-500 to-teal-600 text-white': selectedTicket.status === 'done',
+                                  'bg-gradient-to-r from-gray-700 to-gray-900 text-white': selectedTicket.status === 'blackout',
+                                  'bg-gradient-to-r from-teal-500 to-cyan-600 text-white': selectedTicket.status === 'tersedia'
+                              }">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="selectedTicket.status === 'todo'">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="selectedTicket.status === 'doing'">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="selectedTicket.status === 'done'">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="selectedTicket.status === 'blackout'">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                            </svg>
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="selectedTicket.status === 'tersedia'">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            <span x-text="selectedTicket.status === 'todo' ? 'To Do' : (selectedTicket.status === 'doing' ? 'Doing' : (selectedTicket.status === 'done' ? 'Done' : (selectedTicket.status === 'blackout' ? 'Blackout' : 'Tersedia')))"></span>
                         </span>
 
                         {{-- Priority Badge --}}

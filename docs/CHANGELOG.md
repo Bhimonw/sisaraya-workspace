@@ -268,3 +268,18 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Add visual tag badges to Manajemen Tiket table - display status, context, and deadline badges consistent with Tiketku page for better quick-scan capability
+
+## 2025-10-20
+- Modernize Buat Tiket Umum form - add Blackout statistics card, improve form UI with modern styling, animations, gradients, emoji icons, and enhanced UX
+
+## 2025-10-20
+- Refactored ticket form into modular components - reduced from 847 to 501 lines (41% reduction)
+
+## 2025-10-20
+- Enhanced status badges (TODO, Doing, Done, Blackout) with gradient backgrounds for better visual consistency
+
+## 2025-10-20
+- Applied gradient status badges to Tiketku (mine) page modal for consistency with Manajemen Tiket
+
+## 2025-10-20
+- Added Status field (TODO/Blackout) to ticket creation form - users can now create blackout tickets directly

@@ -1,5 +1,54 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+    /* Modern Range Slider Styling */
+    .slider-modern::-webkit-slider-thumb {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        transition: all 0.2s ease;
+    }
+    
+    .slider-modern::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+    }
+    
+    .slider-modern::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        transition: all 0.2s ease;
+    }
+    
+    .slider-modern::-moz-range-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+    }
+    
+    .slider-modern::-webkit-slider-runnable-track {
+        background: linear-gradient(to right, #10b981 0%, #fbbf24 50%, #ef4444 100%);
+        border-radius: 999px;
+        height: 6px;
+    }
+    
+    .slider-modern::-moz-range-track {
+        background: linear-gradient(to right, #10b981 0%, #fbbf24 50%, #ef4444 100%);
+        border-radius: 999px;
+        height: 6px;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="relative" x-data="{ 
     showTicketModal: false,
@@ -31,64 +80,14 @@
             </div>
         </div>
         
-        {{-- Statistics --}}
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-blue-600">Total Tiket</p>
-                        <p class="text-2xl font-bold text-blue-900">{{ $allTickets->count() }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center">
-                        <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-4 border border-amber-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-amber-600">To Do</p>
-                        <p class="text-2xl font-bold text-amber-900">{{ $allTickets->where('status', 'todo')->count() }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-amber-200 rounded-full flex items-center justify-center">
-                        <svg class="h-6 w-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-purple-600">Doing</p>
-                        <p class="text-2xl font-bold text-purple-900">{{ $allTickets->where('status', 'doing')->count() }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-purple-200 rounded-full flex items-center justify-center">
-                        <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-green-600">Done</p>
-                        <p class="text-2xl font-bold text-green-900">{{ $allTickets->where('status', 'done')->count() }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-200 rounded-full flex items-center justify-center">
-                        <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {{-- Statistics Component --}}
+        @include('components.tickets.statistics', [
+            'totalTickets' => $allTickets->count(),
+            'unclaimedTickets' => $allTickets->where('status', 'todo')->count(),
+            'activeTickets' => $allTickets->where('status', 'doing')->count(),
+            'completedTickets' => $allTickets->where('status', 'done')->count(),
+            'blackoutTickets' => $allTickets->where('status', 'blackout')->count()
+        ])
     </div>
 
     {{-- Table View - Semua Tiket --}}
@@ -145,30 +144,30 @@
                                 <div class="flex flex-wrap gap-1.5">
                                     {{-- Status Badge --}}
                                     @if($ticket->status === 'todo')
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-amber-100 text-amber-700">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm">
                                             <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                             </svg>
                                             To Do
                                         </span>
                                     @elseif($ticket->status === 'doing')
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-purple-100 text-purple-700">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-sm">
                                             <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                             </svg>
                                             Doing
                                         </span>
                                     @elseif($ticket->status === 'done')
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-green-100 text-green-700">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-sm">
                                             <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                             </svg>
                                             Done
                                         </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-gray-600 text-white">
+                                    @elseif($ticket->status === 'blackout')
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-gradient-to-r from-gray-700 to-gray-900 text-white shadow-sm">
                                             <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
                                             </svg>
                                             Blackout
                                         </span>
@@ -493,199 +492,9 @@
         </div>
     </template>
 
-    {{-- Modal Create Tiket Umum --}}
-    <template x-if="showCreateModal">
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" 
-             @click.self="showCreateModal = false">
-            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-                 @click.stop>
-                {{-- Modal Header --}}
-                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 flex items-center justify-between">
-                    <h3 class="text-lg font-bold text-white">Buat Tiket Umum</h3>
-                    <button @click="showCreateModal = false" 
-                            class="text-white hover:text-gray-200 transition-colors">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-
-                {{-- Form --}}
-                <form method="POST" action="{{ route('tickets.store') }}" class="p-6 space-y-4">
-                    @csrf
-                    <input type="hidden" name="project_id" value="">
-                    <input type="hidden" name="context" value="umum">
-
-                    {{-- Title --}}
-                    <div>
-                        <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul Tiket *</label>
-                        <input type="text" 
-                               name="title" 
-                               id="title" 
-                               required
-                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                               placeholder="Masukkan judul tiket">
-                    </div>
-
-                    {{-- Description --}}
-                    <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                        <textarea name="description" 
-                                  id="description" 
-                                  rows="4"
-                                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                  placeholder="Deskripsi detail tiket..."></textarea>
-                    </div>
-
-                    {{-- Priority, Bobot & Due Date --}}
-                    <div class="grid grid-cols-3 gap-4">
-                        <div>
-                            <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Prioritas</label>
-                            <select name="priority" 
-                                    id="priority"
-                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="low">Rendah</option>
-                                <option value="medium" selected>Sedang</option>
-                                <option value="high">Tinggi</option>
-                                <option value="urgent">Mendesak</option>
-                            </select>
-                        </div>
-
-                        <div x-data="{ 
-                            weight: 5,
-                            getLabel() {
-                                if (this.weight <= 3) return { text: 'Ringan', color: 'text-green-600', bg: 'bg-green-100', border: 'border-green-300' };
-                                if (this.weight <= 6) return { text: 'Sedang', color: 'text-yellow-600', bg: 'bg-yellow-100', border: 'border-yellow-300' };
-                                return { text: 'Berat', color: 'text-red-600', bg: 'bg-red-100', border: 'border-red-300' };
-                            }
-                        }">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Bobot
-                            </label>
-                            
-                            {{-- Weight Display --}}
-                            <div class="mb-2 p-2 rounded-lg border transition-all duration-200"
-                                 :class="getLabel().bg + ' ' + getLabel().border">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-gray-600">Tingkat:</span>
-                                    <div class="flex items-center gap-1">
-                                        <span x-text="weight" 
-                                              class="text-lg font-bold"
-                                              :class="getLabel().color"></span>
-                                        <span class="text-xs font-semibold"
-                                              :class="getLabel().color"
-                                              x-text="getLabel().text"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            {{-- Slider --}}
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs text-gray-500">1</span>
-                                <input type="range" 
-                                       name="weight" 
-                                       min="1" 
-                                       max="10" 
-                                       value="5"
-                                       x-model="weight"
-                                       class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
-                                <span class="text-xs text-gray-500">10</span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="due_date" class="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
-                            <input type="date" 
-                                   name="due_date" 
-                                   id="due_date"
-                                   class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                    </div>
-
-                    {{-- Target Selection --}}
-                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Target Tiket (Opsional)</label>
-                        
-                        <div class="space-y-3">
-                            {{-- Option 1: Semua Orang --}}
-                            <label class="flex items-start cursor-pointer">
-                                <input type="radio" name="target_type" value="all" checked
-                                       class="mt-1 text-indigo-600 focus:ring-indigo-500"
-                                       x-model="targetType">
-                                <div class="ml-3">
-                                    <span class="text-sm font-medium text-gray-900">Semua Orang</span>
-                                    <p class="text-xs text-gray-500">Tiket bisa diambil siapa saja</p>
-                                </div>
-                            </label>
-
-                            {{-- Option 2: Role Tetap --}}
-                            <label class="flex items-start cursor-pointer">
-                                <input type="radio" name="target_type" value="role"
-                                       class="mt-1 text-indigo-600 focus:ring-indigo-500"
-                                       x-model="targetType">
-                                <div class="ml-3 flex-1">
-                                    <span class="text-sm font-medium text-gray-900">Role Tetap</span>
-                                    <p class="text-xs text-gray-500 mb-2">Targetkan ke semua user dengan role tertentu</p>
-                                    <select name="target_role" 
-                                            id="target_role"
-                                            x-bind:disabled="targetType !== 'role'"
-                                            x-bind:required="targetType === 'role'"
-                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed">
-                                        <option value="">Pilih Role...</option>
-                                        @foreach(\App\Models\Ticket::getAvailableRoles() as $roleKey => $roleName)
-                                            <option value="{{ $roleKey }}">{{ $roleName }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </label>
-
-                            {{-- Option 3: User Spesifik (Multiple) --}}
-                            <label class="flex items-start cursor-pointer">
-                                <input type="radio" name="target_type" value="user"
-                                       class="mt-1 text-indigo-600 focus:ring-indigo-500"
-                                       x-model="targetType">
-                                <div class="ml-3 flex-1">
-                                    <span class="text-sm font-medium text-gray-900">User Spesifik (Bisa Multiple)</span>
-                                    <p class="text-xs text-gray-500 mb-2">Targetkan ke beberapa user sekaligus - akan membuat tiket sebanyak user yang dipilih</p>
-                                    
-                                    {{-- Checkbox List Container --}}
-                                    <div class="mt-2 border border-gray-300 rounded-lg p-3 bg-white max-h-48 overflow-y-auto"
-                                         x-bind:class="targetType !== 'user' ? 'bg-gray-50 opacity-50' : ''">
-                                        <div class="space-y-2">
-                                            @foreach(\App\Models\User::orderBy('name')->get() as $user)
-                                                <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
-                                                    <input type="checkbox" 
-                                                           name="target_user_id[]" 
-                                                           value="{{ $user->id }}"
-                                                           x-bind:disabled="targetType !== 'user'"
-                                                           class="rounded text-indigo-600 focus:ring-indigo-500 disabled:cursor-not-allowed">
-                                                    <span class="text-sm text-gray-700">{{ $user->name }}</span>
-                                                </label>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                    <p class="text-xs text-gray-400 mt-1">Centang satu atau beberapa user yang ingin ditargetkan</p>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    {{-- Form Footer --}}
-                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-                        <button type="button" 
-                                @click="showCreateModal = false"
-                                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium">
-                            Batal
-                        </button>
-                        <button type="submit"
-                                class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-colors font-medium">
-                            Buat Tiket
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </template>
+    {{-- Modal Create Tiket Umum Component --}}
+    @include('components.tickets.create-modal')
 
 </div>
 @endsection
+
