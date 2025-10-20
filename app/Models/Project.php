@@ -138,6 +138,11 @@ class Project extends Model
         return $this->hasMany(ProjectRating::class);
     }
 
+    public function chatMessages()
+    {
+        return $this->hasMany(ProjectChatMessage::class);
+    }
+
     /**
      * Get average rating for this project
      */

@@ -31,7 +31,7 @@
     }
 }">
     {{-- Project Header --}}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6" x-data="projectChatPopup({{ $project->id }})">
         <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
             <div class="flex-1">
                 <div class="flex items-center flex-wrap gap-3 mb-2">
@@ -95,26 +95,145 @@
                 @endif
             </div>
             
-            {{-- Members Preview --}}
-            <div class="flex items-center gap-4 lg:ml-6">
-                <div class="text-sm text-gray-500 font-medium">{{ $project->members->count() + 1 }} Members</div>
-                <div class="flex -space-x-2">
-                    @foreach($project->members->take(5) as $member)
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-sm font-semibold flex items-center justify-center border-2 border-white shadow-sm" 
-                             title="{{ $member->name }}">
-                            {{ strtoupper(substr($member->name, 0, 1)) }}
-                        </div>
-                    @endforeach
-                    @if($project->members->count() > 4)
-                        <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-600 text-xs font-semibold flex items-center justify-center border-2 border-white shadow-sm" 
-                             title="{{ $project->members->count() - 4 }} more">
-                            +{{ $project->members->count() - 4 }}
-                        </div>
-                    @endif
+            {{-- Right Side: Chat Button & Members Preview --}}
+            <div class="flex flex-col items-end gap-3 lg:ml-6">
+                {{-- Chat Button --}}
+                <button @click="toggleChat()" 
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-md hover:shadow-lg relative">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    <span class="text-sm font-medium">Chat Proyek</span>
+                    <template x-if="unreadCount > 0">
+                        <span class="absolute -top-2 -right-2 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full" x-text="unreadCount"></span>
+                    </template>
+                </button>
+                
+                {{-- Members Preview --}}
+                <div class="flex items-center gap-4">
+                    <div class="text-sm text-gray-500 font-medium">{{ $project->members->count() + 1 }} Members</div>
+                    <div class="flex -space-x-2">
+                        @foreach($project->members->take(5) as $member)
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-sm font-semibold flex items-center justify-center border-2 border-white shadow-sm" 
+                                 title="{{ $member->name }}">
+                                {{ strtoupper(substr($member->name, 0, 1)) }}
+                            </div>
+                        @endforeach
+                        @if($project->members->count() > 4)
+                            <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-600 text-xs font-semibold flex items-center justify-center border-2 border-white shadow-sm" 
+                                 title="{{ $project->members->count() - 4 }} more">
+                                +{{ $project->members->count() - 4 }}
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        
+        {{-- Chat Popup (Fixed Position, Bottom Right) --}}
+        <div x-show="showChat" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform translate-y-4"
+             x-transition:enter-end="opacity-100 transform translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 transform translate-y-0"
+             x-transition:leave-end="opacity-0 transform translate-y-4"
+             @click.away="showChat = false"
+             class="fixed bottom-6 right-6 w-96 bg-white rounded-lg shadow-2xl border-2 border-blue-300 overflow-hidden z-50"
+             style="max-height: 600px;">
+            
+            {{-- Chat Header --}}
+            <div class="bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                        <h3 class="font-semibold text-white">Chat Proyek</h3>
+                    </div>
+                    <button @click="showChat = false" class="text-white hover:bg-white/20 rounded p-1 transition">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            {{-- Chat Messages --}}
+            <div class="h-96 overflow-y-auto bg-gray-50 p-4 space-y-3"
+                 x-ref="messagesContainer"
+                 @scroll="handleScroll">
+    
+    <template x-if="loading">
+        <div class="flex items-center justify-center h-full">
+            <div class="text-center">
+                <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto mb-2" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="text-sm text-gray-600">Memuat pesan...</p>
+            </div>
+        </div>
+    </template>
+    
+    <template x-if="!loading && messages.length === 0">
+        <div class="flex items-center justify-center h-full">
+            <div class="text-center">
+                <svg class="h-16 w-16 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                <p class="text-sm font-medium text-gray-500">Belum ada pesan</p>
+                <p class="text-xs text-gray-400 mt-1">Mulai percakapan dengan tim</p>
+            </div>
+        </div>
+    </template>
+    
+    {{-- Message List --}}
+    <template x-for="message in messages" :key="message.id">
+        <div class="flex gap-2" 
+             :class="message.user_id === {{ auth()->id() }} ? 'flex-row-reverse' : 'flex-row'">
+            {{-- Avatar --}}
+            <div class="flex-shrink-0">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold"
+                     :class="message.user_id === {{ auth()->id() }} ? 'bg-gradient-to-br from-blue-600 to-cyan-600' : 'bg-gradient-to-br from-indigo-600 to-purple-600'"
+                     x-text="message.user_name.charAt(0).toUpperCase()">
+                </div>
+            </div>
+            
+            {{-- Message Bubble --}}
+            <div class="flex flex-col max-w-[70%]"
+                 :class="message.user_id === {{ auth()->id() }} ? 'items-end' : 'items-start'">
+                <div class="text-xs text-gray-600 mb-1" x-text="message.user_name"></div>
+                <div class="rounded-lg px-3 py-2 break-words text-sm"
+                     :class="message.user_id === {{ auth()->id() }} ? 'bg-blue-600 text-white rounded-br-none' : 'bg-white border border-gray-200 text-gray-900 rounded-bl-none'"
+                     x-text="message.message">
+                </div>
+                <div class="text-xs text-gray-500 mt-1" x-text="message.time_ago"></div>
+            </div>
+        </div>
+    </template>
+</div>
+
+{{-- Chat Input --}}
+<div class="p-3 bg-white border-t border-gray-200">
+    <form @submit.prevent="sendMessage()" class="flex gap-2">
+        <input type="text" 
+               x-model="newMessage"
+               placeholder="Ketik pesan..."
+               :disabled="sending"
+               class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+               required>
+        <button type="submit" 
+                :disabled="sending || !newMessage.trim()"
+                class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+        </button>
+    </form>
+</div>
+        </div>{{-- End Chat Popup --}}
+    </div>{{-- End Project Header --}}
 
     {{-- Tab Navigation --}}
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
@@ -140,7 +259,7 @@
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
-                    <span>Kelola Member</span>
+                    <span>Member</span>
                     <span class="ml-1 px-2 py-0.5 text-xs rounded-full bg-gray-100">{{ $project->members->count() + 1 }}</span>
                 </div>
             </button>
@@ -1772,46 +1891,56 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                     <div>
-                        <h2 class="text-lg font-semibold text-white">
-                            @if($project->canManageMembers(Auth::user()))
-                                Kelola Tim Proyek
-                            @else
-                                Anggota Tim Proyek
-                            @endif
-                        </h2>
-                        <p class="text-sm text-white/90">
-                            @if($project->canManageMembers(Auth::user()))
-                                Atur anggota, role, dan izin akses
-                            @else
-                                Lihat daftar anggota dan role mereka
-                            @endif
-                        </p>
+                        <h2 class="text-lg font-semibold text-white">Anggota Tim Proyek</h2>
+                        <p class="text-sm text-white/90">Daftar anggota dan role mereka</p>
                     </div>
                 </div>
-                @if($project->canManageMembers(Auth::user()))
-                <button @click="showAddMember = !showAddMember" 
-                        class="px-4 py-2 bg-white text-violet-600 font-semibold rounded-lg hover:bg-violet-50 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg">
-                    <span x-show="!showAddMember" class="flex items-center gap-2">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                        </svg>
-                        Tambah Member
-                    </span>
-                    <span x-show="showAddMember" class="flex items-center gap-2">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                        Tutup
-                    </span>
-                </button>
-                @endif
+                
+                {{-- Action Buttons --}}
+                <div class="flex items-center gap-3">
+                    @if($project->canManageMembers(Auth::user()))
+                    <button @click="showManageMembers = !showManageMembers" 
+                            class="px-4 py-2 bg-white text-violet-600 font-semibold rounded-lg hover:bg-violet-50 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg">
+                        <span x-show="!showManageMembers" class="flex items-center gap-2">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Kelola Member
+                        </span>
+                        <span x-show="showManageMembers" class="flex items-center gap-2">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Tutup
+                        </span>
+                    </button>
+                    
+                    <button @click="showAddMember = !showAddMember" 
+                            x-show="showManageMembers"
+                            class="px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg">
+                        <span x-show="!showAddMember" class="flex items-center gap-2">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            Tambah Member
+                        </span>
+                        <span x-show="showAddMember" class="flex items-center gap-2">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Tutup
+                        </span>
+                    </button>
+                    @endif
+                </div>
             </div>
         </div>
 
         <div class="p-6">
             @if($project->canManageMembers(Auth::user()))
             {{-- Add Member Form (PM/HR/Admin Only) --}}
-            <div x-show="showAddMember" 
+            <div x-show="showAddMember && showManageMembers" 
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 transform -translate-y-2"
                  x-transition:enter-end="opacity-100 transform translate-y-0"
@@ -2036,46 +2165,48 @@
                             </span>
                             
                             @if($project->canManageMembers(Auth::user()))
-                            {{-- Edit Button (Disabled if permanent role) (PM/HR/Admin Only) --}}
-                            @if(!$hasPermanentRole)
-                            <button @click="editMode = !editMode" 
-                                    class="p-2 hover:bg-blue-50 rounded-lg transition"
-                                    title="Edit Role">
-                                <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </button>
-                            @else
-                            <div class="p-2 opacity-40 cursor-not-allowed" title="Role permanent tidak dapat diubah">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                                </svg>
-                            </div>
-                            @endif
-
-                            {{-- Remove Button (Disabled if permanent role) (PM/HR/Admin Only) --}}
-                            @if(!$hasPermanentRole)
-                            <form action="{{ route('projects.members.destroy', [$project, $member]) }}" 
-                                  method="POST" 
-                                  class="inline" 
-                                  onsubmit="return confirm('Hapus {{ $member->name }} dari project ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" 
-                                        class="p-2 hover:bg-red-50 rounded-lg transition"
-                                        title="Hapus dari Project">
-                                    <svg class="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            <div x-show="showManageMembers" class="flex items-center gap-2">
+                                {{-- Edit Button (Disabled if permanent role) (PM/HR/Admin Only) --}}
+                                @if(!$hasPermanentRole)
+                                <button @click="editMode = !editMode" 
+                                        class="p-2 hover:bg-blue-50 rounded-lg transition"
+                                        title="Edit Role">
+                                    <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
                                 </button>
-                            </form>
-                            @else
-                            <div class="p-2 opacity-40 cursor-not-allowed" title="Member dengan role permanent tidak dapat dihapus dari project">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
+                                @else
+                                <div class="p-2 opacity-40 cursor-not-allowed" title="Role permanent tidak dapat diubah">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                    </svg>
+                                </div>
+                                @endif
+
+                                {{-- Remove Button (Disabled if permanent role) (PM/HR/Admin Only) --}}
+                                @if(!$hasPermanentRole)
+                                <form action="{{ route('projects.members.destroy', [$project, $member]) }}" 
+                                      method="POST" 
+                                      class="inline" 
+                                      onsubmit="return confirm('Hapus {{ $member->name }} dari project ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            class="p-2 hover:bg-red-50 rounded-lg transition"
+                                            title="Hapus dari Project">
+                                        <svg class="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                                @else
+                                <div class="p-2 opacity-40 cursor-not-allowed" title="Member dengan role permanent tidak dapat dihapus dari project">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </div>
+                                @endif
                             </div>
-                            @endif
                             @endif
                             {{-- End PM/HR/Admin Only Actions --}}
                         </div>
@@ -2083,7 +2214,7 @@
                     
                     @if($project->canManageMembers(Auth::user()))
                     {{-- Edit Role Form (PM/HR/Admin Only) --}}
-                    <div x-show="editMode" 
+                    <div x-show="editMode && showManageMembers" 
                          x-transition
                          class="mt-4 pt-4 border-t-2 border-gray-100">
                         <form action="{{ route('projects.members.updateRole', [$project, $member]) }}" method="POST">
@@ -2150,19 +2281,148 @@
                     <p class="text-sm text-gray-500">Klik tombol "Tambah Member" untuk mengundang anggota tim</p>
                 </div>
                 @endif
-            </div>
-        </div>
-    </div>
-
+            </div>{{-- End Member List --}}
+        </div>{{-- End Members Card p-6 --}}
+    </div>{{-- End Members Card --}}
+    </div>{{-- End Members Tab --}}
+    
     <script>
     function memberManagement() {
         return {
-            showAddMember: false
+            showAddMember: false,
+            showManageMembers: false
+        }
+    }
+    
+    function projectChatPopup(projectId) {
+        return {
+            projectId: projectId,
+            showChat: false,
+            messages: [],
+            newMessage: '',
+            loading: false,
+            sending: false,
+            lastId: 0,
+            pollInterval: null,
+            unreadCount: 0,
+            
+            init() {
+                console.log('Project chat popup initialized for project:', this.projectId);
+                // Start background polling for notifications even when chat is closed
+                this.startBackgroundPolling();
+            },
+            
+            toggleChat() {
+                this.showChat = !this.showChat;
+                if (this.showChat) {
+                    this.unreadCount = 0; // Reset unread when opening
+                    this.loadInitialMessages();
+                } else {
+                    // Don't stop polling, keep checking for new messages
+                }
+            },
+            
+            async loadInitialMessages() {
+                this.loading = true;
+                try {
+                    const response = await fetch(`/api/projects/${this.projectId}/chat/messages/initial`);
+                    if (!response.ok) throw new Error('Failed to load messages');
+                    
+                    const data = await response.json();
+                    this.messages = data.messages;
+                    this.lastId = data.last_id;
+                    
+                    this.$nextTick(() => {
+                        this.scrollToBottom();
+                    });
+                } catch (error) {
+                    console.error('Error loading messages:', error);
+                    alert('Gagal memuat pesan. Silakan coba lagi.');
+                } finally {
+                    this.loading = false;
+                }
+            },
+            
+            async pollNewMessages() {
+                try {
+                    const response = await fetch(`/api/projects/${this.projectId}/chat/messages?last_id=${this.lastId}`);
+                    if (!response.ok) return;
+                    
+                    const data = await response.json();
+                    if (data.messages.length > 0) {
+                        this.messages = [...this.messages, ...data.messages];
+                        this.lastId = data.last_id;
+                        
+                        // Update unread count if chat is closed
+                        if (!this.showChat) {
+                            this.unreadCount += data.messages.length;
+                        }
+                        
+                        this.$nextTick(() => {
+                            if (this.showChat) {
+                                this.scrollToBottom();
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error polling messages:', error);
+                }
+            },
+            
+            async sendMessage() {
+                if (!this.newMessage.trim() || this.sending) return;
+                
+                this.sending = true;
+                const messageText = this.newMessage.trim();
+                this.newMessage = '';
+                
+                try {
+                    const response = await fetch(`/api/projects/${this.projectId}/chat/messages`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ message: messageText })
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to send message');
+                    
+                    const data = await response.json();
+                    this.messages.push(data.message);
+                    this.lastId = data.message.id;
+                    
+                    this.$nextTick(() => {
+                        this.scrollToBottom();
+                    });
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    alert('Gagal mengirim pesan. Silakan coba lagi.');
+                    this.newMessage = messageText; // Restore message
+                } finally {
+                    this.sending = false;
+                }
+            },
+            
+            startBackgroundPolling() {
+                this.pollInterval = setInterval(() => {
+                    this.pollNewMessages();
+                }, 5000); // Poll every 5 seconds
+            },
+            
+            scrollToBottom() {
+                const container = this.$refs.messagesContainer;
+                if (container) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            },
+            
+            handleScroll() {
+                // Future: implement load more on scroll to top
+            }
         }
     }
     </script>
-    </div>
-    </div>{{-- End Members Tab --}}
     
     {{-- EVENTS TAB (Visible to All, but only PM/Admin can manage) --}}
     <div x-show="activeTab === 'events'" x-transition>

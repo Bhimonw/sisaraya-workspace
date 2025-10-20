@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectChatController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\RoleChangeRequestController;
@@ -150,6 +151,14 @@ Route::middleware(['auth'])->group(function () {
             'users' => $onlineUsers,
         ]);
     })->name('api.online-users');
+    
+    // Project Chat API
+    Route::prefix('api/projects/{project}/chat')->group(function () {
+        Route::get('messages/initial', [ProjectChatController::class, 'getInitialMessages'])->name('api.projects.chat.initial');
+        Route::get('messages', [ProjectChatController::class, 'getMessages'])->name('api.projects.chat.messages');
+        Route::post('messages', [ProjectChatController::class, 'sendMessage'])->name('api.projects.chat.send');
+        Route::get('unread', [ProjectChatController::class, 'getUnreadCount'])->name('api.projects.chat.unread');
+    });
     
     // Calendar views - Personal only (Dashboard calendar integrated in main dashboard)
     Route::get('calendar/personal', [App\Http\Controllers\CalendarController::class, 'personal'])->name('calendar.personal');

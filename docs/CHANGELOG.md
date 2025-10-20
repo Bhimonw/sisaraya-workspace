@@ -191,3 +191,21 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-19
 - Perbaiki fitur Online Users: Tambah last_seen_at ke fillable, ubah middleware ke web group, gunakan DB query langsung untuk performa, kurangi threshold online dari 5 menit ke 3 menit, update interval dari 30 detik ke 15 detik untuk real-time feel, tambah logging untuk debugging
+
+## 2025-10-20
+- Added project chat feature with real-time polling (3s interval) - popup UI below members section
+
+## 2025-10-20
+- Improved project chat UI - moved chat button below members list, added 'Kelola Member' button in header banner
+
+## 2025-10-20
+- Fixed chat UI placement - moved chat section inside member card (before closing div)
+
+## 2025-10-20
+- Fixed chat UI placement - moved chat section inside member card (before closing div)
+
+## 2025-10-20
+- Pindahkan fitur chat proyek ke deskripsi project dengan popup style seperti notifikasi - chat sekarang muncul sebagai fixed popup di kanan bawah, dengan badge unread count dan background polling
+
+## 2025-10-20
+- Pindahkan tombol chat ke pinggir kanan header proyek (sejajar dengan members preview) - tombol chat sekarang di atas member avatars dengan badge unread yang lebih visible
