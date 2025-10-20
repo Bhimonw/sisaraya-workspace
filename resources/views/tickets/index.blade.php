@@ -101,6 +101,9 @@
                             Tiket
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Tag
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Prioritas
                         </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -130,8 +133,83 @@
                     @forelse($allTickets as $ticket)
                         <tr class="hover:bg-gray-50 transition-colors">
                             {{-- Tiket --}}
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4">
                                 <div class="text-sm font-medium text-gray-900">{{ $ticket->title }}</div>
+                                @if($ticket->description)
+                                    <div class="text-xs text-gray-500 mt-1 line-clamp-1">{{ Str::limit($ticket->description, 60) }}</div>
+                                @endif
+                            </td>
+                            
+                            {{-- Tag --}}
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap gap-1.5">
+                                    {{-- Status Badge --}}
+                                    @if($ticket->status === 'todo')
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-amber-100 text-amber-700">
+                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            To Do
+                                        </span>
+                                    @elseif($ticket->status === 'doing')
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-purple-100 text-purple-700">
+                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                            </svg>
+                                            Doing
+                                        </span>
+                                    @elseif($ticket->status === 'done')
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-green-100 text-green-700">
+                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            Done
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-gray-600 text-white">
+                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                            Blackout
+                                        </span>
+                                    @endif
+
+                                    {{-- Context Badge --}}
+                                    @if($ticket->context)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold
+                                            {{ $ticket->context === 'umum' ? 'bg-gray-200 text-gray-800' : '' }}
+                                            {{ $ticket->context === 'event' ? 'bg-indigo-200 text-indigo-800' : '' }}
+                                            {{ $ticket->context === 'proyek' ? 'bg-blue-200 text-blue-800' : '' }}">
+                                            @if($ticket->context === 'umum')
+                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                                                </svg>
+                                                Umum
+                                            @elseif($ticket->context === 'event')
+                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                </svg>
+                                                Event
+                                            @else
+                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                                                </svg>
+                                                Proyek
+                                            @endif
+                                        </span>
+                                    @endif
+
+                                    {{-- Due Date Badge (if exists and within 7 days or overdue) --}}
+                                    @if($ticket->due_date && ($ticket->due_date->isPast() || $ticket->due_date->diffInDays(now()) <= 7))
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold
+                                            {{ $ticket->due_date->isPast() ? 'bg-red-200 text-red-800' : 'bg-yellow-200 text-yellow-800' }}">
+                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            {{ $ticket->due_date->format('d M') }}
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
                             
                             {{-- Prioritas --}}

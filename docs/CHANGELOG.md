@@ -265,3 +265,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Fix bug: Tiket untuk 'Semua Orang' tidak muncul di halaman Tiketku - perbaiki SQL query untuk menangani target_role NULL dan target_user_id NULL
+
+## 2025-10-20
+- Add visual tag badges to Manajemen Tiket table - display status, context, and deadline badges consistent with Tiketku page for better quick-scan capability
