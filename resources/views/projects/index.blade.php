@@ -41,7 +41,7 @@
                     <span>Semua</span>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                  @if($status === 'all') bg-violet-100 text-violet-700 @else bg-gray-100 text-gray-600 @endif">
-                        {{ $projects->count() }}
+                        {{ $totalCount }}
                     </span>
                 </div>
             </a>
@@ -58,6 +58,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                     <span>Perencanaan</span>
+                    @if($statusCounts['planning'] > 0)
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                                 @if($status === 'planning') bg-gray-100 text-gray-700 @else bg-gray-100 text-gray-600 @endif">
+                        {{ $statusCounts['planning'] }}
+                    </span>
+                    @endif
                 </div>
             </a>
             
@@ -73,6 +79,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     <span>Aktif</span>
+                    @if($statusCounts['active'] > 0)
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                                 @if($status === 'active') bg-blue-100 text-blue-700 @else bg-gray-100 text-gray-600 @endif">
+                        {{ $statusCounts['active'] }}
+                    </span>
+                    @endif
                 </div>
             </a>
             
@@ -88,6 +100,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>Ditunda</span>
+                    @if($statusCounts['on_hold'] > 0)
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                                 @if($status === 'on_hold') bg-yellow-100 text-yellow-700 @else bg-gray-100 text-gray-600 @endif">
+                        {{ $statusCounts['on_hold'] }}
+                    </span>
+                    @endif
                 </div>
             </a>
             
@@ -103,6 +121,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>Selesai</span>
+                    @if($statusCounts['completed'] > 0)
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                                 @if($status === 'completed') bg-green-100 text-green-700 @else bg-gray-100 text-gray-600 @endif">
+                        {{ $statusCounts['completed'] }}
+                    </span>
+                    @endif
                 </div>
             </a>
             

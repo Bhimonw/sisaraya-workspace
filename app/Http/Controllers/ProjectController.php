@@ -101,6 +101,16 @@ class ProjectController extends Controller
         $status = $request->get('status', 'all');
         $label = $request->get('label');
         
+        // Get counts for each status tab
+        $totalCount = Project::count();
+        $statusCounts = [
+            'planning' => Project::where('status', 'planning')->count(),
+            'active' => Project::where('status', 'active')->count(),
+            'on_hold' => Project::where('status', 'on_hold')->count(),
+            'completed' => Project::where('status', 'completed')->count(),
+            'blackout' => Project::where('status', 'blackout')->count(),
+        ];
+        
         $query = Project::withCount('tickets')->with(['owner', 'members']);
         
         if ($status !== 'all') {
@@ -114,7 +124,7 @@ class ProjectController extends Controller
         $projects = $query->latest()->get();
         $labels = Project::getLabels();
         
-        return view('projects.index', compact('projects', 'status', 'label', 'labels'));
+        return view('projects.index', compact('projects', 'status', 'label', 'labels', 'totalCount', 'statusCounts'));
     }
 
     public function create()

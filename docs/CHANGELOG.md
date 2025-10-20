@@ -253,3 +253,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Fix member count inconsistency: only count actual members in select all (exclude add member form checkboxes)
+
+## 2025-10-20
+- Fix project counter synchronization: show accurate counts for all status tabs (Semua, Aktif, Selesai, etc)
