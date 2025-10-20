@@ -69,6 +69,18 @@ All notable changes to this project should be documented in this file.
 - **Reactive counter** - Counter "X / Y dipilih" sekarang update real-time saat checkbox diklik
 - **Watch filters** - Counter update otomatis saat search query atau role filter berubah
 - **PM excluded from member list** - User yang membuat project (PM) tidak muncul dalam daftar pilihan anggota karena sudah otomatis menjadi owner/member project dengan kontrol penuh
+
+### Added - Project Member Management
+
+- **Bulk Actions** di kelola member project:
+  - Checkbox select individual member dengan select all option
+  - Bulk change role: Jadikan Admin atau Jadikan Member untuk multiple members sekaligus
+  - Bulk delete: Hapus multiple members dari project sekaligus
+  - Counter showing "X member dipilih"
+  - Smart protection: Member dengan permanent role tidak dapat dipilih/diubah/dihapus via bulk action
+- **Bulk Action Bar** muncul saat ada member yang dipilih
+- **API Endpoints**: `bulkUpdateRole` dan `bulkDelete` untuk batch operations
+- Semua bulk action dengan confirmation dialog
 - Responsive card grid (1/2/3 columns)
 
 ### Fixed
@@ -229,3 +241,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Pindahkan tombol chat ke pinggir kanan header proyek (sejajar dengan members preview) - tombol chat sekarang di atas member avatars dengan badge unread yang lebih visible
+
+## 2025-10-20
+- Fix member count display: remove +1 to show accurate count (14 members total)

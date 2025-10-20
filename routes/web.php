@@ -53,6 +53,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('projects/{project}/members/{user}/role', [App\Http\Controllers\ProjectMemberController::class, 'updateRole'])->name('projects.members.updateRole');
     Route::delete('projects/{project}/members/{user}', [App\Http\Controllers\ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');
     
+    // Bulk Actions for Members
+    Route::post('projects/{project}/members/bulk-update-role', [App\Http\Controllers\ProjectMemberController::class, 'bulkUpdateRole'])->name('projects.members.bulkUpdateRole');
+    Route::post('projects/{project}/members/bulk-delete', [App\Http\Controllers\ProjectMemberController::class, 'bulkDelete'])->name('projects.members.bulkDelete');
+    
     // General tickets (PM can create for all members)
     Route::middleware('role:pm')->group(function () {
         Route::get('tickets/general/create', [TicketController::class, 'createGeneral'])->name('tickets.createGeneral');

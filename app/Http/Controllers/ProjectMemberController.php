@@ -167,5 +167,116 @@ class ProjectMemberController extends Controller
             return back()->with('info', 'User yang dipilih sudah menjadi member.');
         }
     }
-}
+    
+    /**
+     * Bulk update member roles
+     */
+    public function bulkUpdateRole(Request $request, Project $project)
+    {
+        // Check if current user is PM, Admin, or HR
+        if (!$project->canManageMembers(Auth::user())) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
+        $validated = $request->validate([
+            'member_ids' => 'required|array',
+            'member_ids.*' => 'exists:users,id',
+            'role' => 'required|in:member,admin'
+        ]);
+
+        $updatedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($validated['member_ids'] as $userId) {
+            // Skip project owner
+            if ($userId === $project->owner_id) {
+                $skippedCount++;
+                continue;
+            }
+
+            // Check if member has permanent role
+            $currentMember = $project->members()->where('user_id', $userId)->first();
+            if ($currentMember) {
+                $currentEventRoles = $currentMember->pivot->event_roles 
+                    ? json_decode($currentMember->pivot->event_roles, true) 
+                    : [];
+                
+                $permanentRoleKeys = array_keys(\App\Models\Ticket::getAvailableRoles());
+                $hasPermanentRole = !empty($currentEventRoles) && in_array($currentEventRoles[0], $permanentRoleKeys);
+                
+                if ($hasPermanentRole) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                // Update role
+                $project->members()->updateExistingPivot($userId, [
+                    'role' => $validated['role']
+                ]);
+                
+                $updatedCount++;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'updated' => $updatedCount,
+            'skipped' => $skippedCount,
+            'message' => "{$updatedCount} member berhasil diupdate" . ($skippedCount > 0 ? ", {$skippedCount} member dilewati (permanent role)" : "")
+        ]);
+    }
+    
+    /**
+     * Bulk delete members
+     */
+    public function bulkDelete(Request $request, Project $project)
+    {
+        // Check if current user is PM, Admin, or HR
+        if (!$project->canManageMembers(Auth::user())) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            'member_ids' => 'required|array',
+            'member_ids.*' => 'exists:users,id'
+        ]);
+
+        $deletedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($validated['member_ids'] as $userId) {
+            // Skip project owner
+            if ($userId === $project->owner_id) {
+                $skippedCount++;
+                continue;
+            }
+
+            // Check if member has permanent role
+            $currentMember = $project->members()->where('user_id', $userId)->first();
+            if ($currentMember) {
+                $currentEventRoles = $currentMember->pivot->event_roles 
+                    ? json_decode($currentMember->pivot->event_roles, true) 
+                    : [];
+                
+                $permanentRoleKeys = array_keys(\App\Models\Ticket::getAvailableRoles());
+                $hasPermanentRole = !empty($currentEventRoles) && in_array($currentEventRoles[0], $permanentRoleKeys);
+                
+                if ($hasPermanentRole) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                // Delete member
+                $project->members()->detach($userId);
+                $deletedCount++;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'deleted' => $deletedCount,
+            'skipped' => $skippedCount,
+            'message' => "{$deletedCount} member berhasil dihapus" . ($skippedCount > 0 ? ", {$skippedCount} member dilewati (permanent role)" : "")
+        ]);
+    }
+}

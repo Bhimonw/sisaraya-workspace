@@ -111,7 +111,7 @@
                 
                 {{-- Members Preview --}}
                 <div class="flex items-center gap-4">
-                    <div class="text-sm text-gray-500 font-medium">{{ $project->members->count() + 1 }} Members</div>
+                    <div class="text-sm text-gray-500 font-medium">{{ $project->members->count() }} Members</div>
                     <div class="flex -space-x-2">
                         @foreach($project->members->take(5) as $member)
                             <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-sm font-semibold flex items-center justify-center border-2 border-white shadow-sm" 
@@ -260,7 +260,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                     <span>Member</span>
-                    <span class="ml-1 px-2 py-0.5 text-xs rounded-full bg-gray-100">{{ $project->members->count() + 1 }}</span>
+                    <span class="ml-1 px-2 py-0.5 text-xs rounded-full bg-gray-100">{{ $project->members->count() }}</span>
                 </div>
             </button>
 
@@ -2085,11 +2085,70 @@
             @endif
             {{-- End Add Member Form (PM/HR/Admin Only) --}}
 
+            {{-- Bulk Actions Bar --}}
+            @if($project->canManageMembers(Auth::user()))
+            <div x-show="showManageMembers && selectedMembers.length > 0" 
+                 x-transition
+                 class="mb-4 p-4 bg-violet-50 border-2 border-violet-200 rounded-xl">
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-semibold text-gray-700">
+                            <span x-text="selectedMembers.length"></span> member dipilih
+                        </span>
+                        <button @click="selectedMembers = []" 
+                                class="text-xs text-violet-600 hover:text-violet-700 font-medium">
+                            Batal Pilihan
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <!-- Bulk Change to Admin -->
+                        <button @click="bulkChangeRole('admin')" 
+                                class="px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition flex items-center gap-2">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Jadikan Admin
+                        </button>
+                        
+                        <!-- Bulk Change to Member -->
+                        <button @click="bulkChangeRole('member')" 
+                                class="px-4 py-2 bg-gray-600 text-white text-sm font-semibold rounded-lg hover:bg-gray-700 transition flex items-center gap-2">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            Jadikan Member
+                        </button>
+                        
+                        <!-- Bulk Delete -->
+                        <button @click="bulkDeleteMembers()" 
+                                class="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition flex items-center gap-2">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Hapus Terpilih
+                        </button>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             {{-- Member List Header (Visible to All) --}}
-            <div class="mb-4">
+            <div class="mb-4 flex items-center justify-between">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">
-                    Daftar Anggota Tim ({{ $project->members->count() + 1 }})
+                    Daftar Anggota Tim ({{ $project->members->count() }})
                 </h3>
+                
+                @if($project->canManageMembers(Auth::user()))
+                <div x-show="showManageMembers" class="flex items-center gap-2">
+                    <label class="flex items-center gap-2 text-sm font-medium text-violet-600 cursor-pointer hover:text-violet-700">
+                        <input type="checkbox" 
+                               @change="toggleSelectAll($event.target.checked)"
+                               class="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500">
+                        <span>Pilih Semua</span>
+                    </label>
+                </div>
+                @endif
             </div>
 
             {{-- Member Cards --}}
@@ -2136,6 +2195,17 @@
                 <div class="group relative overflow-hidden rounded-xl border-2 border-gray-200 bg-white p-4 hover:border-violet-300 hover:shadow-md transition-all duration-300"
                      x-data="{ editMode: false, projectRole: '{{ $member->pivot->role }}', eventRole: '{{ $eventRole ?? '' }}' }">
                     <div class="flex items-center justify-between">
+                        @if($project->canManageMembers(Auth::user()))
+                        <!-- Bulk Select Checkbox -->
+                        <div x-show="showManageMembers" class="mr-3">
+                            <input type="checkbox" 
+                                   :value="{{ $member->id }}"
+                                   @change="toggleMemberSelection({{ $member->id }}, $event.target.checked, {{ $hasPermanentRole ? 'true' : 'false' }})"
+                                   :disabled="{{ $hasPermanentRole ? 'true' : 'false' }}"
+                                   class="w-5 h-5 text-violet-600 border-gray-300 rounded focus:ring-violet-500 {{ $hasPermanentRole ? 'opacity-40 cursor-not-allowed' : '' }}">
+                        </div>
+                        @endif
+                        
                         <div class="flex items-center gap-4 flex-1">
                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-semibold text-lg shadow">
                                 {{ strtoupper(substr($member->name, 0, 1)) }}
@@ -2290,7 +2360,105 @@
     function memberManagement() {
         return {
             showAddMember: false,
-            showManageMembers: false
+            showManageMembers: false,
+            selectedMembers: [],
+            
+            toggleMemberSelection(memberId, isChecked, isPermanent) {
+                if (isPermanent) return; // Don't allow selection of permanent role members
+                
+                if (isChecked) {
+                    if (!this.selectedMembers.includes(memberId)) {
+                        this.selectedMembers.push(memberId);
+                    }
+                } else {
+                    this.selectedMembers = this.selectedMembers.filter(id => id !== memberId);
+                }
+            },
+            
+            toggleSelectAll(isChecked) {
+                const checkboxes = document.querySelectorAll('input[type="checkbox"][value]:not([disabled])');
+                this.selectedMembers = [];
+                
+                checkboxes.forEach(cb => {
+                    if (cb.hasAttribute('value')) {
+                        cb.checked = isChecked;
+                        if (isChecked) {
+                            const memberId = parseInt(cb.value);
+                            if (!this.selectedMembers.includes(memberId)) {
+                                this.selectedMembers.push(memberId);
+                            }
+                        }
+                    }
+                });
+            },
+            
+            async bulkChangeRole(newRole) {
+                if (this.selectedMembers.length === 0) {
+                    alert('Pilih minimal 1 member terlebih dahulu');
+                    return;
+                }
+                
+                const roleLabel = newRole === 'admin' ? 'Admin Project' : 'Member';
+                if (!confirm(`Ubah ${this.selectedMembers.length} member menjadi ${roleLabel}?`)) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('{{ route("projects.members.bulkUpdateRole", $project) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({
+                            member_ids: this.selectedMembers,
+                            role: newRole
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Gagal mengubah role members');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan');
+                }
+            },
+            
+            async bulkDeleteMembers() {
+                if (this.selectedMembers.length === 0) {
+                    alert('Pilih minimal 1 member terlebih dahulu');
+                    return;
+                }
+                
+                if (!confirm(`Hapus ${this.selectedMembers.length} member dari project ini?`)) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('{{ route("projects.members.bulkDelete", $project) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({
+                            member_ids: this.selectedMembers
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Gagal menghapus members');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan');
+                }
+            }
         }
     }
     
