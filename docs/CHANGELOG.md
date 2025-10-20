@@ -49,6 +49,26 @@ All notable changes to this project should be documented in this file.
 - **Card-based design** untuk halaman index businesses dengan grid layout
 - Filter tabs dengan counter untuk setiap status
 - Report count badge di card
+
+## 2025-10-20
+
+### Added - Project Creation Enhancements
+
+- **Select All Members checkbox** di form create project dengan indeterminate state support
+- **Advanced Member Filter** dengan 3 fitur:
+  - Search bar untuk cari anggota berdasarkan nama
+  - Filter role dropdown dengan multi-select (12 role options)
+  - Counter display: "X / Y dipilih" (menampilkan selected vs visible members)
+- **Role badges** di daftar anggota menampilkan semua role user dengan color-coding
+- **Empty state** saat tidak ada hasil pencarian/filter
+- Filter hanya mempengaruhi anggota yang visible, Select All hanya pilih yang terlihat
+- Role counter di dropdown filter menampilkan jumlah member per role
+
+### Fixed - Project Creation
+
+- **Reactive counter** - Counter "X / Y dipilih" sekarang update real-time saat checkbox diklik
+- **Watch filters** - Counter update otomatis saat search query atau role filter berubah
+- **PM excluded from member list** - User yang membuat project (PM) tidak muncul dalam daftar pilihan anggota karena sudah otomatis menjadi owner/member project dengan kontrol penuh
 - Responsive card grid (1/2/3 columns)
 
 ### Fixed
