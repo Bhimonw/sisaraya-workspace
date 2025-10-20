@@ -167,9 +167,25 @@
 
                 <!-- User List -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">
-                        Pilih Anggota Tim
-                    </label>
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            Pilih Anggota Tim
+                        </label>
+                        
+                        <!-- Select All Checkbox -->
+                        <label class="flex items-center gap-2 cursor-pointer px-4 py-2 bg-gradient-to-r from-violet-50 to-blue-50 hover:from-violet-100 hover:to-blue-100 border border-violet-200 rounded-lg transition"
+                               @click.prevent="toggleAllMembers()">
+                            <input type="checkbox" 
+                                   id="select-all-members"
+                                   class="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500">
+                            <span class="text-sm font-semibold text-violet-700">
+                                <svg class="inline h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Pilih Semua
+                            </span>
+                        </label>
+                    </div>
                     
                     @php
                         $users = App\Models\User::where('id', '!=', Auth::id())->orderBy('name')->get();
@@ -187,7 +203,7 @@
                                            @change="if(!selected) role = 'member'"
                                            name="member_ids[]" 
                                            value="{{ $user->id }}"
-                                           class="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500">
+                                           class="member-checkbox w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500">
                                     
                                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center text-white font-semibold">
                                         {{ strtoupper(substr($user->name, 0, 1)) }}
@@ -265,5 +281,40 @@ function projectForm() {
         // Add any additional Alpine.js logic here if needed
     }
 }
+
+// Select All Members functionality
+function toggleAllMembers() {
+    const selectAllCheckbox = document.getElementById('select-all-members');
+    const memberCheckboxes = document.querySelectorAll('.member-checkbox');
+    
+    selectAllCheckbox.checked = !selectAllCheckbox.checked;
+    const isChecked = selectAllCheckbox.checked;
+    
+    memberCheckboxes.forEach(checkbox => {
+        if (checkbox.checked !== isChecked) {
+            checkbox.click(); // Trigger click to maintain Alpine.js state
+        }
+    });
+}
+
+// Update select-all state when individual checkboxes change
+document.addEventListener('alpine:initialized', () => {
+    setTimeout(() => {
+        const selectAllCheckbox = document.getElementById('select-all-members');
+        if (selectAllCheckbox) {
+            const memberCheckboxes = document.querySelectorAll('.member-checkbox');
+            
+            memberCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const allChecked = Array.from(memberCheckboxes).every(cb => cb.checked);
+                    const someChecked = Array.from(memberCheckboxes).some(cb => cb.checked);
+                    
+                    selectAllCheckbox.checked = allChecked;
+                    selectAllCheckbox.indeterminate = someChecked && !allChecked;
+                });
+            });
+        }
+    }, 100);
+});
 </script>
 @endsection
