@@ -13,8 +13,8 @@ class BusinessPolicy
      */
     public function approve(User $user, Business $business): bool
     {
-        // Only PM can approve and only if status is pending
-        return $user->hasRole('pm') && $business->isPending();
+        // User must have business.approve permission and business must be pending
+        return $user->can('business.approve') && $business->isPending();
     }
 
     /**
@@ -22,8 +22,10 @@ class BusinessPolicy
      */
     public function update(User $user, Business $business): bool
     {
-        // Creator can update if still pending
-        return $user->id === $business->created_by && $business->isPending();
+        // Creator can update if still pending and has permission
+        return $user->can('business.update') 
+            && $user->id === $business->created_by 
+            && $business->isPending();
     }
 
     /**
@@ -32,7 +34,21 @@ class BusinessPolicy
     public function delete(User $user, Business $business): bool
     {
         // Creator can delete if still pending, PM can delete anytime
-        return ($user->id === $business->created_by && $business->isPending()) 
-            || $user->hasRole('pm');
+        return $user->can('business.delete')
+            && (
+                ($user->id === $business->created_by && $business->isPending())
+                || $user->hasRole('pm')
+            );
+    }
+    
+    /**
+     * Determine whether the user can upload reports.
+     */
+    public function uploadReport(User $user, Business $business): bool
+    {
+        // Creator or anyone with upload permission can upload if approved
+        return $user->can('business.upload_reports')
+            && ($user->id === $business->created_by || $user->hasRole('pm'))
+            && $business->isApproved();
     }
 }

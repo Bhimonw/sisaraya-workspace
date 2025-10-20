@@ -37,6 +37,8 @@ class RolePermissionSeeder extends Seeder
             // business / kewirausahaan permissions
             'business.create',
             'business.view',
+            'business.update',
+            'business.delete',
             'business.manage_talent',
             'business.upload_reports',
             'business.approve', // PM can approve businesses
@@ -65,7 +67,7 @@ class RolePermissionSeeder extends Seeder
     // bendahara defaults
     Role::where('name', 'bendahara')->first()?->givePermissionTo(['finance.manage_rab', 'finance.upload_documents', 'finance.view_reports', 'documents.upload', 'documents.view_all']);
         // kewirausahaan defaults
-        Role::where('name', 'kewirausahaan')->first()?->givePermissionTo(['business.create', 'business.view', 'business.manage_talent', 'business.upload_reports', 'documents.upload']);
+        Role::where('name', 'kewirausahaan')->first()?->givePermissionTo(['business.create', 'business.view', 'business.update', 'business.manage_talent', 'business.upload_reports', 'documents.upload']);
 
         // Backwards-compatibility for existing seeded roles (uppercased)
         // create uppercase aliases if missing

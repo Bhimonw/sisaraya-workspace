@@ -17,6 +17,8 @@ class BusinessController extends Controller
         $this->middleware('auth');
         $this->middleware('permission:business.create')->only(['create','store']);
         $this->middleware('permission:business.view')->only(['index','show']);
+        $this->middleware('permission:business.update')->only(['edit','update']);
+        $this->middleware('permission:business.delete')->only(['destroy']);
         $this->middleware('permission:business.approve')->only(['approve','reject']);
     }
 

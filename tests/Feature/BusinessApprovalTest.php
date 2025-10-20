@@ -18,6 +18,20 @@ class BusinessApprovalTest extends TestCase
     {
         parent::setUp();
         
+        // Create permissions
+        $permissions = [
+            'business.create',
+            'business.view',
+            'business.update',
+            'business.delete',
+            'business.approve',
+            'business.upload_reports',
+        ];
+        
+        foreach ($permissions as $permission) {
+            \Spatie\Permission\Models\Permission::create(['name' => $permission]);
+        }
+        
         // Create roles
         Role::create(['name' => 'kewirausahaan']);
         Role::create(['name' => 'pm']);

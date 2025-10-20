@@ -211,7 +211,7 @@
                                             </svg>
                                             Download
                                         </a>
-                                        @if($report->user_id === auth()->id() || auth()->user()->hasRole('pm'))
+                                        @if($report->user_id === auth()->id() || auth()->user()->can('business.delete'))
                                             <form method="POST" action="{{ route('businesses.reports.destroy', [$business, $report]) }}" 
                                                   onsubmit="return confirm('Hapus laporan ini?')" class="inline">
                                                 @csrf
@@ -235,7 +235,7 @@
         <!-- Sidebar -->
         <div class="lg:col-span-1">
             <!-- Upload Report Card -->
-            @canany(['update'], $business)
+            @can('uploadReport', $business)
             <div class="bg-white rounded-lg shadow p-6 sticky top-4">
                 <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -312,7 +312,7 @@
                     </button>
                 </form>
             </div>
-            @endcanany
+            @endcan
         </div>
     </div>
 </div>

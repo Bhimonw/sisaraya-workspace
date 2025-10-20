@@ -19,8 +19,8 @@ class BusinessReportController extends Controller
      */
     public function store(Request $request, Business $business)
     {
-        // Authorization: only creator (kewirausahaan) or PM can upload reports
-        $this->authorize('update', $business);
+        // Authorization: only creator (kewirausahaan) or PM can upload reports for approved business
+        $this->authorize('uploadReport', $business);
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -76,8 +76,8 @@ class BusinessReportController extends Controller
      */
     public function destroy(Business $business, BusinessReport $report)
     {
-        // Authorization: only uploader or PM can delete
-        if ($report->user_id !== auth()->id() && !auth()->user()->hasRole('pm')) {
+        // Authorization: only uploader or user with business.delete permission can delete
+        if ($report->user_id !== auth()->id() && !auth()->user()->can('business.delete')) {
             abort(403, 'Unauthorized action.');
         }
 

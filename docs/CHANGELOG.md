@@ -286,3 +286,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Modernized Project Ticket Creation form - matching Tiket Umum design with gradients, rounded borders, SVG icons, and enhanced UX
+
+## 2025-10-20
+- Perbaiki role permission management usaha: tambah business.update dan business.delete permission, ganti @role dengan @can di menu dan views, update policy untuk cek permission bukan role, update BusinessReportController authorization

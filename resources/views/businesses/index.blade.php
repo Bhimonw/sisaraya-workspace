@@ -6,18 +6,18 @@
     <div class="flex items-center justify-between mb-6">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">
-                @if(auth()->user()->hasRole('pm'))
+                @can('business.approve')
                     Manajemen Usaha
                 @else
                     Usaha Komunitas
-                @endif
+                @endcan
             </h1>
             <p class="text-gray-600 text-sm mt-1">
-                @if(auth()->user()->hasRole('pm'))
+                @can('business.approve')
                     Kelola dan monitoring seluruh usaha komunitas
                 @else
                     Daftar usaha yang dikelola oleh komunitas
-                @endif
+                @endcan
             </p>
         </div>
         @can('business.create')
