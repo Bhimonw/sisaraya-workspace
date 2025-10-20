@@ -256,3 +256,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Fix project counter synchronization: show accurate counts for all status tabs (Semua, Aktif, Selesai, etc)
+
+## 2025-10-20
+- Add modern search & filter UI for target user selection in ticket creation form
+
+## 2025-10-20
+- Change target user selection to multiple choice with select all feature (checkbox instead of radio)

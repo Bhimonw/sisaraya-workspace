@@ -1718,16 +1718,74 @@
                     </div>
                     
                     {{-- Target User Selection --}}
-                    <div class="border-t pt-4">
-                        <label class="block text-sm font-semibold text-gray-900 mb-3">
-                            <svg class="h-5 w-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="border-t pt-4" x-data="targetUserFilter()">
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">
+                            <svg class="h-5 w-5 inline-block mr-1 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
-                            Target User (Opsional)
+                            Target User (Opsional - dapat pilih lebih dari 1)
                         </label>
-                        <p class="text-xs text-gray-500 mb-3">Pilih user spesifik atau biarkan kosong untuk semua member</p>
+                        <p class="text-xs text-gray-500 mb-3">Pilih satu atau beberapa user spesifik, atau biarkan kosong untuk semua member</p>
                         
-                        <div class="max-h-60 overflow-y-auto border border-gray-200 rounded-lg divide-y divide-gray-100">
+                        {{-- Search and Filter Bar --}}
+                        <div class="mb-3 space-y-2">
+                            <!-- Search Input -->
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input type="text" 
+                                       x-model="searchQuery"
+                                       placeholder="Cari nama member..."
+                                       class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition">
+                            </div>
+                            
+                            <!-- Role Filter Pills & Actions -->
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-xs font-medium text-gray-600">Filter:</span>
+                                <button type="button"
+                                        @click="roleFilter = 'all'"
+                                        :class="roleFilter === 'all' ? 'bg-violet-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                                        class="px-3 py-1 text-xs font-medium rounded-full transition">
+                                    Semua
+                                </button>
+                                <button type="button"
+                                        @click="roleFilter = 'admin'"
+                                        :class="roleFilter === 'admin' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'"
+                                        class="px-3 py-1 text-xs font-medium rounded-full transition">
+                                    Admin Project
+                                </button>
+                                <button type="button"
+                                        @click="roleFilter = 'permanent'"
+                                        :class="roleFilter === 'permanent' ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700 hover:bg-blue-100'"
+                                        class="px-3 py-1 text-xs font-medium rounded-full transition">
+                                    Role Permanent
+                                </button>
+                                <button type="button"
+                                        @click="roleFilter = 'event'"
+                                        :class="roleFilter === 'event' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-700 hover:bg-amber-100'"
+                                        class="px-3 py-1 text-xs font-medium rounded-full transition">
+                                    Role Event
+                                </button>
+                                
+                                <!-- Select All Visible -->
+                                <button type="button"
+                                        @click="selectAllVisible()"
+                                        class="ml-auto px-3 py-1 text-xs font-medium bg-violet-100 text-violet-700 hover:bg-violet-200 rounded-full transition">
+                                    <svg class="inline h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Pilih Semua
+                                </button>
+                                
+                                <!-- Counter -->
+                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">
+                                    <span x-text="selectedCount"></span> / <span x-text="visibleCount"></span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="max-h-60 overflow-y-auto border-2 border-gray-200 rounded-xl divide-y divide-gray-100">
                             @php
                                 $projectMembers = $project->members->sortBy('name');
                                 $allRoles = \App\Models\Ticket::getAllRoles();
@@ -1740,33 +1798,53 @@
                                     
                                     // Get member's event roles for this project
                                     $eventRolesArray = $member->pivot->event_roles ? json_decode($member->pivot->event_roles, true) : [];
+                                    
+                                    $isAdmin = $member->pivot->role === 'admin';
+                                    $hasPermanentRole = !empty($permanentRoles);
+                                    $hasEventRole = !empty($eventRolesArray);
                                 @endphp
                                 
-                                <label class="flex items-center p-3 hover:bg-blue-50 cursor-pointer transition">
-                                    <input type="radio" name="target_user_id" value="{{ $member->id }}" class="mr-3 text-green-600">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2">
-                                            <span class="font-medium text-gray-900">{{ $member->name }}</span>
-                                            <span class="text-xs text-gray-500">{{ $member->email }}</span>
+                                <label class="target-user-item flex items-center p-3 hover:bg-violet-50 cursor-pointer transition group"
+                                       x-show="isVisible({{ json_encode($member->name) }}, {{ json_encode($isAdmin) }}, {{ json_encode($hasPermanentRole) }}, {{ json_encode($hasEventRole) }})"
+                                       x-data="{ selected: false }"
+                                       x-init="$watch('selected', () => $dispatch('target-user-changed'))"
+                                       data-member-name="{{ $member->name }}"
+                                       data-is-admin="{{ $isAdmin ? 'true' : 'false' }}"
+                                       data-has-permanent="{{ $hasPermanentRole ? 'true' : 'false' }}"
+                                       data-has-event="{{ $hasEventRole ? 'true' : 'false' }}">
+                                    <input type="checkbox" 
+                                           x-model="selected"
+                                           name="target_user_ids[]" 
+                                           value="{{ $member->id }}" 
+                                           class="target-user-checkbox mr-3 w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                                                {{ strtoupper(substr($member->name, 0, 1)) }}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-gray-900 truncate">{{ $member->name }}</div>
+                                                <div class="text-xs text-gray-500 truncate">{{ $member->email }}</div>
+                                            </div>
                                         </div>
-                                        <div class="flex flex-wrap gap-1 mt-1">
+                                        <div class="flex flex-wrap gap-1 ml-10">
                                             {{-- Permanent Roles Badges (Multiple) --}}
                                             @foreach($permanentRoles as $roleKey)
-                                                <span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full border border-blue-300">
+                                                <span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full border border-blue-200 font-medium">
                                                     {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
                                                 </span>
                                             @endforeach
                                             
                                             {{-- Event Roles Badges (Multiple) --}}
                                             @foreach($eventRolesArray as $roleKey)
-                                                <span class="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full border border-amber-300">
+                                                <span class="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full border border-amber-200 font-medium">
                                                     {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
                                                 </span>
                                             @endforeach
                                             
                                             {{-- Project Role Badge --}}
                                             @if($member->pivot->role === 'admin')
-                                                <span class="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full border border-green-300">
+                                                <span class="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200 font-medium">
                                                     Admin Project
                                                 </span>
                                             @endif
@@ -1774,15 +1852,29 @@
                                     </div>
                                 </label>
                             @empty
-                                <div class="p-4 text-center text-gray-500 text-sm">
+                                <div class="p-6 text-center text-gray-500 text-sm">
+                                    <svg class="h-12 w-12 mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
                                     Belum ada member di project ini
                                 </div>
                             @endforelse
                         </div>
                         
-                        <div class="mt-2 flex items-center gap-2">
-                            <input type="radio" name="target_user_id" value="" checked class="text-green-600">
-                            <label class="text-sm text-gray-600">Tidak ada target spesifik (semua member)</label>
+                        <div class="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <div class="flex items-start gap-2">
+                                <svg class="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div class="flex-1">
+                                    <div class="text-sm font-medium text-blue-900">Tentang Target User:</div>
+                                    <ul class="text-xs text-blue-800 mt-1 space-y-1">
+                                        <li>• <strong>Pilih user:</strong> Tiket hanya dapat diklaim oleh user terpilih</li>
+                                        <li>• <strong>Kosong:</strong> Tiket dapat diklaim oleh semua member project</li>
+                                        <li>• <strong>Multiple:</strong> Bisa pilih lebih dari 1 user</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -2688,6 +2780,85 @@
                     console.error('Error:', error);
                     alert('Terjadi kesalahan');
                 }
+            }
+        }
+    }
+    
+    // Target User Filter Component (for ticket creation)
+    function targetUserFilter() {
+        return {
+            searchQuery: '',
+            roleFilter: 'all',
+            visibleCount: 0,
+            selectedCount: 0,
+            
+            init() {
+                this.updateCounts();
+                this.$watch('searchQuery', () => this.updateCounts());
+                this.$watch('roleFilter', () => this.updateCounts());
+                // Listen for selection changes
+                window.addEventListener('target-user-changed', () => this.updateCounts());
+            },
+            
+            isVisible(memberName, isAdmin, hasPermanentRole, hasEventRole) {
+                // Search filter
+                const matchesSearch = !this.searchQuery || 
+                                    memberName.toLowerCase().includes(this.searchQuery.toLowerCase());
+                
+                // Role filter
+                let matchesRole = true;
+                if (this.roleFilter === 'admin') {
+                    matchesRole = isAdmin;
+                } else if (this.roleFilter === 'permanent') {
+                    matchesRole = hasPermanentRole;
+                } else if (this.roleFilter === 'event') {
+                    matchesRole = hasEventRole;
+                }
+                // 'all' matches everything
+                
+                return matchesSearch && matchesRole;
+            },
+            
+            updateCounts() {
+                const items = document.querySelectorAll('.target-user-item');
+                let visible = 0;
+                let selected = 0;
+                
+                items.forEach(item => {
+                    const memberName = item.dataset.memberName;
+                    const isAdmin = item.dataset.isAdmin === 'true';
+                    const hasPermanent = item.dataset.hasPermanent === 'true';
+                    const hasEvent = item.dataset.hasEvent === 'true';
+                    
+                    if (this.isVisible(memberName, isAdmin, hasPermanent, hasEvent)) {
+                        visible++;
+                        const checkbox = item.querySelector('.target-user-checkbox');
+                        if (checkbox && checkbox.checked) {
+                            selected++;
+                        }
+                    }
+                });
+                
+                this.visibleCount = visible;
+                this.selectedCount = selected;
+            },
+            
+            selectAllVisible() {
+                const items = document.querySelectorAll('.target-user-item');
+                
+                items.forEach(item => {
+                    const memberName = item.dataset.memberName;
+                    const isAdmin = item.dataset.isAdmin === 'true';
+                    const hasPermanent = item.dataset.hasPermanent === 'true';
+                    const hasEvent = item.dataset.hasEvent === 'true';
+                    
+                    if (this.isVisible(memberName, isAdmin, hasPermanent, hasEvent)) {
+                        const checkbox = item.querySelector('.target-user-checkbox');
+                        if (checkbox && !checkbox.checked) {
+                            checkbox.click(); // Trigger Alpine's x-model
+                        }
+                    }
+                });
             }
         }
     }
