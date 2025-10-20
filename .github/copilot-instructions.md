@@ -1,88 +1,226 @@
-## SISARAYA — Copilot / AI agent instructions
+## SISARAYA — Copilot / AI Agent Instructions
 
-This file provides the essential, discoverable knowledge an automated coding agent needs to be productive in this repository.
+**SISARAYA Ruang Kerja** is a Laravel-based collaborative workspace platform for a creative collective ("Kolektif Kreatif Lintas Bidang") managing projects, tickets, documents, voting, and financial tracking (RAB).
 
-Keep instructions short and action-oriented. When making changes that affect behavior, update `docs/CHANGELOG.md` with a one-line summary (there's a helper at `php tools/update-docs.php`).
+### Core Stack & Architecture
 
-Key facts (quick):
-- Framework: Laravel 12 (PHP 8.4+). PSR-4 autoloading with `App\` -> `app/`.
-- Frontend: Vite + Tailwind + Alpine.js. Entry points: `resources/css/app.css`, `resources/js/app.js`.
-- Default DB for local dev: SQLite (`database/database.sqlite`). Tests use in-memory sqlite (see `phpunit.xml`).
-- Permissions: spatie/laravel-permission. Roles and permissions are seeded via `database/seeders` (see `RolePermissionSeeder` / `SisarayaMembersSeeder`).
-- Public registration is disabled; users are created by HR via admin UI.
+- **Framework**: Laravel 12.33 (PHP 8.4+), PSR-4 autoloading `App\` → `app/`
+- **Frontend**: Vite 7.1 + Tailwind 3.x + Alpine.js 3.x. Entry: `resources/css/app.css`, `resources/js/app.js`
+- **Auth**: Laravel Breeze (username-based, not email). Public registration **intentionally disabled** in `routes/auth.php`
+- **Database**: SQLite (`database/database.sqlite`) for local dev. Tests use in-memory SQLite (see `phpunit.xml`)
+- **Permissions**: `spatie/laravel-permission` v6.21. Roles/permissions seeded via `database/seeders/RolePermissionSeeder.php`
+- **Users**: Created only by HR role via admin UI (`app/Http/Controllers/Admin/UserController.php`)
 
-Primary workflows (commands an agent can run or propose):
-- Install / setup (developer): `composer install`, copy `.env.example` -> `.env`, `php artisan key:generate`, create sqlite file `php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"`, `php artisan migrate --seed`, `npm install`, `npm run build`.
-- Development with hot-reload: `npm run dev` (or `composer run dev` defined in `composer.json` which runs concurrently: server, queue listener, pail logs, vite).
-- Run tests: `composer test` / `php artisan test` (uses sqlite in-memory as configured in `phpunit.xml`).
-- Storage symlink (if working with uploads): `php artisan storage:link`.
+### 11 Roles & Multi-Role System
 
-Important files and where to look for patterns:
-- Routing & permissions: `routes/web.php` — shows how route groups use `auth`, `role`, and permission middleware. Use these for discovering authorization requirements.
-- Controllers: `app/Http/Controllers` — resources for projects, tickets, rabs, votes, documents. Look for resource controllers (e.g. `ProjectController`, `TicketController`) to infer CRUD patterns and validation via `app/Http/Requests`.
-- Policies & middleware: `app/Policies`, `app/Http/Middleware/RoleMiddleware.php` — authorization is handled both via policies and `spatie` permissions; routes sometimes wrap groups in `role:pm` or `permission:...`.
-- Console commands: `app/Console/Commands` and `app/Console/Kernel.php` — used for maintenance tasks (e.g. legacy role migrations). If altering role names, prefer using existing commands like `MigrateLegacyRoles`.
-- Seeds & data: `database/seeders` — seeds create roles, permissions, and test users. When adding permissions, update the seeder so new environments receive them.
-- Docs: `docs/` contains project-specific docs that explain implemented features (in Indonesian). Reference these when the change touches feature scope.
+Users can have **multiple roles simultaneously** (e.g., `bhimo` = `pm` + `sekretaris`). Roles (lowercase snake_case):
+- Core: `member`, `hr`, `pm`, `sekretaris`, `bendahara`, `media`, `pr`
+- Extended: `talent_manager`, `researcher`, `talent`, `kewirausahaan`, `guest`
+- Guest role has **minimal permissions** (read-only dashboard, projects, tickets)
 
-Conventions and idioms to follow (project-specific):
-- Role/permission naming: lowercase snake_case (e.g. `finance.manage_rab`, `projects.create`). When adding new permission strings, add them to seeders.
-- Multiple roles per user are normal (e.g. `pm` + `sekretaris`). Avoid assuming single-role logic.
-- Default test credentials & passwords: many seeded users use `password` as the default.
-- Database defaults: local development expects SQLite file at `database/database.sqlite`. Avoid requiring external DBs unless explicitly requested.
-- UI conditionals: views use Blade `@can`, `@role`, and `@canany` to show/hide links. Use controller policies or `permission` middleware to match view behavior.
+**Never assume single-role logic.** Use `$user->hasRole('pm')` or `$user->hasAnyRole(['pm', 'sekretaris'])` for checks.
 
-Examples (copy-paste-friendly) from the codebase:
-- Protect a route with a permission (pattern found in `README.md` and `routes/web.php`):
+### Developer Workflows
 
+**Setup (first time)**:
+```powershell
+composer install
+cp .env.example .env
+php artisan key:generate
+php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
+php artisan migrate --seed
+npm install
+npm run build
+```
+
+**Development (hot-reload)**:
+```powershell
+# Option 1: Vite only
+npm run dev
+
+# Option 2: Full stack (server + queue + logs + vite) - defined in composer.json
+composer run dev
+```
+This runs concurrently: `php artisan serve`, `php artisan queue:listen`, `php artisan pail`, and `npm run dev`.
+
+**Testing**: `composer test` or `php artisan test` (SQLite in-memory)
+
+**Storage symlink** (for document uploads): `php artisan storage:link`
+
+**Legacy role migration** (if uppercase roles exist):
+```powershell
+php artisan roles:migrate-legacy --dry-run  # preview
+php artisan roles:migrate-legacy             # apply
+```
+
+### Key Architecture Patterns
+
+**Route organization** (`routes/web.php`):
+- Routes use `auth`, `role:pm`, and `permission:users.manage` middleware
+- Multi-role checks: `role:pm` allows any user with PM role (even if they have other roles too)
+- Example resource pattern:
 ```php
 Route::middleware(['permission:users.manage'])->group(function () {
     Route::resource('admin/users', Admin\UserController::class);
 });
 ```
 
-- Create sqlite quickly (used in composer scripts):
+**Controllers** (`app/Http/Controllers`):
+- Resource controllers for main entities: `ProjectController`, `TicketController`, `RabController`, `VoteController`
+- Admin namespace: `Admin/UserController.php` (HR-only user management)
+- API namespace: `Api/CalendarController.php` (FullCalendar integration)
+- Validation via Form Requests in `app/Http/Requests`
 
+**Models** (`app/Models`):
+- Core: `User`, `Project`, `Ticket`, `Rab` (finance), `Document`, `Vote`, `Business`
+- Relations: Projects have members (many-to-many with `project_user` pivot), tickets belong to projects
+- User model uses `HasRoles` trait from Spatie
+
+**Authorization**:
+- Middleware: `app/Http/Middleware/RoleMiddleware.php` (supports multiple roles via `hasRole`)
+- Policies: `app/Policies` for model-level authorization
+- Blade directives: `@can('finance.manage_rab')`, `@role('pm')`, `@canany(['update'], $project)`, `@cannot('update', $project)`
+
+**Frontend patterns** (`resources/views`):
+- Layout: `layouts/app.blade.php` with `layouts/_menu.blade.php` (dynamic sidebar with role checks)
+- Menu uses Alpine.js for expandable sections: `x-data="{ openMenus: {...} }"`, `@click="openMenus.mejaKerja = !openMenus.mejaKerja"`
+- Badge counters in menu: `$activeProjectsCount`, `$myTicketsCount`, `$upcomingActivitiesCount` (computed in `_menu.blade.php`)
+- Active state: `{{ request()->routeIs('dashboard') ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50' }}`
+
+### Project-Specific Conventions
+
+**Naming**:
+- Roles: lowercase snake_case (`hr`, `pm`, `sekretaris`, `bendahara`, `kewirausahaan`)
+- Permissions: dot notation (`finance.manage_rab`, `projects.create`, `business.approve`)
+- Routes: snake_case with dots (`projects.mine`, `tickets.createGeneral`, `rabs.approve`)
+
+**Database**:
+- Local dev: SQLite file at `database/database.sqlite`
+- Tests: In-memory SQLite (`phpunit.xml` configures this)
+- Migrations in `database/migrations/` — check for duplicates if "table already exists" errors occur
+
+**Authentication**:
+- Username-based (NOT email) — see `resources/views/auth/login.blade.php`
+- Public registration disabled in `routes/auth.php` (commented out intentionally)
+- Default test password: `password` for all seeded users (`database/seeders/SisarayaMembersSeeder.php`)
+- Test users: `bhimo` (pm+sekretaris), `bagas` (hr), `dijah` (bendahara), etc.
+
+**Multi-role behavior**:
+- A user can have multiple roles: `$user->assignRole(['pm', 'sekretaris'])`
+- Check with: `$user->hasRole('pm')` or `$user->hasAnyRole(['pm', 'hr'])`
+- Dashboard shows role badges for all user roles (see `resources/views/dashboard.blade.php`)
+- Menu items appear if user has ANY of the required roles
+
+### Code Examples from Codebase
+
+**Protect route with permission** (`routes/web.php`):
 ```php
-@php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
+Route::middleware(['permission:users.manage'])->group(function () {
+    Route::resource('admin/users', Admin\UserController::class);
+});
 ```
 
-- Add changelog entry when behavior changes:
+**Multi-role route protection** (`routes/web.php`):
+```php
+Route::middleware('role:pm')->group(function () {
+    Route::get('tickets/general/create', [TicketController::class, 'createGeneral'])->name('tickets.createGeneral');
+});
+```
 
-```bash
+**Blade authorization directives** (`resources/views/layouts/_menu.blade.php`):
+```blade
+@role('bendahara')
+    <a href="{{ route('rabs.index') }}">RAB & Laporan</a>
+@endrole
+
+@can('finance.manage_rab')
+    <button>Approve RAB</button>
+@endcan
+
+@cannot('update', $project)
+    <p>View only</p>
+@endcannot
+```
+
+**Permission seeding** (`database/seeders/RolePermissionSeeder.php`):
+```php
+$permissions = ['finance.manage_rab', 'finance.upload_documents', 'finance.view_reports'];
+foreach ($permissions as $perm) {
+    Permission::firstOrCreate(['name' => $perm]);
+}
+Role::where('name', 'bendahara')->first()?->givePermissionTo(['finance.manage_rab', 'finance.upload_documents']);
+```
+
+**Multi-role user check** (`app/Http/Middleware/RoleMiddleware.php`):
+```php
+foreach ($roles as $role) {
+    if ($user->hasRole($role)) {
+        return $next($request);
+    }
+}
+```
+
+**Alpine.js expandable menu** (`resources/views/layouts/_menu.blade.php`):
+```blade
+<ul x-data="{ openMenus: { mejaKerja: false, rab: false } }">
+    <button @click="openMenus.mejaKerja = !openMenus.mejaKerja">Meja Kerja</button>
+    <div x-show="openMenus.mejaKerja">
+        <!-- submenu items -->
+    </div>
+</ul>
+```
+
+### Common Pitfalls & Troubleshooting
+
+**Migration conflicts** (common issue):
+- Duplicate migrations creating same table cause "table already exists" errors
+- **Workflow to fix**:
+  1. Search `database/migrations` for duplicate table names
+  2. Choose canonical migration (usually earliest, matching models/controllers)
+  3. Either merge fields into canonical migration OR neutralize duplicate (empty up()/down()) and archive
+  4. Run `php artisan migrate:fresh --seed` in dev
+  5. For production, create new migration to alter schema instead of editing old ones
+
+**Public registration**:
+- Registration is **intentionally disabled** in `routes/auth.php`
+- Only HR role creates users via admin panel
+- Never re-enable registration without project lead approval
+
+**Permission updates**:
+- When adding permissions, update BOTH:
+  - Seeder: `database/seeders/RolePermissionSeeder.php`
+  - UI: Blade `@can()` directives
+  - Routes: `permission:` middleware
+- Run `php artisan db:seed --class=RolePermissionSeeder --force` after changes
+
+**Queue & logging**:
+- `composer run dev` runs queue listener and pail logs
+- For simpler testing, set `QUEUE_CONNECTION=sync` in `.env`
+
+**Multi-role logic**:
+- Never use `$user->roles->first()` or assume single role
+- Always use `hasRole()`, `hasAnyRole()`, or `hasAllRoles()`
+
+
+### Documentation & Testing
+
+**Update docs when behavior changes**:
+```powershell
 php tools/update-docs.php "Short summary of change"
 ```
+This appends to `docs/CHANGELOG.md`.
 
-Common pitfalls an agent should avoid or check for:
-- Do not enable public registration — it's intentionally disabled in `routes/auth.php`.
-- When modifying permissions, ensure the seeder and any UI references (Blade `@can`) are updated together.
-- If a change affects queued jobs or logging, note that the concurrent dev script runs `php artisan queue:listen` and `php artisan pail` — for local testing you may prefer `QUEUE_CONNECTION=sync`.
+**Key documentation**:
+- `docs/PROGRESS_IMPLEMENTASI.md` — Feature implementation status (Bahasa Indonesia), 100% MVP complete
+- `docs/INDEX.md` — Documentation index
+- `docs/CALENDAR_SYSTEM.md` — Calendar integration details
+- `docs/DOUBLE_ROLE_IMPLEMENTATION.md` — Multi-role system guide
 
-Migration conflicts (common)
-- Duplicate migrations that create the same table are a recurring issue (example: two `create_votes_table` migrations). When you see "table already exists" errors during `php artisan migrate`, follow this workflow:
-    1. Search `database/migrations` for duplicate migrations that reference the same table name.
-    2. Decide canonical schema (pick the migration that matches models/controllers, usually the earlier one) and either:
-         - Merge required fields into the canonical migration (recommended during early development), or
-         - Neutralize the duplicate by making it a no-op (empty up()/down()) and move the original to `database/migrations/disabled/` as backup.
-    3. Re-run migrations (`php artisan migrate --seed`). If you changed migrations after they've run in other environments, prefer creating a new migration to alter schema instead of editing already-run migrations.
-    4. Update docs and tests to reflect the chosen schema.
-
-
-Code changes and tests policy for an agent:
-- Small behavior change: update relevant controller, add a focused unit/feature test under `tests/Feature` or `tests/Unit`, run `composer test` and ensure green.
-- Database changes: add a migration in `database/migrations` and, if needed, update seeders. Run `php artisan migrate --seed` locally in CI scripts.
-
-Where to look for more context:
-- Feature implementation notes: `docs/PROGRESS_IMPLEMENTASI.md`, `docs/INDEX.md`.
-- Calendar system & API: `docs/CALENDAR_SYSTEM.md` and API Calendar controllers under `app/Http/Controllers/Api/CalendarController.php`.
-
-If you need clarification from humans:
-- Ask which environment to target (local SQLite vs production MySQL/Postgres).
-- Ask whether to update seeders or create a new migration when adding new permissions.
-
-Small extras the agent may perform safely:
-- Add or update tests for any changed behavior (happy path + 1 edge case).
-- Add a one-line changelog using `tools/update-docs.php` when behavior or UI changes.
+**Testing workflow**:
+- Run: `composer test` or `php artisan test`
+- Tests use SQLite in-memory (configured in `phpunit.xml`)
+- When modifying seeders/migrations, update affected tests
+- Add focused feature test for new behavior (happy path + 1 edge case)
 
 ### Agent checklist — common tasks
 Below are short, repeatable workflows an agent should follow when implementing common changes. Keep changes minimal, add tests, and update docs.
