@@ -304,10 +304,15 @@ class TicketController extends Controller
             'projectEvent.project'
         ])
         ->where(function($q) use ($user, $userRoles) {
-            // Tiket yang ditargetkan ke role user
-            $q->whereIn('target_role', $userRoles)
-              // Atau tiket yang ditargetkan ke user spesifik
-              ->orWhere('target_user_id', $user->id);
+            // Case 1: Tiket untuk semua (target_role dan target_user_id keduanya NULL)
+            $q->where(function($subQ) {
+                $subQ->whereNull('target_role')
+                     ->whereNull('target_user_id');
+            })
+            // Case 2: Tiket yang ditargetkan ke role user
+            ->orWhereIn('target_role', $userRoles)
+            // Case 3: Tiket yang ditargetkan ke user spesifik
+            ->orWhere('target_user_id', $user->id);
         })
         ->whereNull('claimed_by') // Belum diambil siapapun
         ->whereIn('status', ['todo', 'doing']) // Hanya yang aktif

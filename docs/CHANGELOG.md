@@ -262,3 +262,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Change target user selection to multiple choice with select all feature (checkbox instead of radio)
+
+## 2025-10-20
+- Fix bug: Tiket untuk 'Semua Orang' tidak muncul di halaman Tiketku - perbaiki SQL query untuk menangani target_role NULL dan target_user_id NULL
