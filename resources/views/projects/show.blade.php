@@ -1648,7 +1648,12 @@
                                         </svg>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="font-semibold text-sm text-gray-900">📅 Event</div>
+                                        <div class="font-semibold text-sm text-gray-900 flex items-center gap-1.5">
+                                            <svg class="h-4 w-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            Event
+                                        </div>
                                         <div class="text-xs text-gray-500">Tiket terikat pada event tertentu</div>
                                     </div>
                                 </div>
@@ -1705,10 +1710,10 @@
                             <select name="status" 
                                     class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 text-gray-900 appearance-none bg-white bg-no-repeat bg-right pr-10"
                                     style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236b7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-size: 1.5rem;">
-                                <option value="todo" selected>⏰ To Do - Belum dikerjakan</option>
-                                <option value="doing">⚡ Doing - Sedang dikerjakan</option>
-                                <option value="done">✅ Done - Selesai</option>
-                                <option value="blackout">⚫ Blackout - Ditunda/dibatalkan</option>
+                                <option value="todo" selected>To Do - Belum dikerjakan</option>
+                                <option value="doing">Doing - Sedang dikerjakan</option>
+                                <option value="done">Done - Selesai</option>
+                                <option value="blackout">Blackout - Ditunda/dibatalkan</option>
                             </select>
                         </div>
                     </div>

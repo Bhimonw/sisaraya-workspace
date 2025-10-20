@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        echo "🚀 Starting database seeding...\n\n";
+        echo "Starting database seeding...\n\n";
         
         // 1. Seed roles first
         $this->call(RolesSeeder::class);
@@ -21,6 +21,6 @@ class DatabaseSeeder extends Seeder
         // 2. Seed Sisaraya members (14 users)
         $this->call(SisarayaMembersSeeder::class);
         
-        echo "\n🎉 Database seeding completed successfully!\n";
+        echo "\nDatabase seeding completed successfully!\n";
     }
 }

@@ -13,7 +13,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h1 class="text-3xl font-bold">📝 Catatan Pribadi</h1>
+                                <h1 class="text-3xl font-bold">Catatan Pribadi</h1>
                                 <p class="text-purple-100 mt-1">Kelola catatan dan ide kreatif Anda</p>
                             </div>
                         </div>
@@ -113,28 +113,33 @@
                     </button>
                     <button @click="filterColor = 'yellow'" 
                             :class="filterColor === 'yellow' ? 'bg-yellow-500 text-white' : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition">
-                        🟡 Kuning
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+                        <span class="inline-block w-3 h-3 rounded-full bg-yellow-400 border border-yellow-600"></span>
+                        Kuning
                     </button>
                     <button @click="filterColor = 'blue'" 
                             :class="filterColor === 'blue' ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition">
-                        🔵 Biru
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+                        <span class="inline-block w-3 h-3 rounded-full bg-blue-400 border border-blue-600"></span>
+                        Biru
                     </button>
                     <button @click="filterColor = 'green'" 
                             :class="filterColor === 'green' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700 hover:bg-green-200'"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition">
-                        🟢 Hijau
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+                        <span class="inline-block w-3 h-3 rounded-full bg-green-400 border border-green-600"></span>
+                        Hijau
                     </button>
                     <button @click="filterColor = 'red'" 
                             :class="filterColor === 'red' ? 'bg-red-500 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition">
-                        🔴 Merah
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+                        <span class="inline-block w-3 h-3 rounded-full bg-red-400 border border-red-600"></span>
+                        Merah
                     </button>
                     <button @click="filterColor = 'purple'" 
                             :class="filterColor === 'purple' ? 'bg-purple-500 text-white' : 'bg-purple-100 text-purple-700 hover:bg-purple-200'"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition">
-                        🟣 Ungu
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+                        <span class="inline-block w-3 h-3 rounded-full bg-purple-400 border border-purple-600"></span>
+                        Ungu
                     </button>
                 </div>
 
@@ -258,31 +263,31 @@
                                     <label class="cursor-pointer group">
                                         <input type="radio" name="color" value="yellow" checked class="sr-only peer">
                                         <div class="w-12 h-12 rounded-xl bg-yellow-200 border-2 border-gray-300 peer-checked:border-yellow-500 peer-checked:ring-4 peer-checked:ring-yellow-500 peer-checked:ring-opacity-30 group-hover:scale-110 transition flex items-center justify-center">
-                                            <span class="text-2xl">🟡</span>
+                                            <span class="inline-block w-6 h-6 rounded-full bg-yellow-400 border-2 border-yellow-600"></span>
                                         </div>
                                     </label>
                                     <label class="cursor-pointer group">
                                         <input type="radio" name="color" value="blue" class="sr-only peer">
                                         <div class="w-12 h-12 rounded-xl bg-blue-200 border-2 border-gray-300 peer-checked:border-blue-500 peer-checked:ring-4 peer-checked:ring-blue-500 peer-checked:ring-opacity-30 group-hover:scale-110 transition flex items-center justify-center">
-                                            <span class="text-2xl">🔵</span>
+                                            <span class="inline-block w-6 h-6 rounded-full bg-blue-400 border-2 border-blue-600"></span>
                                         </div>
                                     </label>
                                     <label class="cursor-pointer group">
                                         <input type="radio" name="color" value="green" class="sr-only peer">
                                         <div class="w-12 h-12 rounded-xl bg-green-200 border-2 border-gray-300 peer-checked:border-green-500 peer-checked:ring-4 peer-checked:ring-green-500 peer-checked:ring-opacity-30 group-hover:scale-110 transition flex items-center justify-center">
-                                            <span class="text-2xl">🟢</span>
+                                            <span class="inline-block w-6 h-6 rounded-full bg-green-400 border-2 border-green-600"></span>
                                         </div>
                                     </label>
                                     <label class="cursor-pointer group">
                                         <input type="radio" name="color" value="red" class="sr-only peer">
                                         <div class="w-12 h-12 rounded-xl bg-red-200 border-2 border-gray-300 peer-checked:border-red-500 peer-checked:ring-4 peer-checked:ring-red-500 peer-checked:ring-opacity-30 group-hover:scale-110 transition flex items-center justify-center">
-                                            <span class="text-2xl">🔴</span>
+                                            <span class="inline-block w-6 h-6 rounded-full bg-red-400 border-2 border-red-600"></span>
                                         </div>
                                     </label>
                                     <label class="cursor-pointer group">
                                         <input type="radio" name="color" value="purple" class="sr-only peer">
                                         <div class="w-12 h-12 rounded-xl bg-purple-200 border-2 border-gray-300 peer-checked:border-purple-500 peer-checked:ring-4 peer-checked:ring-purple-500 peer-checked:ring-opacity-30 group-hover:scale-110 transition flex items-center justify-center">
-                                            <span class="text-2xl">🟣</span>
+                                            <span class="inline-block w-6 h-6 rounded-full bg-purple-400 border-2 border-purple-600"></span>
                                         </div>
                                     </label>
                                 </div>
@@ -412,35 +417,51 @@
                                     <div class="flex gap-3">
                                         <label class="cursor-pointer">
                                             <input type="radio" name="color" value="yellow" {{ $note->color === 'yellow' ? 'checked' : '' }} class="sr-only peer">
-                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-yellow-200 text-2xl peer-checked:ring-4 peer-checked:ring-yellow-400 hover:scale-110 transition transform">💛</span>
+                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-yellow-200 peer-checked:ring-4 peer-checked:ring-yellow-400 hover:scale-110 transition transform">
+                                                <span class="inline-block w-6 h-6 rounded-full bg-yellow-400 border-2 border-yellow-600"></span>
+                                            </span>
                                         </label>
                                         <label class="cursor-pointer">
                                             <input type="radio" name="color" value="blue" {{ $note->color === 'blue' ? 'checked' : '' }} class="sr-only peer">
-                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-200 text-2xl peer-checked:ring-4 peer-checked:ring-blue-400 hover:scale-110 transition transform">💙</span>
+                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-200 peer-checked:ring-4 peer-checked:ring-blue-400 hover:scale-110 transition transform">
+                                                <span class="inline-block w-6 h-6 rounded-full bg-blue-400 border-2 border-blue-600"></span>
+                                            </span>
                                         </label>
                                         <label class="cursor-pointer">
                                             <input type="radio" name="color" value="green" {{ $note->color === 'green' ? 'checked' : '' }} class="sr-only peer">
-                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-green-200 text-2xl peer-checked:ring-4 peer-checked:ring-green-400 hover:scale-110 transition transform">💚</span>
+                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-green-200 peer-checked:ring-4 peer-checked:ring-green-400 hover:scale-110 transition transform">
+                                                <span class="inline-block w-6 h-6 rounded-full bg-green-400 border-2 border-green-600"></span>
+                                            </span>
                                         </label>
                                         <label class="cursor-pointer">
                                             <input type="radio" name="color" value="red" {{ $note->color === 'red' ? 'checked' : '' }} class="sr-only peer">
-                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-red-200 text-2xl peer-checked:ring-4 peer-checked:ring-red-400 hover:scale-110 transition transform">❤️</span>
+                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-red-200 peer-checked:ring-4 peer-checked:ring-red-400 hover:scale-110 transition transform">
+                                                <span class="inline-block w-6 h-6 rounded-full bg-red-400 border-2 border-red-600"></span>
+                                            </span>
                                         </label>
                                         <label class="cursor-pointer">
                                             <input type="radio" name="color" value="purple" {{ $note->color === 'purple' ? 'checked' : '' }} class="sr-only peer">
-                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-purple-200 text-2xl peer-checked:ring-4 peer-checked:ring-purple-400 hover:scale-110 transition transform">💜</span>
+                                            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-purple-200 peer-checked:ring-4 peer-checked:ring-purple-400 hover:scale-110 transition transform">
+                                                <span class="inline-block w-6 h-6 rounded-full bg-purple-400 border-2 border-purple-600"></span>
+                                            </span>
                                         </label>
                                     </div>
                                 </div>
 
                                 <div class="flex gap-3 pt-2">
-                                    <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-r @if($note->color === 'yellow') from-yellow-500 to-yellow-600 @elseif($note->color === 'blue') from-blue-500 to-blue-600 @elseif($note->color === 'green') from-green-500 to-green-600 @elseif($note->color === 'red') from-red-500 to-red-600 @else from-purple-500 to-purple-600 @endif text-white font-bold rounded-xl hover:shadow-xl transform hover:scale-105 transition">
-                                        💾 Simpan Perubahan
+                                    <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-r @if($note->color === 'yellow') from-yellow-500 to-yellow-600 @elseif($note->color === 'blue') from-blue-500 to-blue-600 @elseif($note->color === 'green') from-green-500 to-green-600 @elseif($note->color === 'red') from-red-500 to-red-600 @else from-purple-500 to-purple-600 @endif text-white font-bold rounded-xl hover:shadow-xl transform hover:scale-105 transition flex items-center justify-center gap-2">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                                        </svg>
+                                        Simpan Perubahan
                                     </button>
                                     <button type="button" 
                                             @click="editing = false"
-                                            class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 hover:shadow-lg transform hover:scale-105 transition">
-                                        ❌ Batal
+                                            class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 hover:shadow-lg transform hover:scale-105 transition flex items-center justify-center gap-2">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                        Batal
                                     </button>
                                 </div>
                             </form>

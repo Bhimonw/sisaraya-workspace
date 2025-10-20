@@ -236,7 +236,7 @@ class ProjectController extends Controller
         if ($project->start_date && $project->end_date) {
             $calendarEvents[] = [
                 'id' => 'project-' . $project->id,
-                'title' => '📊 ' . $project->name,
+                'title' => '[Proyek] ' . $project->name,
                 'start' => $project->start_date->format('Y-m-d'),
                 'end' => $project->end_date->format('Y-m-d'),
                 'type' => 'Project',

@@ -307,3 +307,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Enhanced privacy in Personal Calendar: activities from other users now show as 'Sibuk - [Name]' without details, replaced all emoji with proper SVG icons for professional appearance, improved privacy explanation in UI
+
+## 2025-10-20
+- Modernisasi UI - Mengganti semua emoji dengan icon SVG profesional di seluruh aplikasi untuk tampilan yang lebih modern dan konsisten
