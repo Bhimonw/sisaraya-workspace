@@ -244,3 +244,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Fix member count display: remove +1 to show accurate count (14 members total)
+
+## 2025-10-20
+- Add search & role filter to 'Tambah Member' form in project detail (matching create project UX)
+
+## 2025-10-20
+- Add search & role filter to member list in 'Kelola Member' section
+
+## 2025-10-20
+- Fix member count inconsistency: only count actual members in select all (exclude add member form checkboxes)
