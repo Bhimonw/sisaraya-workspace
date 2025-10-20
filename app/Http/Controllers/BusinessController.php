@@ -39,7 +39,8 @@ class BusinessController extends Controller
 
     public function create()
     {
-        return view('businesses.create');
+        // Redirect to index with modal open flag
+        return redirect()->route('businesses.index')->with('openCreateModal', true);
     }
 
     public function store(Request $request)

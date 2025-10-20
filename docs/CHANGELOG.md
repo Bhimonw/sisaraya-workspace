@@ -289,3 +289,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-20
 - Perbaiki role permission management usaha: tambah business.update dan business.delete permission, ganti @role dengan @can di menu dan views, update policy untuk cek permission bukan role, update BusinessReportController authorization
+
+## 2025-10-20
+- Modernisasi form buat usaha baru menjadi modal pop-up: Alpine.js modal dengan gradient header, backdrop blur, smooth animations, keyboard shortcuts (ESC), auto-open saat validation error, improved accessibility (ARIA), dan modern UI/UX
+
+## 2025-10-20
+- Modernisasi halaman create business: redirect create route ke index dengan modal auto-open, update create.blade.php dengan gradient header, info cards, better form layout, tips section, dan process steps untuk user guidance
+
+## 2025-10-20
+- Modernisasi filter tabs usaha: grid 4 kolom dengan gradient backgrounds, large numbers, icon badges, animated indicators, quick stats summary (approval rate, with project, pending review) saat tab Semua aktif, hover effects, dan responsive design
