@@ -1587,42 +1587,90 @@
         {{-- CREATE TICKET TAB --}}
         @if($project->canManage(Auth::user()))
         <div x-show="activeTab === 'create-ticket'" x-transition>
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200" x-data="{ context: 'proyek', showCreateModal: false }">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
-                    <svg class="h-8 w-8 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                    </svg>
-                    Buat Tiket Baru
-                </h2>
-                <p class="text-gray-600 mt-1">Tambahkan tiket untuk mengorganisir pekerjaan di project ini</p>
-            </div>
-            <form action="{{ route('projects.tickets.store', $project) }}" method="POST">
-                @csrf
-                <div class="space-y-4">
-                    {{-- Context Selection (Hanya Proyek/Event) --}}
+        <div class="bg-white rounded-2xl shadow-lg border-2 border-violet-100 overflow-hidden" x-data="{ context: 'proyek', showCreateModal: false }">
+            {{-- Modern Header with Gradient --}}
+            <div class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 px-8 py-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Tiket <span class="text-red-500">*</span></label>
-                        <div class="flex gap-4">
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="context" value="event" x-model="context" class="text-purple-600" />
-                                <span class="text-sm">Event</span>
+                        <h2 class="text-2xl font-bold text-white">Buat Tiket Baru</h2>
+                        <p class="text-violet-100 text-sm mt-1">Tambahkan tiket untuk mengorganisir pekerjaan di project ini</p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Form Content --}}
+            <form action="{{ route('projects.tickets.store', $project) }}" method="POST" class="p-8">
+                @csrf
+                <div class="space-y-6">
+                    {{-- Context Selection with Modern Cards --}}
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                            <svg class="h-4 w-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                            </svg>
+                            Tipe Tiket
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <label class="relative flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md"
+                                   :class="context === 'proyek' ? 'border-violet-500 bg-violet-50' : 'border-gray-200 bg-white hover:border-violet-200'">
+                                <input type="radio" name="context" value="proyek" x-model="context" checked class="sr-only" />
+                                <div class="flex items-center gap-3 flex-1">
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                                         :class="context === 'proyek' ? 'bg-violet-500 text-white' : 'bg-gray-100 text-gray-400'">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-sm text-gray-900">📁 Proyek</div>
+                                        <div class="text-xs text-gray-500">Tiket terikat pada proyek ini</div>
+                                    </div>
+                                </div>
+                                <svg x-show="context === 'proyek'" class="h-5 w-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
                             </label>
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="context" value="proyek" x-model="context" checked class="text-green-600" />
-                                <span class="text-sm">Proyek</span>
+                            
+                            <label class="relative flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md"
+                                   :class="context === 'event' ? 'border-amber-500 bg-amber-50' : 'border-gray-200 bg-white hover:border-amber-200'">
+                                <input type="radio" name="context" value="event" x-model="context" class="sr-only" />
+                                <div class="flex items-center gap-3 flex-1">
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                                         :class="context === 'event' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-400'">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-sm text-gray-900">📅 Event</div>
+                                        <div class="text-xs text-gray-500">Tiket terikat pada event tertentu</div>
+                                    </div>
+                                </div>
+                                <svg x-show="context === 'event'" class="h-5 w-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
                             </label>
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">
-                            <span x-show="context === 'event'">Tiket terikat pada event tertentu</span>
-                            <span x-show="context === 'proyek'">Tiket terikat pada proyek ini</span>
-                        </p>
                     </div>
 
                     {{-- Event Selection (only show if context is 'event') --}}
-                    <div x-show="context === 'event'" x-collapse>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Event <span class="text-red-500">*</span></label>
-                        <select name="project_event_id" class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500">
+                    <div x-show="context === 'event'" x-collapse class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                            <svg class="h-4 w-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            Pilih Event
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <select name="project_event_id" 
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:ring-4 focus:ring-amber-100 transition-all duration-200 text-gray-900 appearance-none bg-white bg-no-repeat bg-right pr-10"
+                                style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236b7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-size: 1.5rem;">
                             <option value="">-- Pilih Event --</option>
                             @foreach($project->events as $event)
                                 <option value="{{ $event->id }}">{{ $event->title }} ({{ $event->start_date->format('d M Y') }})</option>
@@ -1630,90 +1678,122 @@
                         </select>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Judul Tiket <span class="text-red-500">*</span></label>
-                            <input name="title" placeholder="Judul Tiket" required class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+                    {{-- Title & Status Row --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                <svg class="h-4 w-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                                </svg>
+                                Judul Tiket
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input name="title" 
+                                   placeholder="Contoh: Review Desain Landing Page" 
+                                   required 
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 text-gray-900 placeholder-gray-400" />
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
-                            <select name="status" class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                                <option value="todo">To Do</option>
-                                <option value="doing">Doing</option>
-                                <option value="done">Done</option>
-                                <option value="blackout">Blackout</option>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                <svg class="h-4 w-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Status Awal
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <select name="status" 
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 text-gray-900 appearance-none bg-white bg-no-repeat bg-right pr-10"
+                                    style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236b7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-size: 1.5rem;">
+                                <option value="todo" selected>⏰ To Do - Belum dikerjakan</option>
+                                <option value="doing">⚡ Doing - Sedang dikerjakan</option>
+                                <option value="done">✅ Done - Selesai</option>
+                                <option value="blackout">⚫ Blackout - Ditunda/dibatalkan</option>
                             </select>
                         </div>
                     </div>
                     
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi (Opsional)</label>
-                        <textarea name="description" placeholder="Jelaskan detail pekerjaan..." rows="3" class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent"></textarea>
+                    {{-- Description --}}
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                            <svg class="h-4 w-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+                            </svg>
+                            Deskripsi
+                            <span class="text-xs text-gray-500 font-normal">(Opsional)</span>
+                        </label>
+                        <textarea name="description" 
+                                  placeholder="Jelaskan detail pekerjaan, deliverables, atau catatan khusus..." 
+                                  rows="4" 
+                                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 text-gray-900 placeholder-gray-400 resize-none"></textarea>
                     </div>
                     
-                    {{-- Priority & Weight --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Prioritas <span class="text-red-500">*</span>
+                    {{-- Priority & Weight Row --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-900 flex items-center gap-1">
+                                <svg class="h-4 w-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                                Prioritas
+                                <span class="text-red-500">*</span>
                             </label>
-                            <select name="priority" required class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                                <option value="low">Rendah</option>
-                                <option value="medium" selected>Sedang</option>
-                                <option value="high">Tinggi</option>
-                                <option value="urgent">Mendesak</option>
+                            <select name="priority" 
+                                    required 
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 text-gray-900 appearance-none bg-white bg-no-repeat bg-right pr-10"
+                                    style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236b7280%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-size: 1.5rem;">
+                                <option value="low">🟢 Rendah</option>
+                                <option value="medium" selected>🟡 Sedang</option>
+                                <option value="high">🟠 Tinggi</option>
+                                <option value="urgent">🔴 Mendesak</option>
                             </select>
-                            <p class="text-xs text-gray-500 mt-1">Tingkat urgensi pekerjaan</p>
                         </div>
                         
                         <div x-data="{ 
                             weight: 5,
                             getLabel() {
-                                if (this.weight <= 3) return { text: 'Ringan', color: 'text-green-600', bg: 'bg-green-100', border: 'border-green-300' };
-                                if (this.weight <= 6) return { text: 'Sedang', color: 'text-yellow-600', bg: 'bg-yellow-100', border: 'border-yellow-300' };
-                                return { text: 'Berat', color: 'text-red-600', bg: 'bg-red-100', border: 'border-red-300' };
+                                if (this.weight <= 3) return { text: 'Ringan', color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200', emoji: '🪶' };
+                                if (this.weight <= 6) return { text: 'Sedang', color: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-200', emoji: '⚖️' };
+                                return { text: 'Berat', color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200', emoji: '🏋️' };
                             }
-                        }">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Bobot Kesulitan <span class="text-red-500">*</span>
+                        }" class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-900 flex items-center gap-1">
+                                <svg class="h-4 w-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
+                                </svg>
+                                Bobot
+                                <span class="text-red-500">*</span>
                             </label>
                             
-                            {{-- Weight Display Card --}}
-                            <div class="mb-3 p-3 rounded-lg border-2 transition-all duration-200"
+                            {{-- Weight Display --}}
+                            <div class="p-3 rounded-xl border-2 transition-all duration-200"
                                  :class="getLabel().bg + ' ' + getLabel().border">
                                 <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-gray-700">Tingkat Kesulitan:</span>
-                                    <div class="flex items-center gap-2">
+                                    <span class="text-xs font-medium text-gray-600">Level:</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <span x-text="getLabel().emoji" class="text-lg"></span>
                                         <span x-text="weight" 
-                                              class="text-2xl font-bold"
+                                              class="text-xl font-bold"
                                               :class="getLabel().color"></span>
-                                        <span class="text-lg font-semibold"
-                                              :class="getLabel().color"
-                                              x-text="'- ' + getLabel().text"></span>
+                                        <span class="text-xs font-bold px-2 py-0.5 rounded-full"
+                                              :class="getLabel().bg + ' ' + getLabel().color"
+                                              x-text="getLabel().text"></span>
                                     </div>
                                 </div>
                             </div>
                             
                             {{-- Slider --}}
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm text-gray-500 font-medium">1</span>
+                            <div class="flex items-center gap-3 px-1">
+                                <span class="text-xs font-medium text-gray-500">1</span>
                                 <input type="range" 
                                        name="weight" 
                                        min="1" 
                                        max="10" 
                                        value="5" 
-                                       step="1"
                                        x-model="weight"
-                                       class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                                <span class="text-sm text-gray-500 font-medium">10</span>
+                                       class="flex-1 h-2 bg-gray-200 rounded-full appearance-none cursor-pointer slider-modern">
+                                <span class="text-xs font-medium text-gray-500">10</span>
                             </div>
-                            
-                            <p class="text-xs text-gray-500 mt-2">
-                                <span class="font-medium text-green-600">1-3:</span> Ringan • 
-                                <span class="font-medium text-yellow-600">4-6:</span> Sedang • 
-                                <span class="font-medium text-red-600">7-10:</span> Berat
-                            </p>
                         </div>
                     </div>
                     
@@ -1879,11 +1959,14 @@
                     </div>
                     
                     {{-- Target Role & Due Date --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                <svg class="h-4 w-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
                                 Target Role (Opsional)
-                                <span class="text-xs text-gray-500">- jika tidak pilih user spesifik</span>
+                                <span class="text-xs font-normal text-gray-500">- jika tidak pilih user spesifik</span>
                             </label>
                             @php
                                 // Collect all unique permanent roles from project members
@@ -1907,8 +1990,10 @@
                                 
                                 $allRolesReference = \App\Models\Ticket::getAllRoles();
                             @endphp
-                            <select name="target_role" class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                                <option value="">-- Semua Role --</option>
+                            <select name="target_role" 
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-200 text-gray-900 appearance-none bg-white"
+                                    style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25em 1.25em; padding-right: 2.5rem;">
+                                <option value="">Semua Role</option>
                                 
                                 @if($permanentRolesInProject->count() > 0)
                                 <optgroup label="Role Permanent ({{ $permanentRolesInProject->count() }} role)">
@@ -1945,27 +2030,35 @@
                                 <option value="" disabled>Tidak ada role tersedia di project ini</option>
                                 @endif
                             </select>
-                            <p class="text-xs text-gray-500 mt-1">
+                            <p class="text-xs text-gray-500">
                                 Hanya menampilkan role yang ada pada anggota project ini
                             </p>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Due Date <span class="text-red-500">*</span>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                <svg class="h-4 w-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                Due Date
+                                <span class="text-red-500">*</span>
                             </label>
                             <input type="date" 
                                    name="due_date" 
                                    required
                                    min="{{ date('Y-m-d') }}"
-                                   class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent" />
-                            <p class="text-xs text-gray-500 mt-1">Batas waktu penyelesaian tiket</p>
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-100 transition-all duration-200 text-gray-900" />
+                            <p class="text-xs text-gray-500">Batas waktu penyelesaian tiket</p>
                         </div>
                     </div>
                 </div>
-                <div class="mt-3">
-                    <button type="submit" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition">
-                        Buat Tiket
+                <div class="mt-6 flex justify-end">
+                    <button type="submit" 
+                            class="group relative flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        <span>Buat Tiket</span>
                     </button>
                 </div>
             </form>
