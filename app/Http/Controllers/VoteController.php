@@ -6,6 +6,7 @@ use App\Models\Vote;
 use App\Models\VoteOption;
 use App\Models\VoteResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VoteController extends Controller
 {
@@ -18,7 +19,7 @@ class VoteController extends Controller
             })
             ->with(['creator', 'options', 'responses'])
             ->latest()
-            ->get();
+            ->paginate(10, ['*'], 'active_page');
 
         $closedVotes = Vote::where('status', 'closed')
             ->orWhere(function($q) {
@@ -26,7 +27,7 @@ class VoteController extends Controller
             })
             ->with(['creator', 'options', 'responses'])
             ->latest()
-            ->get();
+            ->paginate(10, ['*'], 'closed_page');
 
         return view('votes.index', compact('activeVotes', 'closedVotes'));
     }
@@ -83,12 +84,9 @@ class VoteController extends Controller
 
     public function castVote(Request $request, Vote $vote)
     {
+        // Quick check before acquiring lock
         if ($vote->isClosed()) {
             return back()->with('error', 'Voting sudah ditutup');
-        }
-
-        if (!$vote->allow_multiple && $vote->hasVoted(auth()->user())) {
-            return back()->with('error', 'Anda sudah memberikan suara');
         }
 
         $validated = $request->validate([
@@ -96,23 +94,59 @@ class VoteController extends Controller
             'option_ids.*' => 'exists:vote_options,id',
         ]);
 
-        // Delete previous votes if not allow_multiple
-        if (!$vote->allow_multiple) {
-            VoteResponse::where('vote_id', $vote->id)
-                ->where('user_id', auth()->id())
-                ->delete();
-        }
+        try {
+            DB::beginTransaction();
 
-        foreach ($validated['option_ids'] as $optionId) {
-            VoteResponse::updateOrCreate([
+            // Lock vote record to prevent concurrent modifications
+            $vote = Vote::where('id', $vote->id)->lockForUpdate()->first();
+
+            // Re-check if closed after lock
+            if ($vote->isClosed()) {
+                DB::rollBack();
+                return back()->with('error', 'Voting sudah ditutup');
+            }
+
+            // Check and handle existing votes atomically
+            $existingVotes = VoteResponse::where('vote_id', $vote->id)
+                ->where('user_id', auth()->id())
+                ->lockForUpdate()
+                ->get();
+
+            if (!$vote->allow_multiple && $existingVotes->isNotEmpty()) {
+                DB::rollBack();
+                return back()->with('error', 'Anda sudah memberikan suara');
+            }
+
+            // Delete previous votes if allowing multiple
+            if ($vote->allow_multiple && $existingVotes->isNotEmpty()) {
+                $existingVotes->each->delete();
+            }
+
+            // Create new responses
+            foreach ($validated['option_ids'] as $optionId) {
+                VoteResponse::create([
+                    'vote_id' => $vote->id,
+                    'user_id' => auth()->id(),
+                    'vote_option_id' => $optionId,
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('votes.show', $vote)
+                ->with('success', 'Suara Anda berhasil dicatat');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            \Log::error('Vote casting failed', [
                 'vote_id' => $vote->id,
                 'user_id' => auth()->id(),
-                'vote_option_id' => $optionId,
+                'error' => $e->getMessage(),
             ]);
-        }
 
-        return redirect()->route('votes.show', $vote)
-            ->with('success', 'Suara Anda berhasil dicatat');
+            return back()->with('error', 'Gagal mencatat suara. Silakan coba lagi.');
+        }
     }
 
     public function close(Vote $vote)

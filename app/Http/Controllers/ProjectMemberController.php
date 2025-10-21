@@ -20,9 +20,27 @@ class ProjectMemberController extends Controller
             abort(403, 'Only Project Manager, Admin, or HR can manage member roles');
         }
 
+        // Prevent modifying project owner (PM)
+        if ($user->id === $project->owner_id) {
+            return back()->with('error', 'Tidak dapat mengubah role Project Manager');
+        }
+
         // Check if user is member of this project
         if (!$project->members()->where('user_id', $user->id)->exists()) {
             abort(404, 'User is not a member of this project');
+        }
+
+        // Only PM can modify admin roles
+        if (!$project->isManager(Auth::user())) {
+            $targetMember = $project->members()->where('user_id', $user->id)->first();
+            if ($targetMember && $targetMember->pivot->role === 'admin') {
+                return back()->with('error', 'Hanya Project Manager yang dapat mengubah role admin');
+            }
+        }
+
+        // Prevent admins from modifying their own role
+        if (Auth::id() === $user->id && $project->isAdmin(Auth::user())) {
+            return back()->with('error', 'Anda tidak dapat mengubah role Anda sendiri');
         }
 
         // Get current event roles to check if user has permanent role
@@ -76,8 +94,20 @@ class ProjectMemberController extends Controller
             return back()->with('error', 'Cannot remove Project Manager from project');
         }
 
-        // Check if user has permanent role
+        // Only PM can remove admins
         $currentMember = $project->members()->where('user_id', $user->id)->first();
+        if ($currentMember && $currentMember->pivot->role === 'admin') {
+            if (!$project->isManager(Auth::user())) {
+                return back()->with('error', 'Hanya Project Manager yang dapat menghapus admin dari project');
+            }
+        }
+
+        // Prevent admins from removing themselves
+        if (Auth::id() === $user->id && $project->isAdmin(Auth::user())) {
+            return back()->with('error', 'Anda tidak dapat menghapus diri sendiri dari project. Silakan minta PM untuk melakukannya.');
+        }
+
+        // Check if user has permanent role
         if ($currentMember) {
             $currentEventRoles = $currentMember->pivot->event_roles 
                 ? json_decode($currentMember->pivot->event_roles, true) 

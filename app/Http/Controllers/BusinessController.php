@@ -76,6 +76,22 @@ class BusinessController extends Controller
         try {
             DB::beginTransaction();
             
+            // Lock business record for update to prevent race condition
+            $business = Business::where('id', $business->id)
+                ->lockForUpdate()
+                ->first();
+            
+            // Re-check status after lock
+            if ($business->status === 'approved') {
+                DB::rollBack();
+                return back()->with('error', 'Usaha sudah disetujui oleh PM lain.');
+            }
+            
+            if ($business->status === 'rejected') {
+                DB::rollBack();
+                return back()->with('error', 'Usaha sudah ditolak sebelumnya.');
+            }
+            
             // Create project from approved business
             $project = Project::create([
                 'name' => $business->name,

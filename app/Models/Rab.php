@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Rab extends Model
 {
@@ -16,6 +17,21 @@ class Rab extends Model
     protected $casts = [
         'approved_at' => 'datetime',
     ];
+
+    /**
+     * Boot method to register model events
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Automatically delete file from storage when RAB is deleted
+        static::deleting(function ($rab) {
+            if ($rab->file_path && Storage::disk('public')->exists($rab->file_path)) {
+                Storage::disk('public')->delete($rab->file_path);
+            }
+        });
+    }
 
     public function project()
     {

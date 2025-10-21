@@ -16,7 +16,7 @@ class DocumentController extends Controller
         
         $type = $validated['type'] ?? 'public';
         
-        $query = Document::latest();
+        $query = Document::with(['user:id,name', 'project:id,name'])->latest();
         
         if ($type === 'confidential') {
             // Only sekretaris and HR can view confidential documents
@@ -28,7 +28,7 @@ class DocumentController extends Controller
             $query->where('is_confidential', false);
         }
         
-        $docs = $query->get();
+        $docs = $query->paginate(20);
         return view('documents.index', compact('docs', 'type'));
     }
 

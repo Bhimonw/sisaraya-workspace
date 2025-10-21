@@ -54,16 +54,20 @@ class DashboardController extends Controller
                 })->count(),
         ];
         
-        // Get availability data for today
+        // Get availability data for today (optimized with database-level filtering)
         $today = today();
         $freeUsersToday = \App\Models\User::where(function($q) {
-            $q->whereNull('guest_expired_at')
-              ->orWhere('guest_expired_at', '>', now());
-        })
-        ->get()
-        ->filter(function($u) use ($today) {
-            return $u->isFreeOnDate($today);
-        });
+                $q->whereNull('guest_expired_at')
+                  ->orWhere('guest_expired_at', '>', now());
+            })
+            ->whereDoesntHave('claimedTickets', function($q) use ($today) {
+                $q->whereDate('due_date', $today)
+                  ->whereIn('status', ['todo', 'doing', 'blackout']);
+            })
+            ->whereDoesntHave('personalActivities', function($q) use ($today) {
+                $q->whereDate('date', $today);
+            })
+            ->get();
         
         return view('dashboard', compact('activeTickets', 'userProjects', 'stats', 'freeUsersToday', 'today'));
     }

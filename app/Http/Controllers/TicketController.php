@@ -334,7 +334,7 @@ class TicketController extends Controller
               ->orWhere('target_user_id', $user->id);
         })
         ->latest()
-        ->get();
+        ->paginate(20);
         
         return view('tickets.overview', compact('tickets'));
     }
@@ -358,7 +358,7 @@ class TicketController extends Controller
         ->where('claimed_by', $user->id)
         ->whereIn('status', ['todo', 'doing', 'blackout'])
         ->latest()
-        ->get();
+        ->paginate(15, ['*'], 'my_page');
         
         // Tiket yang tersedia untuk diambil (belum claimed, sesuai role/target user)
         $availableTickets = Ticket::with([
@@ -380,7 +380,7 @@ class TicketController extends Controller
         ->whereNull('claimed_by') // Belum diambil siapapun
         ->whereIn('status', ['todo', 'doing']) // Hanya yang aktif
         ->latest()
-        ->get();
+        ->paginate(15, ['*'], 'available_page');
         
         return view('tickets.mine', compact('myTickets', 'availableTickets'));
     }
@@ -392,26 +392,49 @@ class TicketController extends Controller
     {
         $user = $request->user();
 
-        // Check if ticket is already claimed
-        if ($ticket->isClaimed()) {
-            return back()->with('error', 'Tiket sudah diambil oleh ' . $ticket->claimedBy->name);
-        }
-
-        // Check if user has the required role
+        // Check if user has the required role (fast check before DB lock)
         if (!$ticket->canBeClaimedBy($user)) {
             return back()->with('error', 'Anda tidak memiliki role yang sesuai untuk mengambil tiket ini');
         }
 
-        // Claim the ticket
-        $ticket->update([
-            'claimed_by' => $user->id,
-            'claimed_at' => now(),
-        ]);
+        try {
+            DB::beginTransaction();
 
-        // Send push notification to user who claimed the ticket
-        $user->notify(new TicketAssignedNotification($ticket));
+            // Use lockForUpdate to prevent race condition
+            $ticket = Ticket::where('id', $ticket->id)
+                ->lockForUpdate()
+                ->first();
 
-        return back()->with('success', 'Anda berhasil mengambil tiket ini');
+            // Re-check if ticket is already claimed after lock
+            if ($ticket->isClaimed()) {
+                DB::rollBack();
+                return back()->with('error', 'Tiket sudah diambil oleh ' . $ticket->claimedBy->name);
+            }
+
+            // Claim the ticket atomically
+            $ticket->update([
+                'claimed_by' => $user->id,
+                'claimed_at' => now(),
+            ]);
+
+            DB::commit();
+
+            // Send push notification to user who claimed the ticket (outside transaction)
+            $user->notify(new TicketAssignedNotification($ticket));
+
+            return back()->with('success', 'Anda berhasil mengambil tiket ini');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            \Log::error('Ticket claim failed', [
+                'ticket_id' => $ticket->id,
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Gagal mengambil tiket. Silakan coba lagi.');
+        }
     }
 
     /**
@@ -424,6 +447,16 @@ class TicketController extends Controller
         // Check if user is the one who claimed it
         if ($ticket->claimed_by !== $user->id) {
             return back()->with('error', 'Anda tidak bisa melepas tiket yang bukan milik Anda');
+        }
+
+        // Cannot unclaim if already in progress
+        if ($ticket->status === 'doing') {
+            return back()->with('error', 'Tidak dapat melepas tiket yang sedang dikerjakan. Silakan selesaikan atau reset terlebih dahulu.');
+        }
+
+        // Cannot unclaim if completed
+        if ($ticket->status === 'done') {
+            return back()->with('error', 'Tidak dapat melepas tiket yang sudah selesai.');
         }
 
         // Release the ticket
