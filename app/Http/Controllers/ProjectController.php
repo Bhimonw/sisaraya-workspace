@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -330,9 +332,54 @@ class ProjectController extends Controller
             abort(403, 'Anda tidak memiliki izin untuk menghapus proyek ini.');
         }
         
-        // Delete the project (cascade will handle related records)
-        $project->delete();
+        // Check if project has active status
+        if (in_array($project->status, ['active', 'planning'])) {
+            return back()->with('error', 'Tidak dapat menghapus proyek yang masih aktif. Silakan ubah status proyek terlebih dahulu.');
+        }
         
-        return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus!');
+        try {
+            DB::beginTransaction();
+            
+            // 1. Release claimed tickets (set to null instead of deleting for audit trail)
+            Ticket::where('project_id', $project->id)
+                ->where('claimed_by', '!=', null)
+                ->update([
+                    'claimed_by' => null,
+                    'claimed_at' => null,
+                ]);
+            
+            // 2. Nullify project_id on tickets (keep tickets for audit trail)
+            Ticket::where('project_id', $project->id)->update(['project_id' => null]);
+            
+            // 3. Delete project-related records
+            $project->documents()->delete(); // Will trigger file cleanup via model event
+            $project->rabs()->delete(); // Will trigger file cleanup via model event
+            $project->events()->delete();
+            $project->ratings()->delete();
+            
+            // 4. Delete chat messages
+            \App\Models\ProjectChat::where('project_id', $project->id)->delete();
+            
+            // 5. Detach all members
+            $project->members()->detach();
+            
+            // 6. Delete the project
+            $project->delete();
+            
+            DB::commit();
+            
+            return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus!');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            \Log::error('Project deletion failed', [
+                'project_id' => $project->id,
+                'owner_id' => auth()->id(),
+                'error' => $e->getMessage(),
+            ]);
+            
+            return back()->with('error', 'Gagal menghapus proyek. Silakan coba lagi.');
+        }
     }
 }

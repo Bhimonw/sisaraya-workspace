@@ -146,26 +146,20 @@ class TicketController extends Controller
                 // Load relationships for notification
                 $ticket->load(['project', 'projectEvent.project']);
 
-                // Send notifications based on target type (with error handling)
+                // Send notifications based on target type (queued for better performance)
                 if ($ticket->target_role) {
                     try {
-                        // Send notification to all users with the role
+                        // Send notification to all users with the role (queued)
                         $usersWithRole = User::role($ticket->target_role)->get();
-                        foreach ($usersWithRole as $user) {
-                            if ($user->id !== $request->user()->id) {
-                                try {
-                                    $user->notify(new TicketAssigned($ticket, $request->user(), false));
-                                } catch (\Exception $e) {
-                                    \Log::warning('Failed to send ticket notification to user', [
-                                        'ticket_id' => $ticket->id,
-                                        'user_id' => $user->id,
-                                        'error' => $e->getMessage(),
-                                    ]);
-                                }
-                            }
-                        }
+                        $usersToNotify = $usersWithRole->filter(fn($u) => $u->id !== $request->user()->id);
+                        
+                        // Queue notifications instead of sending immediately
+                        \Illuminate\Support\Facades\Notification::send(
+                            $usersToNotify, 
+                            (new TicketAssigned($ticket, $request->user(), false))->onQueue('notifications')
+                        );
                     } catch (\Exception $e) {
-                        \Log::warning('Failed to send bulk ticket notifications', [
+                        \Log::warning('Failed to queue bulk ticket notifications', [
                             'ticket_id' => $ticket->id,
                             'role' => $ticket->target_role,
                             'error' => $e->getMessage(),
@@ -240,7 +234,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Send notifications for newly created ticket
+     * Send notifications for newly created ticket (queued for performance)
      */
     private function sendTicketNotifications(Ticket $ticket, User $creator, Project $project)
     {
@@ -248,21 +242,16 @@ class TicketController extends Controller
         if ($ticket->target_user_id) {
             $targetUser = User::find($ticket->target_user_id);
             if ($targetUser) {
-                $targetUser->notify(new TicketAssigned($ticket, $creator, true));
+                $targetUser->notify((new TicketAssigned($ticket, $creator, true))->onQueue('notifications'));
             }
             return;
         }
 
         // Case 2: Tiket untuk role tertentu (notifikasi ke semua user dengan role tersebut di project)
         if ($ticket->target_role) {
-            $notifiedUsers = [];
+            $membersToNotify = collect();
             
             foreach ($project->members as $member) {
-                // Skip if already notified
-                if (in_array($member->id, $notifiedUsers)) {
-                    continue;
-                }
-                
                 // Check permanent role from Spatie
                 $hasPermanentRole = $member->hasRole($ticket->target_role);
                 
@@ -270,22 +259,28 @@ class TicketController extends Controller
                 $eventRoles = $member->pivot->event_roles ? json_decode($member->pivot->event_roles, true) : [];
                 $hasEventRole = in_array($ticket->target_role, $eventRoles);
                 
-                // If user has the role, send notification
+                // If user has the role, add to notification list
                 if ($hasPermanentRole || $hasEventRole) {
-                    $member->notify(new TicketAssigned($ticket, $creator, false));
-                    $notifiedUsers[] = $member->id;
+                    $membersToNotify->push($member);
                 }
+            }
+            
+            // Send queued notifications
+            if ($membersToNotify->isNotEmpty()) {
+                \Illuminate\Support\Facades\Notification::send(
+                    $membersToNotify->unique('id'),
+                    (new TicketAssigned($ticket, $creator, false))->onQueue('notifications')
+                );
             }
             return;
         }
 
         // Case 3: Tiket umum (no target_user_id & no target_role) - notifikasi ke semua member project
-        $notifiedUsers = [];
-        foreach ($project->members as $member) {
-            if (!in_array($member->id, $notifiedUsers)) {
-                $member->notify(new TicketAssigned($ticket, $creator, false));
-                $notifiedUsers[] = $member->id;
-            }
+        if ($project->members->isNotEmpty()) {
+            \Illuminate\Support\Facades\Notification::send(
+                $project->members,
+                (new TicketAssigned($ticket, $creator, false))->onQueue('notifications')
+            );
         }
     }
 
