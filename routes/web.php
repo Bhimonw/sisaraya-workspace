@@ -192,6 +192,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('my-requests', [RoleChangeRequestController::class, 'myRequests'])->name('my-requests');
     });
 
+    // Member Data
+    Route::prefix('member-data')->name('member-data.')->group(function () {
+        Route::get('/', [App\Http\Controllers\MemberDataController::class, 'index'])->name('index');
+        Route::get('create', [App\Http\Controllers\MemberDataController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\MemberDataController::class, 'store'])->name('store');
+        Route::patch('{type}/{id}', [App\Http\Controllers\MemberDataController::class, 'update'])->name('update');
+        Route::delete('{type}/{id}', [App\Http\Controllers\MemberDataController::class, 'destroy'])->name('destroy');
+    });
+
     Route::prefix('admin')->name('admin.')->group(function () {
         // Role Change Requests Management (HR only)
         Route::middleware('role:hr')->group(function () {
@@ -205,6 +214,13 @@ Route::middleware(['auth'])->group(function () {
             Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
             Route::get('users/create', [AdminUserController::class, 'create'])->name('users.create');
             Route::post('users', [AdminUserController::class, 'store'])->name('users.store');
+        });
+
+        // Member Data Management (Sekretaris only)
+        Route::middleware('role:sekretaris')->group(function () {
+            Route::get('member-data', [App\Http\Controllers\Admin\MemberDataAdminController::class, 'index'])->name('member-data.index');
+            Route::get('member-data/{user}', [App\Http\Controllers\Admin\MemberDataAdminController::class, 'show'])->name('member-data.show');
+            Route::get('member-data-export', [App\Http\Controllers\Admin\MemberDataAdminController::class, 'export'])->name('member-data.export');
         });
     });
 });

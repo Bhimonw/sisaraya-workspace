@@ -24,6 +24,9 @@ class User extends Authenticatable
         'username',
         'password',
         'bio',
+        'photo_path',
+        'phone',
+        'whatsapp',
         'guest_expired_at',
         'last_seen_at',
     ];
@@ -118,6 +121,30 @@ class User extends Authenticatable
     public function personalActivities()
     {
         return $this->hasMany(\App\Models\PersonalActivity::class);
+    }
+
+    /**
+     * Get member skills
+     */
+    public function skills()
+    {
+        return $this->hasMany(\App\Models\MemberSkill::class);
+    }
+
+    /**
+     * Get member modals (contributions)
+     */
+    public function modals()
+    {
+        return $this->hasMany(\App\Models\MemberModal::class);
+    }
+
+    /**
+     * Get member links
+     */
+    public function links()
+    {
+        return $this->hasMany(\App\Models\MemberLink::class);
     }
 
     /**

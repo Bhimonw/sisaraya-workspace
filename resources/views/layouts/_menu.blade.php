@@ -313,6 +313,15 @@
                             Pengelolaan Arsip
                         </a>
                     </li>
+                    <li>
+                        @php $active = request()->routeIs('admin.member-data.*'); @endphp
+                        <a href="{{ route('admin.member-data.index') }}" class="flex items-center gap-2 px-3 py-1.5 text-sm rounded {{ $active ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50' }}">
+                            <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            Data Anggota
+                        </a>
+                    </li>
                 @endrole
                 @can('business.view')
                     <li>
@@ -387,8 +396,21 @@
     </li>
     @endif
 
-    {{-- 8. Akun & Pengaturan --}}
+    {{-- 8. Data Kepegawaian --}}
     <li class="pt-2 mt-2 border-t border-gray-200">
+        @php $active = request()->routeIs('member-data.*') && !request()->routeIs('admin.member-data.*'); @endphp
+        <a href="{{ route('member-data.index') }}" class="flex items-center justify-between w-full px-3 py-2 rounded {{ $active ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50' }}">
+            <span class="inline-flex items-center gap-2">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Data Kepegawaian
+            </span>
+        </a>
+    </li>
+
+    {{-- 9. Akun & Pengaturan --}}
+    <li>
         @php $active = request()->routeIs('profile.*'); @endphp
         <a href="{{ route('profile.edit') }}" class="flex items-center justify-between w-full px-3 py-2 rounded {{ $active ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50' }}">
             <span class="inline-flex items-center gap-2">

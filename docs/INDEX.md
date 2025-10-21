@@ -118,6 +118,40 @@ This folder contains project documentation.
 - UI dengan Alpine.js untuk interactive stars
 - Business rules & validation
 
+### 11. `MEMBER_DATA_MANAGEMENT.md` 🆕⭐⭐
+**Member Data Management System - Technical Guide (English)**
+- Complete member data collection system
+- Profile photo upload (max 2MB)
+- Skills tracking with expertise levels
+- Modal contributions (money/equipment)
+- External links & contacts
+- Sekretaris dashboard with CSV export
+- Database schema, models, controllers, routes, views
+- Notification system for data updates
+- Security & authorization details
+- **Full technical documentation for developers**
+
+### 12. `MEMBER_DATA_SUMMARY.md` 🆕⭐
+**Member Data Implementation Summary (English)**
+- Implementation highlights & metrics
+- 4 migrations, 3 models, 2 controllers, 6 views
+- Zero new test failures (33 passing tests)
+- Complete user & admin workflows
+- Deployment checklist
+- Future enhancement ideas
+- **Quick overview for stakeholders**
+
+### 13. `PANDUAN_DATA_KEPEGAWAIAN.md` 🆕⭐
+**Panduan Pengguna: Data Kepegawaian (Bahasa Indonesia)**
+- Panduan lengkap untuk member mengisi data
+- Step-by-step dengan visual ASCII art
+- Cara upload foto profil
+- Cara isi skills, modal, dan links
+- FAQ (13 pertanyaan umum)
+- Tips & best practices
+- Troubleshooting guide
+- **User-friendly guide untuk semua anggota**
+
 ---
 
 ## 🎯 Quick Links Berdasarkan Role
