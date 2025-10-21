@@ -31,6 +31,7 @@ class RolesSeeder extends Seeder
             'talent' => 'Talent',
             'kewirausahaan' => 'Kewirausahaan',
             'guest' => 'Guest',
+            'head' => 'Head of SISARAYA',
         ];
 
         foreach ($roles as $name => $label) {

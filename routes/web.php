@@ -39,10 +39,6 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 Route::middleware(['auth'])->group(function () {
     Route::get('/app-dashboard', [DashboardController::class, 'index'])->name('app.dashboard');
 
-    // Role Change Requests (User can submit/cancel from profile)
-    Route::post('/role-change-requests', [RoleChangeRequestController::class, 'store'])->name('role-requests.store');
-    Route::delete('/role-change-requests/{roleChangeRequest}', [RoleChangeRequestController::class, 'cancel'])->name('role-requests.cancel');
-
     // Workspace (Meja Kerja) - Proyek aktif yang diikuti user
     Route::get('/workspace', [ProjectController::class, 'workspace'])->name('workspace');
     
@@ -195,6 +191,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('create', [RoleChangeRequestController::class, 'create'])->name('create');
         Route::post('/', [RoleChangeRequestController::class, 'store'])->name('store');
         Route::get('my-requests', [RoleChangeRequestController::class, 'myRequests'])->name('my-requests');
+        Route::delete('{roleChangeRequest}', [RoleChangeRequestController::class, 'cancel'])->name('cancel');
     });
 
     // Member Data
@@ -219,6 +216,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
             Route::get('users/create', [AdminUserController::class, 'create'])->name('users.create');
             Route::post('users', [AdminUserController::class, 'store'])->name('users.store');
+            Route::get('users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+            Route::put('users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+            Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
         });
 
         // Member Data Management (Sekretaris only)

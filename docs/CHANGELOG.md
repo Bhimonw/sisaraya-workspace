@@ -463,3 +463,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Removed email field from HR user management (forms, validation, table display) and added delete account functionality with confirmation dialog and relationship cleanup
+
+## 2025-10-21
+- Fixed missing admin.users routes (edit, update, destroy) and removed duplicate role-requests.store route definition
