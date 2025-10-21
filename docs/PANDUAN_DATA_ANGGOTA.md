@@ -1,8 +1,8 @@
-# Panduan Pengguna: Data Kepegawaian
+# Panduan Pengguna: Data Anggota
 
 ## 📋 Gambaran Umum
 
-Fitur Data Kepegawaian memungkinkan Anda untuk:
+Fitur Data Anggota memungkinkan Anda untuk:
 - Upload foto profil
 - Mencatat keahlian/skills yang Anda miliki
 - Mendaftarkan modal kontribusi (uang atau alat)
@@ -58,10 +58,10 @@ Semua data akan dikirim ke **Sekretaris** untuk pengelolaan kolektif.
 
 ---
 
-## 📝 Mengisi Data Kepegawaian
+## 📝 Mengisi Data Anggota
 
 ### Langkah 1: Akses Halaman Data
-- Klik **"Data Kepegawaian"** di sidebar
+- Klik **"Data Anggota"** di sidebar
 - Atau langsung akses: `/member-data`
 
 ### Langkah 2: Klik "+ Tambah Data"
@@ -169,11 +169,11 @@ Semua data akan dikirim ke **Sekretaris** untuk pengelolaan kolektif.
 
 ## 👀 Melihat Data Anda
 
-Setelah submit, Anda akan diarahkan ke halaman "Data Kepegawaian Saya":
+Setelah submit, Anda akan diarahkan ke halaman "Data Anggota Saya":
 
 ```
 ┌─────────────────────────────────────────┐
-│ Data Kepegawaian Saya    [+ Tambah Data]│
+│ Data Anggota Saya    [+ Tambah Data]│
 ├─────────────────────────────────────────┤
 │                                         │
 │ 💡 Keahlian / Skills                    │
@@ -216,7 +216,7 @@ Sekretaris dapat mengakses dashboard khusus:
 #### 1. Lihat Semua Anggota
 ```
 ┌─────────────────────────────────────────────┐
-│ Data Kepegawaian Anggota    [📥 Export CSV] │
+│ Data Anggota Anggota    [📥 Export CSV] │
 ├─────────────────────────────────────────────┤
 │ 🔍 [Cari nama atau username...] [Cari]      │
 ├─────────────────────────────────────────────┤
@@ -245,7 +245,7 @@ Klik "Lihat Detail" untuk melihat profil lengkap:
 
 ```
 ┌──────────────────────────────────────┐
-│ Data Kepegawaian: Bhimo    [← Kembali]│
+│ Data Anggota: Bhimo    [← Kembali]│
 ├──────────────────────────────────────┤
 │ 👤 Bhimo                             │
 │    @bhimo                            │
@@ -434,7 +434,7 @@ Bisa diisi sama atau berbeda sesuai kebutuhan.
 3. Jika masih tidak muncul, hubungi admin
 
 ### Data hilang setelah submit?
-Data tidak hilang! Kembali ke halaman "Data Kepegawaian" untuk melihat semua data Anda.
+Data tidak hilang! Kembali ke halaman "Data Anggota" untuk melihat semua data Anda.
 
 ---
 
@@ -448,7 +448,7 @@ Jika ada kendala atau pertanyaan:
 
 ---
 
-**Selamat menggunakan fitur Data Kepegawaian!** 🎉
+**Selamat menggunakan fitur Data Anggota!** 🎉
 
 Dengan melengkapi data, Anda membantu kolektif untuk:
 - ✅ Assign proyek sesuai keahlian
@@ -459,3 +459,4 @@ Dengan melengkapi data, Anda membantu kolektif untuk:
 ---
 
 **Terakhir diperbarui**: 21 Oktober 2025
+

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Tambah Data Kepegawaian
+                Tambah Data Anggota
             </h2>
             <a href="{{ route('member-data.index') }}" class="text-gray-600 hover:text-gray-800">
                 ← Kembali

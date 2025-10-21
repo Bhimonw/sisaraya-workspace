@@ -141,8 +141,8 @@ This folder contains project documentation.
 - Future enhancement ideas
 - **Quick overview for stakeholders**
 
-### 13. `PANDUAN_DATA_KEPEGAWAIAN.md` 🆕⭐
-**Panduan Pengguna: Data Kepegawaian (Bahasa Indonesia)**
+### 13. `PANDUAN_DATA_ANGGOTA.md` 🆕⭐
+**Panduan Pengguna: Data Anggota (Bahasa Indonesia)**
 - Panduan lengkap untuk member mengisi data
 - Step-by-step dengan visual ASCII art
 - Cara upload foto profil

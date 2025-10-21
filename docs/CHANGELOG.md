@@ -376,3 +376,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Implemented member data management system with photo upload, skills tracking, modal contributions, and external links. Added sekretaris dashboard for data management and CSV export.
+
+## 2025-10-21
+- Changed terminology from 'Data Kepegawaian' to 'Data Anggota' throughout the system (views, menu, documentation)

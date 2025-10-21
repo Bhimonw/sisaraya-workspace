@@ -396,7 +396,7 @@
     </li>
     @endif
 
-    {{-- 8. Data Kepegawaian --}}
+    {{-- 8. Data Anggota --}}
     <li class="pt-2 mt-2 border-t border-gray-200">
         @php $active = request()->routeIs('member-data.*') && !request()->routeIs('admin.member-data.*'); @endphp
         <a href="{{ route('member-data.index') }}" class="flex items-center justify-between w-full px-3 py-2 rounded {{ $active ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50' }}">
@@ -404,7 +404,7 @@
                 <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Data Kepegawaian
+                Data Anggota
             </span>
         </a>
     </li>
