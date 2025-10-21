@@ -95,8 +95,8 @@ class SisarayaMembersSeeder extends Seeder
             [
                 'name' => 'Kafilah',
                 'username' => 'kafilah',
-                'roles' => ['kewirausahaan'],
-                'bio' => 'Kewirausahaan - Mengelola unit bisnis komunitas, melaporkan progress usaha, mengunggah hasil penjualan dan laporan keuangan ke Ruang Penyimpanan.'
+                'roles' => ['bisnis_manager'],
+                'bio' => 'Bisnis Manager - Mengelola unit bisnis komunitas, melaporkan progress usaha, mengunggah hasil penjualan dan laporan keuangan ke Ruang Penyimpanan.'
             ],
             [
                 'name' => 'Agung',
