@@ -197,31 +197,71 @@
                          x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 transform scale-95"
                          x-transition:enter-end="opacity-100 transform scale-100"
-                         class="mt-5 pt-5 border-t-2 border-gray-200">
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 transform scale-100"
+                         x-transition:leave-end="opacity-0 transform scale-95"
+                         class="mt-5 pt-5 border-t-2 border-gray-200"
+                         style="display: none;">
                         
                         <h4 class="text-lg font-bold text-gray-900 mb-4" x-text="action === 'approve' ? 'Approve Request' : 'Reject Request'"></h4>
                         
-                        <form :action="action === 'approve' ? '{{ route('admin.role-requests.approve', $request) }}' : '{{ route('admin.role-requests.reject', $request) }}'" 
-                              method="POST">
+                        {{-- Approve Form --}}
+                        <form x-show="action === 'approve'" 
+                              x-cloak
+                              action="{{ route('admin.role-requests.approve', $request) }}" 
+                              method="POST"
+                              onsubmit="return confirm('Yakin ingin approve request ini?');">
                             @csrf
                             
                             <div class="mb-4">
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Catatan <span x-show="action === 'reject'" class="text-red-500">*</span>
-                                    <span class="text-gray-500 font-normal">(untuk user)</span>
+                                    Catatan
+                                    <span class="text-gray-500 font-normal">(opsional untuk user)</span>
                                 </label>
                                 <textarea name="review_note" 
                                           rows="4" 
-                                          :required="action === 'reject'"
-                                          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
-                                          :placeholder="action === 'approve' ? 'Catatan opsional untuk user...' : 'Jelaskan alasan penolakan (wajib)...'"></textarea>
+                                          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                                          placeholder="Catatan opsional untuk user..."></textarea>
                             </div>
 
                             <div class="flex items-center gap-3">
                                 <button type="submit" 
-                                        :class="action === 'approve' ? 'bg-gradient-to-r from-green-500 to-emerald-600' : 'bg-gradient-to-r from-red-500 to-pink-600'"
-                                        class="px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-                                    <span x-text="action === 'approve' ? 'Konfirmasi Approve' : 'Konfirmasi Reject'"></span>
+                                        class="bg-gradient-to-r from-green-500 to-emerald-600 px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                                    Konfirmasi Approve
+                                </button>
+
+                                <button type="button" 
+                                        @click="showReviewForm = false"
+                                        class="px-6 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all">
+                                    Batal
+                                </button>
+                            </div>
+                        </form>
+
+                        {{-- Reject Form --}}
+                        <form x-show="action === 'reject'" 
+                              x-cloak
+                              action="{{ route('admin.role-requests.reject', $request) }}" 
+                              method="POST"
+                              onsubmit="return confirm('Yakin ingin reject request ini?');">
+                            @csrf
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Catatan <span class="text-red-500">*</span>
+                                    <span class="text-gray-500 font-normal">(wajib untuk user)</span>
+                                </label>
+                                <textarea name="review_note" 
+                                          rows="4" 
+                                          required
+                                          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+                                          placeholder="Jelaskan alasan penolakan (wajib)..."></textarea>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <button type="submit" 
+                                        class="bg-gradient-to-r from-red-500 to-pink-600 px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                                    Konfirmasi Reject
                                 </button>
 
                                 <button type="button" 

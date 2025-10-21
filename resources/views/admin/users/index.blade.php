@@ -13,12 +13,40 @@
     {{-- ========================================
          HEADER SECTION
          ======================================== --}}
-    <x-users.page-header 
-        title="Manajemen Anggota"
-        description="Kelola akun pengguna Sisaraya"
-        :actionUrl="route('admin.users.create')"
-        actionText="Tambah User Baru"
-    />
+    <div class="mb-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <div>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Manajemen Anggota
+                </h1>
+                <p class="text-gray-600 mt-1">Kelola akun pengguna Sisaraya</p>
+            </div>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                @php
+                    $pendingRoleRequests = \App\Models\RoleChangeRequest::where('status', 'pending')->count();
+                @endphp
+                <a href="{{ route('admin.role-requests.index') }}" 
+                   class="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    <span>Review Request Role</span>
+                    @if($pendingRoleRequests > 0)
+                        <span class="px-2 py-0.5 bg-yellow-400 text-yellow-900 rounded-full text-xs font-bold animate-pulse">
+                            {{ $pendingRoleRequests }}
+                        </span>
+                    @endif
+                </a>
+                <a href="{{ route('admin.users.create') }}" 
+                   class="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Tambah User Baru</span>
+                </a>
+            </div>
+        </div>
+    </div>
 
     {{-- ========================================
          FLASH MESSAGES

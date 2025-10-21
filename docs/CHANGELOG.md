@@ -445,3 +445,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Cleaned duplicate and non-standard roles - removed capitalized duplicates (HR, PM, Sekretaris, Bendahara, Guest) and non-standard roles (head, Anggota)
+
+## 2025-10-21
+- Fixed role request review actions - separated approve and reject forms for proper form submission
+
+## 2025-10-21
+- Enhanced role request review - added confirmation dialogs, fixed form visibility, and added quick link from user management page
+
+## 2025-10-21
+- Fixed responsive layout for role request button in user management page - now visible on all screen sizes
