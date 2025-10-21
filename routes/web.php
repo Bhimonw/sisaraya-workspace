@@ -79,10 +79,24 @@ Route::middleware(['auth'])->group(function () {
     
     Route::resource('projects.tickets', TicketController::class)->shallow();
 
-    Route::resource('documents', DocumentController::class)->only(['index','create','store','show']);
+    // Rate-limited file uploads (10 per minute)
+    Route::middleware('throttle:10,1')->group(function () {
+        Route::post('documents', [DocumentController::class, 'store'])->name('documents.store');
+        Route::post('rabs', [App\Http\Controllers\RabController::class, 'store'])->name('rabs.store');
+        Route::put('rabs/{rab}', [App\Http\Controllers\RabController::class, 'update'])->name('rabs.update');
+        Route::post('businesses/{business}/reports', [App\Http\Controllers\BusinessReportController::class, 'store'])->name('businesses.reports.store');
+    });
+    
+    // Rate-limited ticket/vote creation (20 per minute)
+    Route::middleware('throttle:20,1')->group(function () {
+        Route::post('tickets', [TicketController::class, 'store'])->name('tickets.store.limited');
+        Route::post('votes', [App\Http\Controllers\VoteController::class, 'store'])->name('votes.store.limited');
+    });
+    
+    Route::resource('documents', DocumentController::class)->except(['store']);
     
     // RAB (Rencana Anggaran Biaya) - Bendahara
-    Route::resource('rabs', App\Http\Controllers\RabController::class);
+    Route::resource('rabs', App\Http\Controllers\RabController::class)->except(['store', 'update']);
     Route::post('rabs/{rab}/approve', [App\Http\Controllers\RabController::class, 'approve'])->name('rabs.approve');
     Route::post('rabs/{rab}/reject', [App\Http\Controllers\RabController::class, 'reject'])->name('rabs.reject');
     Route::get('rabs/{rab}/create-ticket', [App\Http\Controllers\TicketController::class, 'createForRab'])->name('tickets.createFromRab');
@@ -92,8 +106,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('businesses/{business}/approve', [App\Http\Controllers\BusinessController::class, 'approve'])->name('businesses.approve');
     Route::post('businesses/{business}/reject', [App\Http\Controllers\BusinessController::class, 'reject'])->name('businesses.reject');
     
-    // Business Reports
-    Route::post('businesses/{business}/reports', [App\Http\Controllers\BusinessReportController::class, 'store'])->name('businesses.reports.store');
+    // Business Reports - already in rate-limited group above
     Route::get('businesses/{business}/reports/{report}/download', [App\Http\Controllers\BusinessReportController::class, 'download'])->name('businesses.reports.download');
     Route::delete('businesses/{business}/reports/{report}', [App\Http\Controllers\BusinessReportController::class, 'destroy'])->name('businesses.reports.destroy');
 
@@ -101,8 +114,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('notes', App\Http\Controllers\NoteController::class)->except(['show', 'create', 'edit']);
     Route::post('notes/{note}/toggle-pin', [App\Http\Controllers\NoteController::class, 'togglePin'])->name('notes.togglePin');
 
-    // Votes (Voting System)
-    Route::resource('votes', App\Http\Controllers\VoteController::class)->except(['edit']);
+    // Votes (Voting System) - store route already in rate-limited group above
+    Route::resource('votes', App\Http\Controllers\VoteController::class)->except(['edit', 'store']);
     Route::post('votes/{vote}/cast', [App\Http\Controllers\VoteController::class, 'castVote'])->name('votes.cast');
     Route::post('votes/{vote}/close', [App\Http\Controllers\VoteController::class, 'close'])->name('votes.close');
     

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Project;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -55,23 +56,40 @@ class UserController extends Controller
             }
         }
 
-        $user = User::create([
-            'name' => $data['name'],
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        try {
+            DB::beginTransaction();
+            
+            $user = User::create([
+                'name' => $data['name'],
+                'username' => $data['username'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
 
-        if (!empty($data['roles'])) {
-            $user->syncRoles($data['roles']);
+            if (!empty($data['roles'])) {
+                $user->syncRoles($data['roles']);
+            }
+
+            // Attach projects if guest role
+            if (in_array('guest', $data['roles'] ?? []) && !empty($data['projects'])) {
+                $user->projects()->attach($data['projects']);
+            }
+            
+            DB::commit();
+            
+            return redirect()->route('admin.users.index')
+                ->with('success', 'User berhasil dibuat');
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            \Log::error('User creation failed: ' . $e->getMessage(), [
+                'admin_id' => auth()->id(),
+                'username' => $data['username'],
+            ]);
+            
+            return back()->withErrors(['error' => 'Gagal membuat user. Silakan coba lagi.'])->withInput();
         }
-
-        // Attach projects if guest role
-        if (in_array('guest', $data['roles'] ?? []) && !empty($data['projects'])) {
-            $user->projects()->attach($data['projects']);
-        }
-
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
     public function edit(User $user)
@@ -107,28 +125,45 @@ class UserController extends Controller
             }
         }
 
-        $user->update([
-            'name' => $data['name'],
-            'username' => $data['username'],
-            'email' => $data['email'],
-        ]);
+        try {
+            DB::beginTransaction();
+            
+            $user->update([
+                'name' => $data['name'],
+                'username' => $data['username'],
+                'email' => $data['email'],
+            ]);
 
-        if (!empty($data['password'])) {
-            $user->update(['password' => Hash::make($data['password'])]);
+            if (!empty($data['password'])) {
+                $user->update(['password' => Hash::make($data['password'])]);
+            }
+
+            if (isset($data['roles'])) {
+                $user->syncRoles($data['roles']);
+            }
+
+            // Sync projects if guest role, otherwise detach all
+            if (in_array('guest', $data['roles'] ?? [])) {
+                $user->projects()->sync($data['projects'] ?? []);
+            } else {
+                $user->projects()->detach();
+            }
+            
+            DB::commit();
+            
+            return redirect()->route('admin.users.index')
+                ->with('success', 'User berhasil diperbarui');
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            \Log::error('User update failed: ' . $e->getMessage(), [
+                'admin_id' => auth()->id(),
+                'user_id' => $user->id,
+            ]);
+            
+            return back()->withErrors(['error' => 'Gagal memperbarui user. Silakan coba lagi.'])->withInput();
         }
-
-        if (isset($data['roles'])) {
-            $user->syncRoles($data['roles']);
-        }
-
-        // Sync projects if guest role, otherwise detach all
-        if (in_array('guest', $data['roles'] ?? [])) {
-            $user->projects()->sync($data['projects'] ?? []);
-        } else {
-            $user->projects()->detach();
-        }
-
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
     public function destroy(User $user)

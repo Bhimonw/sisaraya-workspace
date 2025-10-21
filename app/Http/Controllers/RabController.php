@@ -19,7 +19,12 @@ class RabController extends Controller
 
     public function index(Request $request)
     {
-        $status = $request->get('status', 'all');
+        // Validate query parameter
+        $validated = $request->validate([
+            'status' => 'nullable|in:all,pending,approved,rejected',
+        ]);
+        
+        $status = $validated['status'] ?? 'all';
         
         $query = Rab::with('project', 'creator', 'approver');
         
@@ -41,39 +46,62 @@ class RabController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'project_id' => 'nullable|exists:projects,id',
-            'amount' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'file' => [
-                'nullable',
-                'file',
-                'max:10240', // 10MB
-                'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif'
-            ]
-        ], [
-            'title.required' => 'Judul RAB wajib diisi',
-            'amount.required' => 'Jumlah anggaran wajib diisi',
-            'amount.numeric' => 'Jumlah anggaran harus berupa angka',
-            'amount.min' => 'Jumlah anggaran minimal 0',
-            'file.file' => 'Upload harus berupa file',
-            'file.max' => 'Ukuran file maksimal 10MB',
-            'file.mimes' => 'Format file harus: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, atau GIF',
-        ]);
+        try {
+            $data = $request->validate([
+                'title' => 'required|string|max:255',
+                'project_id' => 'nullable|exists:projects,id',
+                'amount' => 'required|numeric|min:0',
+                'description' => 'nullable|string|max:5000',
+                'file' => [
+                    'nullable',
+                    'file',
+                    'max:10240', // 10MB
+                    'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif'
+                ]
+            ], [
+                'title.required' => 'Judul RAB wajib diisi',
+                'amount.required' => 'Jumlah anggaran wajib diisi',
+                'amount.numeric' => 'Jumlah anggaran harus berupa angka',
+                'amount.min' => 'Jumlah anggaran minimal 0',
+                'file.file' => 'Upload harus berupa file',
+                'file.max' => 'Ukuran file maksimal 10MB',
+                'file.mimes' => 'Format file harus: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, atau GIF',
+            ]);
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $path = $file->store('rabs', 'public');
-            $data['file_path'] = $path;
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                
+                // Verify file is valid
+                if (!$file->isValid()) {
+                    return back()->withErrors(['file' => 'File upload gagal. Silakan coba lagi.'])->withInput();
+                }
+                
+                // Sanitize filename
+                $filename = \Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+                $extension = $file->getClientOriginalExtension();
+                $newFilename = $filename . '_' . time() . '.' . $extension;
+                
+                $path = $file->storeAs('rabs', $newFilename, 'public');
+                $data['file_path'] = $path;
+            }
+
+            $data['created_by'] = $request->user()->id;
+
+            Rab::create($data);
+
+            return redirect()->route('rabs.index')
+                ->with('success', 'RAB berhasil dibuat');
+                
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            \Log::error('RAB creation failed: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'title' => $request->input('title'),
+            ]);
+            
+            return back()->withErrors(['error' => 'Gagal membuat RAB. Silakan coba lagi.'])->withInput();
         }
-
-        $data['created_by'] = $request->user()->id;
-
-        Rab::create($data);
-
-        return redirect()->route('rabs.index')
-            ->with('success', 'RAB berhasil dibuat');
     }
 
     public function show(Rab $rab)
@@ -91,9 +119,17 @@ class RabController extends Controller
             'approved_at' => now(),
         ]);
 
-        // Send push notification to RAB creator
-        if ($rab->created_by) {
-            $rab->creator->notify(new RabApprovedNotification($rab));
+        // Send push notification to RAB creator (with error handling)
+        if ($rab->created_by && $rab->creator) {
+            try {
+                $rab->creator->notify(new RabApprovedNotification($rab));
+            } catch (\Exception $e) {
+                \Log::warning('Failed to send RAB approval notification', [
+                    'rab_id' => $rab->id,
+                    'user_id' => $rab->created_by,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         return redirect()->route('rabs.show', $rab)->with('success', 'RAB approved');
@@ -120,25 +156,51 @@ class RabController extends Controller
 
     public function update(Request $request, Rab $rab)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'project_id' => 'nullable|exists:projects,id',
-            'amount' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'file' => 'nullable|file|mimes:pdf,jpg,png|max:5120'
-        ]);
+        try {
+            $data = $request->validate([
+                'title' => 'required|string|max:255',
+                'project_id' => 'nullable|exists:projects,id',
+                'amount' => 'required|numeric|min:0',
+                'description' => 'nullable|string|max:5000',
+                'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240'
+            ]);
 
-        if ($request->hasFile('file')) {
-            if ($rab->file_path) {
-                Storage::delete($rab->file_path);
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                
+                // Verify file is valid
+                if (!$file->isValid()) {
+                    return back()->withErrors(['file' => 'File upload gagal. Silakan coba lagi.'])->withInput();
+                }
+                
+                // Delete old file if exists
+                if ($rab->file_path) {
+                    Storage::delete($rab->file_path);
+                }
+                
+                // Sanitize filename
+                $filename = \Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+                $extension = $file->getClientOriginalExtension();
+                $newFilename = $filename . '_' . time() . '.' . $extension;
+                
+                $path = $file->storeAs('rabs', $newFilename, 'public');
+                $data['file_path'] = $path;
             }
-            $path = $request->file('file')->store('rabs');
-            $data['file_path'] = $path;
+
+            $rab->update($data);
+
+            return redirect()->route('rabs.index')->with('success','RAB berhasil diperbarui');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            \Log::error('RAB update failed: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'rab_id' => $rab->id,
+            ]);
+            
+            return back()->withErrors(['error' => 'Gagal memperbarui RAB. Silakan coba lagi.'])->withInput();
         }
-
-        $rab->update($data);
-
-        return redirect()->route('rabs.index')->with('success','RAB updated');
     }
 
     public function destroy(Rab $rab)

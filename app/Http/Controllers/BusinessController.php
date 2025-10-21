@@ -73,7 +73,9 @@ class BusinessController extends Controller
     {
         $this->authorize('approve', $business);
         
-        DB::transaction(function () use ($business) {
+        try {
+            DB::beginTransaction();
+            
             // Create project from approved business
             $project = Project::create([
                 'name' => $business->name,
@@ -99,10 +101,23 @@ class BusinessController extends Controller
                 'rejection_reason' => null,
                 'project_id' => $project->id,
             ]);
-        });
-        
-        return redirect()->route('businesses.show', $business)
-            ->with('success', 'Usaha berhasil disetujui dan proyek telah dibuat!');
+            
+            DB::commit();
+            
+            return redirect()->route('businesses.show', $business)
+                ->with('success', 'Usaha berhasil disetujui dan proyek telah dibuat!');
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            \Log::error('Business approval failed', [
+                'business_id' => $business->id,
+                'approver_id' => auth()->id(),
+                'error' => $e->getMessage(),
+            ]);
+            
+            return back()->with('error', 'Gagal menyetujui usaha. Silakan coba lagi.');
+        }
     }
 
     public function reject(Request $request, Business $business)

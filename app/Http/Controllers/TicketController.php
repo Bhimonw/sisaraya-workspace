@@ -8,6 +8,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketAssigned;
 use App\Notifications\TicketAssignedNotification;
+use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
@@ -49,7 +50,7 @@ class TicketController extends Controller
         if ($project === null) {
             // PM-only can create general tickets
             if (!$request->user()->hasRole('pm')) {
-                abort(403, 'Only PM can create general tickets');
+                abort(403, 'Hanya PM yang dapat membuat tiket umum');
             }
 
             $data = $request->validate([
@@ -77,79 +78,123 @@ class TicketController extends Controller
 
             $ticketsCreated = 0;
 
-            // If multiple users selected, create one ticket per user
-            if (!empty($targetUserIds)) {
-                foreach ($targetUserIds as $userId) {
-                    $ticket = Ticket::create([
-                        'title' => $data['title'],
-                        'description' => $data['description'] ?? null,
-                        'status' => 'todo',
-                        'context' => 'umum',
-                        'priority' => $data['priority'] ?? 'medium',
-                        'weight' => $data['weight'] ?? 5,
-                        'target_role' => null,
-                        'target_user_id' => $userId,
-                        'due_date' => $data['due_date'] ?? null,
-                        'creator_id' => $request->user()->id,
-                        'project_id' => null, // General ticket
-                    ]);
-
-                    // Load relationships for notification
-                    $ticket->load(['project', 'projectEvent.project']);
-
-                    // Send notification to specific user
-                    $targetUser = User::find($userId);
-                    if ($targetUser && $targetUser->id !== $request->user()->id) {
-                        $targetUser->notify(new TicketAssigned($ticket, $request->user(), true));
-                    }
-                    
-                    $ticketsCreated++;
-                }
-
-                $message = $ticketsCreated === 1 
-                    ? 'Tiket umum berhasil dibuat!' 
-                    : "Berhasil membuat {$ticketsCreated} tiket umum untuk {$ticketsCreated} user!";
+            try {
+                DB::beginTransaction();
                 
-                return redirect()->route('tickets.index')->with('success', $message);
-            }
+                // If multiple users selected, create one ticket per user
+                if (!empty($targetUserIds)) {
+                    foreach ($targetUserIds as $userId) {
+                        $ticket = Ticket::create([
+                            'title' => $data['title'],
+                            'description' => $data['description'] ?? null,
+                            'status' => 'todo',
+                            'context' => 'umum',
+                            'priority' => $data['priority'] ?? 'medium',
+                            'weight' => $data['weight'] ?? 5,
+                            'target_role' => null,
+                            'target_user_id' => $userId,
+                            'due_date' => $data['due_date'] ?? null,
+                            'creator_id' => $request->user()->id,
+                            'project_id' => null, // General ticket
+                        ]);
 
-            // Single ticket for role or all
-            $ticket = Ticket::create([
-                'title' => $data['title'],
-                'description' => $data['description'] ?? null,
-                'status' => 'todo',
-                'context' => 'umum',
-                'priority' => $data['priority'] ?? 'medium',
-                'weight' => $data['weight'] ?? 5,
-                'target_role' => $targetRole,
-                'target_user_id' => null,
-                'due_date' => $data['due_date'] ?? null,
-                'creator_id' => $request->user()->id,
-                'project_id' => null, // General ticket
-            ]);
+                        // Load relationships for notification
+                        $ticket->load(['project', 'projectEvent.project']);
 
-            // Load relationships for notification
-            $ticket->load(['project', 'projectEvent.project']);
+                        // Send notification to specific user (with error handling)
+                        try {
+                            $targetUser = User::find($userId);
+                            if ($targetUser && $targetUser->id !== $request->user()->id) {
+                                $targetUser->notify(new TicketAssigned($ticket, $request->user(), true));
+                            }
+                        } catch (\Exception $e) {
+                            \Log::warning('Failed to send ticket notification', [
+                                'ticket_id' => $ticket->id,
+                                'user_id' => $userId,
+                                'error' => $e->getMessage(),
+                            ]);
+                            // Continue - notification failure shouldn't stop ticket creation
+                        }
+                        
+                        $ticketsCreated++;
+                    }
 
-            // Send notifications based on target type
-            if ($ticket->target_role) {
-                // Send notification to all users with the role
-                $usersWithRole = User::role($ticket->target_role)->get();
-                foreach ($usersWithRole as $user) {
-                    if ($user->id !== $request->user()->id) {
-                        $user->notify(new TicketAssigned($ticket, $request->user(), false));
+                    DB::commit();
+                    
+                    $message = $ticketsCreated === 1 
+                        ? 'Tiket umum berhasil dibuat!' 
+                        : "Berhasil membuat {$ticketsCreated} tiket umum untuk {$ticketsCreated} user!";
+                    
+                    return redirect()->route('tickets.index')->with('success', $message);
+                }
+
+                // Single ticket for role or all
+                $ticket = Ticket::create([
+                    'title' => $data['title'],
+                    'description' => $data['description'] ?? null,
+                    'status' => 'todo',
+                    'context' => 'umum',
+                    'priority' => $data['priority'] ?? 'medium',
+                    'weight' => $data['weight'] ?? 5,
+                    'target_role' => $targetRole,
+                    'target_user_id' => null,
+                    'due_date' => $data['due_date'] ?? null,
+                    'creator_id' => $request->user()->id,
+                    'project_id' => null, // General ticket
+                ]);
+
+                // Load relationships for notification
+                $ticket->load(['project', 'projectEvent.project']);
+
+                // Send notifications based on target type (with error handling)
+                if ($ticket->target_role) {
+                    try {
+                        // Send notification to all users with the role
+                        $usersWithRole = User::role($ticket->target_role)->get();
+                        foreach ($usersWithRole as $user) {
+                            if ($user->id !== $request->user()->id) {
+                                try {
+                                    $user->notify(new TicketAssigned($ticket, $request->user(), false));
+                                } catch (\Exception $e) {
+                                    \Log::warning('Failed to send ticket notification to user', [
+                                        'ticket_id' => $ticket->id,
+                                        'user_id' => $user->id,
+                                        'error' => $e->getMessage(),
+                                    ]);
+                                }
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        \Log::warning('Failed to send bulk ticket notifications', [
+                            'ticket_id' => $ticket->id,
+                            'role' => $ticket->target_role,
+                            'error' => $e->getMessage(),
+                        ]);
                     }
                 }
-            }
-            // If target_type is 'all', no notifications sent
+                // If target_type is 'all', no notifications sent
 
-            return redirect()->route('tickets.index')->with('success', 'Tiket umum berhasil dibuat!');
+                DB::commit();
+                
+                return redirect()->route('tickets.index')->with('success', 'Tiket umum berhasil dibuat!');
+                
+            } catch (\Exception $e) {
+                DB::rollBack();
+                
+                \Log::error('Ticket creation failed', [
+                    'creator_id' => auth()->id(),
+                    'title' => $data['title'] ?? null,
+                    'error' => $e->getMessage(),
+                ]);
+                
+                return back()->withErrors(['error' => 'Gagal membuat tiket. Silakan coba lagi.'])->withInput();
+            }
         }
 
         // Original project-based ticket creation
         // Check if user can manage project (PM or Admin)
         if (!$project->canManage($request->user())) {
-            abort(403, 'Only Project Manager or Admin can create tickets');
+            abort(403, 'Hanya Project Manager atau Admin yang dapat membuat tiket');
         }
 
         $data = $request->validate([

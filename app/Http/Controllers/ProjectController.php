@@ -132,8 +132,14 @@ class ProjectController extends Controller
     
     public function index(Request $request)
     {
-        $status = $request->get('status', 'all');
-        $label = $request->get('label');
+        // Validate query parameters
+        $validated = $request->validate([
+            'status' => 'nullable|in:all,planning,active,on_hold,completed,blackout',
+            'label' => 'nullable|in:UMKM,DIVISI,Kegiatan',
+        ]);
+        
+        $status = $validated['status'] ?? 'all';
+        $label = $validated['label'] ?? null;
         
         // Get counts for each status tab
         $totalCount = Project::count();
