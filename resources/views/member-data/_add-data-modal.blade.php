@@ -29,6 +29,21 @@
             } else {
                 input.value = '';
             }
+        },
+        disableInactiveTabs(event) {
+            // Disable semua input di tab yang tidak aktif sebelum submit
+            const form = event.target;
+            const tabs = form.querySelectorAll('[x-show]');
+            
+            tabs.forEach(tab => {
+                const isVisible = tab.style.display !== 'none';
+                if (!isVisible) {
+                    // Disable semua input/select/textarea di tab yang hidden
+                    tab.querySelectorAll('input, select, textarea').forEach(field => {
+                        field.disabled = true;
+                    });
+                }
+            });
         }
     }" 
      @open-add-modal.window="showModal = true; activeTab = $event.detail || 'skills'; jenis = 'uang'; jumlahUang = ''"
@@ -92,7 +107,8 @@
 
             <!-- Modal Content -->
             <div class="overflow-y-auto max-h-[calc(90vh-180px)]">
-                <form method="POST" action="{{ route('member-data.store') }}" class="p-6">
+                <form method="POST" action="{{ route('member-data.store') }}" class="p-6" 
+                      @submit="disableInactiveTabs($event)">
                     @csrf
 
                     <!-- Skills Tab -->

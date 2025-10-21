@@ -394,3 +394,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Fixed 'invalid form control not focusable' error by making required attributes conditional based on active tab
+
+## 2025-10-21
+- Fixed data not being saved - added function to disable inactive tab fields before form submission
