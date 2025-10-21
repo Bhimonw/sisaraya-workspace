@@ -70,13 +70,26 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <button @click="showCreateModal = true" 
-                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-150">
-                    <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Buat Tiket Umum
-                </button>
+                @if(!auth()->user()->hasRole('head') || auth()->user()->hasRole('pm'))
+                    {{-- Button only visible to PM or users without HEAD role --}}
+                    <button @click="showCreateModal = true" 
+                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-150">
+                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Buat Tiket Umum
+                    </button>
+                @else
+                    {{-- Info badge for HEAD role --}}
+                    <div class="inline-flex items-center px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg">
+                        <svg class="h-5 w-5 text-amber-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        <span class="text-sm font-medium text-amber-700">Mode Monitoring</span>
+                        <span class="ml-2 text-xs text-amber-600">View Only</span>
+                    </div>
+                @endif
             </div>
         </div>
         
@@ -492,8 +505,10 @@
         </div>
     </template>
 
-    {{-- Modal Create Tiket Umum Component --}}
-    @include('components.tickets.create-modal')
+    {{-- Modal Create Tiket Umum Component (PM only) --}}
+    @if(!auth()->user()->hasRole('head') || auth()->user()->hasRole('pm'))
+        @include('components.tickets.create-modal')
+    @endif
 
 </div>
 @endsection

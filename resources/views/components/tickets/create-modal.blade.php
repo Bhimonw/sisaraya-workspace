@@ -41,9 +41,8 @@
             </div>
 
             {{-- Form --}}
-            <form method="POST" action="{{ route('tickets.store') }}" class="p-8 space-y-6">
+            <form method="POST" action="{{ route('tickets.storeGeneral') }}" class="p-8 space-y-6">
                 @csrf
-                <input type="hidden" name="project_id" value="">
                 <input type="hidden" name="context" value="umum">
 
                 {{-- Title --}}

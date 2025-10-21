@@ -478,3 +478,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - HEAD role can now access ticket monitoring page (GET /tickets) via route 'tickets.index' with role:pm|head middleware. Menu already includes 'Monitoring Tiket' link in HEAD's Ruang Management section.
+
+## 2025-10-21
+- Fixed route error: Changed create-modal.blade.php to use 'tickets.storeGeneral' instead of undefined 'tickets.store' route. This aligns the modal with PM-only general ticket creation.
+
+## 2025-10-21
+- HEAD role UI enhancement: Hidden 'Buat Tiket Umum' button and create-modal component for HEAD users. Added 'Mode Monitoring - View Only' badge instead. Only PM can see and use the create general ticket button.
