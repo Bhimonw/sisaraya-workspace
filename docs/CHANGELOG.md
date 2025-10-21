@@ -466,3 +466,15 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Fixed missing admin.users routes (edit, update, destroy) and removed duplicate role-requests.store route definition
+
+## 2025-10-21
+- Added HEAD role menu with view-only access to projects, tickets, businesses, and documents. PM retains full edit/add capabilities.
+
+## 2025-10-21
+- Added authorization checks in controllers to enforce HEAD role view-only access. HEAD cannot create/edit/delete projects, create general tickets, or approve businesses.
+
+## 2025-10-21
+- Clarified HEAD role ticket permissions: can view all tickets, claim tickets, update status (start/complete/todo), but cannot create general tickets or manage tickets for others.
+
+## 2025-10-21
+- HEAD role can now access ticket monitoring page (GET /tickets) via route 'tickets.index' with role:pm|head middleware. Menu already includes 'Monitoring Tiket' link in HEAD's Ruang Management section.

@@ -41,8 +41,8 @@ class SisarayaMembersSeeder extends Seeder
             [
                 'name' => 'Yahya',
                 'username' => 'yahya',
-                'roles' => ['pr'],
-                'bio' => 'Head of Public Relation - Bertanggung jawab atas komunikasi eksternal, branding komunitas, serta menjembatani hubungan dengan mitra, sponsor, dan publik.'
+                'roles' => ['pr', 'head'],
+                'bio' => 'Head of SISARAYA & Public Relation - Memimpin organisasi dengan monitoring semua aktivitas. Bertanggung jawab atas komunikasi eksternal, branding komunitas, serta menjembatani hubungan dengan mitra, sponsor, dan publik.'
             ],
             [
                 'name' => 'Fadhil',

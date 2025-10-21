@@ -171,11 +171,23 @@ class ProjectController extends Controller
 
     public function create()
     {
+        // Head role cannot create projects (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm', 'hr'])) {
+            abort(403, 'Role Head tidak dapat membuat proyek baru. Silakan hubungi PM untuk membuat proyek.');
+        }
+        
         return view('projects.create');
     }
 
     public function store(Request $request)
     {
+        // Head role cannot create projects (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm', 'hr'])) {
+            return back()->withErrors(['error' => 'Role Head tidak dapat membuat proyek baru. Silakan hubungi PM untuk membuat proyek.'])->withInput();
+        }
+        
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -215,12 +227,24 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        // Head role cannot edit projects (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm', 'hr'])) {
+            abort(403, 'Role Head tidak dapat mengedit proyek. Hanya dapat melihat informasi proyek.');
+        }
+        
         $project->load('members');
         return view('projects.edit', compact('project'));
     }
 
     public function update(Request $request, Project $project)
     {
+        // Head role cannot update projects (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm', 'hr'])) {
+            return back()->withErrors(['error' => 'Role Head tidak dapat mengedit proyek. Hanya dapat melihat informasi proyek.'])->withInput();
+        }
+        
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -327,6 +351,12 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
+        // Head role cannot delete projects (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm', 'hr'])) {
+            return back()->with('error', 'Role Head tidak dapat menghapus proyek. Hanya dapat melihat informasi proyek.');
+        }
+        
         // Check if the authenticated user is the project owner
         if ($project->owner_id !== auth()->id()) {
             abort(403, 'Anda tidak memiliki izin untuk menghapus proyek ini.');

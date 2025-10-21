@@ -65,10 +65,11 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:pm')->group(function () {
         Route::get('tickets/general/create', [TicketController::class, 'createGeneral'])->name('tickets.createGeneral');
         Route::post('tickets/general', [TicketController::class, 'storeGeneral'])->name('tickets.storeGeneral');
-        
-        // Manajemen Tiket - PM only
+    });
+    
+    // Manajemen Tiket - accessible by PM and HEAD roles
+    Route::middleware('role:pm|head')->group(function () {
         Route::get('tickets', [TicketController::class, 'index'])->name('tickets.index');
-        Route::post('tickets', [TicketController::class, 'store'])->name('tickets.store');
     });
     
     // Ticket overview for all users

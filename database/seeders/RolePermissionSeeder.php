@@ -23,6 +23,7 @@ class RolePermissionSeeder extends Seeder
             'users.manage',
             'projects.create',
             'projects.update',
+            'projects.delete',
             'projects.view',
             'projects.manage_members',
             'tickets.create',
@@ -72,7 +73,13 @@ class RolePermissionSeeder extends Seeder
         // head (Head of SISARAYA - Yahya) - Pengawas tertinggi dengan akses view-only
         // Dapat melihat semua proyek, claim tiket, dan aktif di chat, tapi tidak bisa update/delete proyek
         // Role ini khusus untuk posisi kepemimpinan organisasi
-        Role::where('name', 'head')->first()?->givePermissionTo(['projects.view', 'tickets.view_all', 'tickets.update_status', 'documents.view_all']);
+        Role::where('name', 'head')->first()?->givePermissionTo([
+            'projects.view',         // View all projects (READ ONLY)
+            'tickets.view_all',      // View all tickets (READ ONLY)
+            'tickets.update_status', // Can update status of claimed tickets
+            'documents.view_all',    // View public documents (READ ONLY)
+            'business.view'          // View all businesses (READ ONLY)
+        ]);
 
         // Backwards-compatibility for existing seeded roles (uppercased)
         // create uppercase aliases if missing

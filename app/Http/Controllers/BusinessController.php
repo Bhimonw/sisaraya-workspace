@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\User;
 use App\Notifications\BusinessNeedsApproval;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\DB;
 
@@ -39,12 +40,24 @@ class BusinessController extends Controller
 
     public function create()
     {
+        // Head role cannot create business proposals (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm', 'kewirausahaan'])) {
+            abort(403, 'Role Head tidak dapat membuat proposal usaha. Hanya dapat melihat informasi usaha.');
+        }
+        
         // Redirect to index with modal open flag
         return redirect()->route('businesses.index')->with('openCreateModal', true);
     }
 
     public function store(Request $request)
     {
+        // Head role cannot create business proposals (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm', 'kewirausahaan'])) {
+            return back()->withErrors(['error' => 'Role Head tidak dapat membuat proposal usaha. Hanya dapat melihat informasi usaha.'])->withInput();
+        }
+        
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string'
@@ -71,6 +84,12 @@ class BusinessController extends Controller
 
     public function approve(Business $business)
     {
+        // Head role cannot approve business proposals (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm'])) {
+            return back()->with('error', 'Role Head tidak dapat menyetujui proposal usaha. Hanya PM yang dapat menyetujui.');
+        }
+        
         $this->authorize('approve', $business);
         
         try {

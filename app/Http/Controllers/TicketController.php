@@ -545,6 +545,12 @@ class TicketController extends Controller
      */
     public function createGeneral()
     {
+        // Head role cannot create general tickets (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm'])) {
+            abort(403, 'Role Head tidak dapat membuat tiket umum. Hanya PM yang dapat membuat tiket untuk semua anggota.');
+        }
+        
         return view('tickets.create_general');
     }
 
@@ -559,6 +565,12 @@ class TicketController extends Controller
      */
     public function storeGeneral(Request $request)
     {
+        // Head role cannot create general tickets (view-only access)
+        $user = Auth::user();
+        if ($user->hasRole('head') && !$user->hasAnyRole(['pm'])) {
+            return back()->withErrors(['error' => 'Role Head tidak dapat membuat tiket umum. Hanya PM yang dapat membuat tiket untuk semua anggota.'])->withInput();
+        }
+        
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
