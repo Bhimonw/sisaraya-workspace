@@ -27,6 +27,22 @@ class TicketController extends Controller
         return view('tickets.index', compact('allTickets'));
     }
 
+    /**
+     * Show single ticket detail
+     */
+    public function show(Ticket $ticket)
+    {
+        $ticket->load([
+            'project',
+            'projectEvent.project',
+            'creator',
+            'claimedBy',
+            'rab'
+        ]);
+
+        return view('tickets.show', compact('ticket'));
+    }
+
     public function store(Request $request, Project $project = null)
     {
         // If project is null, it's a general ticket (from Manajemen Tiket)

@@ -318,15 +318,22 @@
             {{-- Left Column: Tiket, Kanban, Event (2 columns = 2/3 width) --}}
             <div class="lg:col-span-2 space-y-6">
                 
-                {{-- Tiket Tersedia Section --}}
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-3">
-                        <div class="flex items-center gap-2">
-                            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                            </svg>
-                            <h3 class="font-semibold text-white">Tiket Tersedia untuk Anda</h3>
-                            <span class="text-xs px-2 py-0.5 bg-white/20 rounded-full text-white">
+                {{-- Tiket Tersedia Section - Enhanced Design --}}
+                <div class="bg-white rounded-xl shadow-lg border border-blue-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div class="bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-700 px-6 py-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+                                    <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white text-lg">Tiket Tersedia untuk Anda</h3>
+                                    <p class="text-xs text-blue-100">Tiket yang dapat Anda klaim atau kerjakan</p>
+                                </div>
+                            </div>
+                            <span class="flex items-center gap-2 px-3 py-1.5 bg-white/25 backdrop-blur-sm rounded-full text-white font-semibold">
                                 @php
                                     $availableTickets = $project->tickets->filter(function($ticket) {
                                         // Tampilkan tiket yang:
@@ -336,32 +343,61 @@
                                             || ($ticket->claimed_by === auth()->id());
                                     });
                                 @endphp
-                                {{ $availableTickets->count() }}
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                                </svg>
+                                {{ $availableTickets->count() }} tiket
                             </span>
                         </div>
                     </div>
                     
-                    <div class="p-4">
+                    <div class="p-6 bg-gradient-to-br from-gray-50 to-blue-50/30">
                         @if($availableTickets->count() > 0)
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                                 @foreach($availableTickets as $ticket)
-                                <div class="p-3 bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all">
-                                    <div class="font-medium text-sm text-gray-900 mb-1">{{ $ticket->title }}</div>
-                                    @if($ticket->description)
-                                        <div class="text-xs text-gray-600 mb-2 line-clamp-2">{{ Str::limit($ticket->description, 80) }}</div>
-                                    @endif
-                                    <div class="flex items-center justify-between flex-wrap gap-2">
-                                        <div class="flex flex-wrap gap-1">
-                                            <span class="text-[10px] px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
-                                                {{ ucfirst($ticket->status) }}
+                                <div class="group p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all duration-300">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <h4 class="font-semibold text-gray-900 text-sm leading-tight flex-1 group-hover:text-blue-600 transition-colors">
+                                            {{ $ticket->title }}
+                                        </h4>
+                                        @if($ticket->target_role)
+                                            <span class="ml-2 flex-shrink-0 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-full font-semibold border border-purple-200">
+                                                {{ \App\Models\Ticket::getAvailableRoles()[$ticket->target_role] ?? $ticket->target_role }}
                                             </span>
-                                            @if($ticket->target_role)
-                                                <span class="text-[10px] px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">
-                                                    {{ \App\Models\Ticket::getAvailableRoles()[$ticket->target_role] ?? $ticket->target_role }}
+                                        @endif
+                                    </div>
+                                    
+                                    @if($ticket->description)
+                                        <p class="text-xs text-gray-600 mb-3 line-clamp-2 leading-relaxed">
+                                            {{ Str::limit($ticket->description, 100) }}
+                                        </p>
+                                    @endif
+                                    
+                                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-100">
+                                        <div class="flex items-center gap-2">
+                                            {{-- Status Badge --}}
+                                            @if($ticket->status === 'todo')
+                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 rounded-full font-bold border border-amber-200">
+                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                    </svg>
+                                                    To Do
+                                                </span>
+                                            @elseif($ticket->status === 'doing')
+                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full font-bold border border-purple-200">
+                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                                    </svg>
+                                                    Doing
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-bold border border-blue-200">
+                                                    {{ ucfirst($ticket->status) }}
                                                 </span>
                                             @endif
                                         </div>
-                                        <div class="flex gap-1">
+                                        
+                                        <div class="flex items-center gap-2">
                                             {{-- Detail Button --}}
                                             <button 
                                                 @click="showTicket({
@@ -378,44 +414,61 @@
                                                     created_at: '{{ $ticket->created_at->format('d M Y H:i') }}',
                                                     event_title: {{ \Illuminate\Support\Js::from($ticket->projectEvent?->title) }}
                                                 })"
-                                                class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">
+                                                class="inline-flex items-center gap-1 text-xs px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 hover:shadow-sm transition-all font-medium">
+                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                </svg>
                                                 Detail
                                             </button>
 
                                             {{-- Action Button Based on Status --}}
                                             @if(!$ticket->isClaimed())
                                                 {{-- Unclaimed: Show Ambil button --}}
-                                                <form method="POST" action="{{ route('tickets.claim', $ticket) }}">
+                                                <form method="POST" action="{{ route('tickets.claim', $ticket) }}" class="inline">
                                                     @csrf
-                                                    <button type="submit" class="text-xs px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                                                    <button type="submit" class="inline-flex items-center gap-1 text-xs px-3 py-1.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 hover:shadow-md transition-all font-semibold">
+                                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                        </svg>
                                                         Ambil
                                                     </button>
                                                 </form>
                                             @elseif($ticket->claimed_by === auth()->id())
                                                 {{-- Claimed by current user --}}
                                                 @if($ticket->status === 'todo')
-                                                    <form method="POST" action="{{ route('tickets.start', $ticket) }}">
+                                                    <form method="POST" action="{{ route('tickets.start', $ticket) }}" class="inline">
                                                         @csrf
-                                                        <button type="submit" class="text-xs px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">
+                                                        <button type="submit" class="inline-flex items-center gap-1 text-xs px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 hover:shadow-md transition-all font-semibold">
+                                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                            </svg>
                                                             Mulai
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'doing')
-                                                    <form method="POST" action="{{ route('tickets.complete', $ticket) }}">
+                                                    <form method="POST" action="{{ route('tickets.complete', $ticket) }}" class="inline">
                                                         @csrf
-                                                        <button type="submit" class="text-xs px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">
+                                                        <button type="submit" class="inline-flex items-center gap-1 text-xs px-3 py-1.5 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 hover:shadow-md transition-all font-semibold">
+                                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                            </svg>
                                                             Selesai
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'done')
-                                                    <span class="text-xs px-3 py-1 bg-green-100 text-green-700 rounded-lg font-medium">
+                                                    <span class="inline-flex items-center gap-1 text-xs px-3 py-1.5 bg-green-100 text-green-700 rounded-lg font-semibold border border-green-300">
+                                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                        </svg>
                                                         Selesai
                                                     </span>
                                                 @endif
                                             @else
                                                 {{-- Claimed by other user --}}
-                                                <span class="text-[10px] text-gray-500">
-                                                    Diambil: {{ $ticket->claimedBy?->name }}
+                                                <span class="text-[10px] px-2 py-1 bg-gray-100 text-gray-600 rounded-lg border border-gray-200">
+                                                    {{ $ticket->claimedBy?->name }}
                                                 </span>
                                             @endif
                                         </div>
@@ -424,36 +477,48 @@
                                 @endforeach
                             </div>
                         @else
-                            <div class="text-center py-8 text-gray-500">
-                                <svg class="h-12 w-12 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <p class="text-xs text-gray-400 font-medium">Tidak ada tiket tersedia</p>
-                                <p class="text-[10px] text-gray-400 mt-1">untuk role Anda saat ini</p>
+                            <div class="text-center py-12">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full mb-4">
+                                    <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm text-gray-600 font-semibold mb-1">Tidak ada tiket tersedia</p>
+                                <p class="text-xs text-gray-400">Semua tiket sudah diklaim atau tidak ada tiket untuk role Anda</p>
                             </div>
                         @endif
                     </div>
                 </div>
 
-                {{-- Kanban Board untuk Member (Tiket Saya) --}}
+                {{-- Kanban Board untuk Member (Tiket Saya) - Enhanced Design --}}
                 @cannot('update', $project)
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-3">
+                <div class="bg-white rounded-xl shadow-lg border border-purple-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div class="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 px-6 py-4">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                                </svg>
-                                <h3 class="font-semibold text-white">Tiket Saya</h3>
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+                                    <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white text-lg">Tiket Saya</h3>
+                                    <p class="text-xs text-purple-100">Tiket yang sedang Anda kerjakan</p>
+                                </div>
                             </div>
                             @php
                                 $myTickets = $project->tickets->where('claimed_by', auth()->id());
                             @endphp
-                            <span class="text-xs px-2 py-0.5 bg-white/20 rounded-full text-white">{{ $myTickets->count() }} tiket</span>
+                            <span class="flex items-center gap-2 px-3 py-1.5 bg-white/25 backdrop-blur-sm rounded-full text-white font-semibold">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                                </svg>
+                                {{ $myTickets->count() }} tiket
+                            </span>
                         </div>
                     </div>
 
-                    <div class="p-4">
+                    <div class="p-6 bg-gradient-to-br from-gray-50 to-purple-50/30">
                         {{-- Kanban Columns --}}
                         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 @foreach([

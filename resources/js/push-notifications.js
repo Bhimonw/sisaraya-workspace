@@ -3,8 +3,13 @@
  * Handles service worker registration and push subscription management
  */
 
-// Check browser support
-if ('serviceWorker' in navigator && 'PushManager' in window) {
+// Check if VAPID key is configured
+const vapidPublicKey = document.querySelector('meta[name="vapid-public-key"]')?.content;
+
+if (!vapidPublicKey || vapidPublicKey === '') {
+    console.info('ℹ️ Push notifications not configured (VAPID key missing). See docs/PUSH_NOTIFICATION_GUIDE.md');
+    // Silently exit - don't initialize push notifications
+} else if ('serviceWorker' in navigator && 'PushManager' in window) {
     console.log('✅ Browser supports Push Notifications');
     
     // Register service worker when page loads
