@@ -355,49 +355,63 @@
                         @if($availableTickets->count() > 0)
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                                 @foreach($availableTickets as $ticket)
-                                <div class="group p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all duration-300">
-                                    <div class="flex items-start justify-between mb-3">
-                                        <h4 class="font-semibold text-gray-900 text-sm leading-tight flex-1 group-hover:text-blue-600 transition-colors">
+                                <div class="group flex flex-col p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all duration-300 min-h-[180px]">
+                                    {{-- Header: Title + Badge --}}
+                                    <div class="flex items-start justify-between gap-2 mb-3">
+                                        <h4 class="font-semibold text-gray-900 text-sm leading-tight flex-1 group-hover:text-blue-600 transition-colors line-clamp-2">
                                             {{ $ticket->title }}
                                         </h4>
                                         @if($ticket->target_role)
-                                            <span class="ml-2 flex-shrink-0 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-full font-semibold border border-purple-200">
+                                            <span class="flex-shrink-0 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-full font-semibold border border-purple-200 whitespace-nowrap">
                                                 {{ \App\Models\Ticket::getAvailableRoles()[$ticket->target_role] ?? $ticket->target_role }}
                                             </span>
                                         @endif
                                     </div>
                                     
-                                    @if($ticket->description)
-                                        <p class="text-xs text-gray-600 mb-3 line-clamp-2 leading-relaxed">
-                                            {{ Str::limit($ticket->description, 100) }}
-                                        </p>
-                                    @endif
+                                    {{-- Description --}}
+                                    <div class="flex-1 mb-3">
+                                        @if($ticket->description)
+                                            <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                                                {{ Str::limit($ticket->description, 100) }}
+                                            </p>
+                                        @else
+                                            <p class="text-xs text-gray-400 italic">Tidak ada deskripsi</p>
+                                        @endif
+                                    </div>
                                     
-                                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-100">
-                                        <div class="flex items-center gap-2">
+                                    {{-- Footer: Status + Actions (Always at bottom) --}}
+                                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-100 mt-auto">
+                                        <div class="flex items-center gap-2 min-w-0 flex-shrink">
                                             {{-- Status Badge --}}
                                             @if($ticket->status === 'todo')
-                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 rounded-full font-bold border border-amber-200">
-                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 rounded-full font-bold border border-amber-200 min-w-[70px]">
+                                                    <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                     </svg>
                                                     To Do
                                                 </span>
                                             @elseif($ticket->status === 'doing')
-                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full font-bold border border-purple-200">
-                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full font-bold border border-purple-200 min-w-[70px]">
+                                                    <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                                     </svg>
                                                     Doing
                                                 </span>
+                                            @elseif($ticket->status === 'done')
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-bold border border-blue-200 min-w-[70px]">
+                                                    <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                    </svg>
+                                                    Done
+                                                </span>
                                             @else
-                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-bold border border-blue-200">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-bold border border-blue-200 min-w-[70px]">
                                                     {{ ucfirst($ticket->status) }}
                                                 </span>
                                             @endif
                                         </div>
                                         
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-2 flex-shrink-0">
                                             {{-- Detail Button - CONSISTENT SIZE --}}
                                             <button 
                                                 @click="showTicket({
@@ -414,8 +428,8 @@
                                                     created_at: '{{ $ticket->created_at->format('d M Y H:i') }}',
                                                     event_title: {{ \Illuminate\Support\Js::from($ticket->projectEvent?->title) }}
                                                 })"
-                                                class="inline-flex items-center gap-1 text-xs px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 hover:shadow-sm transition-all font-medium">
-                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 hover:shadow-sm transition-all font-medium whitespace-nowrap">
+                                                <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                 </svg>
@@ -425,10 +439,10 @@
                                             {{-- Action Buttons - CONSISTENT SIZE --}}
                                             @if(!$ticket->isClaimed())
                                                 {{-- Unclaimed: Show Ambil button --}}
-                                                <form method="POST" action="{{ route('tickets.claim', $ticket) }}" class="inline">
+                                                <form method="POST" action="{{ route('tickets.claim', $ticket) }}">
                                                     @csrf
-                                                    <button type="submit" class="inline-flex items-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 hover:shadow-md transition-all font-semibold">
-                                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <button type="submit" class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 hover:shadow-md transition-all font-semibold whitespace-nowrap">
+                                                        <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                         </svg>
                                                         Ambil
@@ -437,10 +451,10 @@
                                             @elseif($ticket->claimed_by === auth()->id())
                                                 {{-- Claimed by current user --}}
                                                 @if($ticket->status === 'todo')
-                                                    <form method="POST" action="{{ route('tickets.start', $ticket) }}" class="inline">
+                                                    <form method="POST" action="{{ route('tickets.start', $ticket) }}">
                                                         @csrf
-                                                        <button type="submit" class="inline-flex items-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 hover:shadow-md transition-all font-semibold">
-                                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <button type="submit" class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 hover:shadow-md transition-all font-semibold whitespace-nowrap">
+                                                            <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                             </svg>
@@ -448,18 +462,18 @@
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'doing')
-                                                    <form method="POST" action="{{ route('tickets.complete', $ticket) }}" class="inline">
+                                                    <form method="POST" action="{{ route('tickets.complete', $ticket) }}">
                                                         @csrf
-                                                        <button type="submit" class="inline-flex items-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 hover:shadow-md transition-all font-semibold">
-                                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <button type="submit" class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 hover:shadow-md transition-all font-semibold whitespace-nowrap">
+                                                            <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                             </svg>
                                                             Selesai
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'done')
-                                                    <span class="inline-flex items-center gap-1 text-xs px-3 py-2 bg-green-100 text-green-700 rounded-lg font-semibold border border-green-300">
-                                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <span class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-green-100 text-green-700 rounded-lg font-semibold border border-green-300 whitespace-nowrap">
+                                                        <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                         </svg>
                                                         Selesai
@@ -467,7 +481,10 @@
                                                 @endif
                                             @else
                                                 {{-- Claimed by other user --}}
-                                                <span class="text-[10px] px-2 py-1 bg-gray-100 text-gray-600 rounded-lg border border-gray-200">
+                                                <span class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gray-100 text-gray-600 rounded-lg border border-gray-200 whitespace-nowrap">
+                                                    <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                                    </svg>
                                                     {{ $ticket->claimedBy?->name }}
                                                 </span>
                                             @endif
@@ -682,9 +699,10 @@
                         @if($generalTickets->count() > 0)
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                                 @foreach($generalTickets as $ticket)
-                                <div class="group p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-gray-400 hover:shadow-lg transition-all duration-300">
-                                    <div class="flex items-start justify-between mb-3">
-                                        <h4 class="font-semibold text-gray-900 text-sm leading-tight flex-1 group-hover:text-gray-700 transition-colors">
+                                <div class="group flex flex-col p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-gray-400 hover:shadow-lg transition-all duration-300 min-h-[180px]">
+                                    {{-- Header: Title + Priority Badge --}}
+                                    <div class="flex items-start justify-between gap-2 mb-3">
+                                        <h4 class="font-semibold text-gray-900 text-sm flex-1 group-hover:text-gray-700 transition-colors line-clamp-2">
                                             {{ $ticket->title }}
                                         </h4>
                                         @if($ticket->priority)
@@ -696,56 +714,65 @@
                                                     'low' => 'bg-gradient-to-r from-gray-100 to-slate-100 text-gray-700 border-gray-200',
                                                 ];
                                             @endphp
-                                            <span class="ml-2 flex-shrink-0 text-[10px] px-2 py-1 {{ $priorityClasses[$ticket->priority] ?? $priorityClasses['low'] }} rounded-full font-semibold border">
+                                            <span class="flex-shrink-0 text-[10px] px-2 py-1 {{ $priorityClasses[$ticket->priority] ?? $priorityClasses['low'] }} rounded-full font-semibold border">
                                                 {{ ucfirst($ticket->priority) }}
                                             </span>
                                         @endif
                                     </div>
                                     
-                                    @if($ticket->description)
-                                        <p class="text-xs text-gray-600 mb-3 line-clamp-2 leading-relaxed">
-                                            {{ Str::limit($ticket->description, 100) }}
-                                        </p>
-                                    @endif
+                                    {{-- Description: Flexible space --}}
+                                    <div class="flex-1 mb-3">
+                                        @if($ticket->description)
+                                            <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                                                {{ Str::limit($ticket->description, 100) }}
+                                            </p>
+                                        @else
+                                            <p class="text-xs text-gray-400 italic">Tidak ada deskripsi</p>
+                                        @endif
+                                    </div>
                                     
-                                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-100">
-                                        <div class="flex items-center gap-2">
+                                    {{-- Footer: Status + Claimed + Action Buttons (forced to bottom) --}}
+                                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-100 mt-auto">
+                                        <div class="flex items-center gap-2 min-w-0 flex-shrink">
                                             {{-- Status Badge --}}
                                             @if($ticket->status === 'todo')
-                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 rounded-full font-bold border border-amber-200">
-                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 rounded-full font-bold border border-amber-200 min-w-[70px]">
+                                                    <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                     </svg>
                                                     To Do
                                                 </span>
                                             @elseif($ticket->status === 'doing')
-                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full font-bold border border-purple-200">
-                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full font-bold border border-purple-200 min-w-[70px]">
+                                                    <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                                     </svg>
                                                     Doing
                                                 </span>
                                             @elseif($ticket->status === 'done')
-                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-green-100 to-teal-100 text-green-700 rounded-full font-bold border border-green-200">
-                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-green-100 to-teal-100 text-green-700 rounded-full font-bold border border-green-200 min-w-[70px]">
+                                                    <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                     </svg>
                                                     Done
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center gap-1 text-[10px] px-2 py-1 bg-gray-100 text-gray-700 rounded-full font-bold border border-gray-200">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gray-100 text-gray-700 rounded-full font-bold border border-gray-200 min-w-[70px]">
                                                     {{ ucfirst($ticket->status) }}
                                                 </span>
                                             @endif
                                             
                                             @if($ticket->claimed_by)
-                                                <span class="text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-lg border border-blue-200 font-medium">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-lg border border-blue-200 font-medium whitespace-nowrap">
+                                                    <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                                    </svg>
                                                     {{ $ticket->claimedBy?->name }}
                                                 </span>
                                             @endif
                                         </div>
                                         
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-2 flex-shrink-0">
                                             {{-- Detail Button - CONSISTENT SIZE --}}
                                             <button 
                                                 @click="showTicket({
@@ -762,8 +789,8 @@
                                                     created_at: '{{ $ticket->created_at->format('d M Y H:i') }}',
                                                     event_title: {{ \Illuminate\Support\Js::from($ticket->projectEvent?->title) }}
                                                 })"
-                                                class="inline-flex items-center gap-1 text-xs px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 hover:shadow-sm transition-all font-medium">
-                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 hover:shadow-sm transition-all font-medium whitespace-nowrap">
+                                                <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                 </svg>
@@ -772,10 +799,10 @@
 
                                             {{-- Action Buttons - CONSISTENT SIZE --}}
                                             @if(!$ticket->isClaimed())
-                                                <form method="POST" action="{{ route('tickets.claim', $ticket) }}" class="inline">
+                                                <form method="POST" action="{{ route('tickets.claim', $ticket) }}">
                                                     @csrf
-                                                    <button type="submit" class="inline-flex items-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 hover:shadow-md transition-all font-semibold">
-                                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <button type="submit" class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 hover:shadow-md transition-all font-semibold whitespace-nowrap">
+                                                        <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                         </svg>
                                                         Ambil
@@ -783,10 +810,10 @@
                                                 </form>
                                             @elseif($ticket->claimed_by === auth()->id())
                                                 @if($ticket->status === 'todo')
-                                                    <form method="POST" action="{{ route('tickets.start', $ticket) }}" class="inline">
+                                                    <form method="POST" action="{{ route('tickets.start', $ticket) }}">
                                                         @csrf
-                                                        <button type="submit" class="inline-flex items-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 hover:shadow-md transition-all font-semibold">
-                                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <button type="submit" class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 hover:shadow-md transition-all font-semibold whitespace-nowrap">
+                                                            <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                             </svg>
@@ -794,10 +821,10 @@
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'doing')
-                                                    <form method="POST" action="{{ route('tickets.complete', $ticket) }}" class="inline">
+                                                    <form method="POST" action="{{ route('tickets.complete', $ticket) }}">
                                                         @csrf
-                                                        <button type="submit" class="inline-flex items-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 hover:shadow-md transition-all font-semibold">
-                                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <button type="submit" class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 hover:shadow-md transition-all font-semibold whitespace-nowrap">
+                                                            <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                             </svg>
                                                             Selesai

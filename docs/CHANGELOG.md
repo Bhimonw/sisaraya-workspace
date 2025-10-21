@@ -334,3 +334,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Added General Tickets section and standardized all button sizes (py-2, h-3.5 w-3.5 icons)
+
+## 2025-10-21
+- Fixed card alignment in project tickets board - standardized flex-col layout with min-height and bottom-aligned buttons
+
+## 2025-10-21
+- Fixed card alignment in project tickets board - standardized flex-col layout with min-height and bottom-aligned buttons across all sections
+
+## 2025-10-21
+- Fixed button alignment with status badge min-width, flex-shrink-0 containers, justify-center, and whitespace-nowrap across all ticket cards
