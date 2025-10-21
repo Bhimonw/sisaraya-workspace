@@ -15,23 +15,7 @@ class RoleChangeRequestController extends Controller
     }
 
     /**
-     * User membuat request perubahan role
-     */
-    public function create()
-    {
-        $roles = Role::orderBy('name')->get();
-        $user = auth()->user();
-        
-        // Cek apakah ada pending request
-        $pendingRequest = RoleChangeRequest::where('user_id', $user->id)
-            ->where('status', 'pending')
-            ->first();
-            
-        return view('role-requests.create', compact('roles', 'user', 'pendingRequest'));
-    }
-
-    /**
-     * Store request perubahan role
+     * Store request perubahan role (dipanggil dari profile page)
      */
     public function store(Request $request)
     {
@@ -68,21 +52,23 @@ class RoleChangeRequestController extends Controller
         ]);
 
         return redirect()
-            ->route('role-requests.my-requests')
+            ->route('profile.edit')
             ->with('success', 'Request perubahan role berhasil diajukan. Menunggu persetujuan dari HR.');
     }
 
     /**
-     * Tampilkan request milik user
+     * Cancel pending request
      */
-    public function myRequests()
+    public function cancel(RoleChangeRequest $roleChangeRequest)
     {
-        $requests = RoleChangeRequest::where('user_id', auth()->id())
-            ->with('reviewer')
-            ->latest()
-            ->get();
-            
-        return view('role-requests.my-requests', compact('requests'));
+        // Only the owner can cancel their own pending request
+        if ($roleChangeRequest->user_id !== auth()->id() || $roleChangeRequest->status !== 'pending') {
+            abort(403);
+        }
+        
+        $roleChangeRequest->delete();
+        
+        return back()->with('success', 'Request berhasil dibatalkan.');
     }
 
     /**

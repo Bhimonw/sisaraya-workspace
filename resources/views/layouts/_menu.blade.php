@@ -262,6 +262,23 @@
                             Manajemen Anggota
                         </a>
                     </li>
+                    <li>
+                        @php 
+                            $active = request()->routeIs('admin.role-requests.*');
+                            $pendingRoleRequests = \App\Models\RoleChangeRequest::where('status', 'pending')->count();
+                        @endphp
+                        <a href="{{ route('admin.role-requests.index') }}" class="flex items-center justify-between px-3 py-1.5 text-sm rounded {{ $active ? 'bg-gradient-to-r from-violet-100 to-blue-100 text-violet-900' : 'text-gray-600 hover:bg-gray-50' }}">
+                            <span class="inline-flex items-center gap-2">
+                                <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                </svg>
+                                Review Request Role
+                            </span>
+                            @if($pendingRoleRequests > 0)
+                                <span class="text-xs bg-yellow-100 text-yellow-700 rounded-full px-1.5 py-0.5 font-semibold animate-pulse">{{ $pendingRoleRequests }}</span>
+                            @endif
+                        </a>
+                    </li>
                 @endrole
                 @role('pm')
                     <li>

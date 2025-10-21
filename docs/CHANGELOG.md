@@ -403,3 +403,21 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Modernized profile form with live photo preview, gradient design, and updated navigation to display user profile photos across the app
+
+## 2025-10-21
+- Implemented complete role change request system: users can request role changes, HR can approve/reject with review notes, full workflow with status tracking and notifications
+
+## 2025-10-21
+- Integrated role change request system directly in profile page: users can request role changes, view request history, HR can approve/reject with full workflow
+
+## 2025-10-21
+- Converted role change request from full section to modal: added Request Role button in profile role display, clean modal UI with form validation and history
+
+## 2025-10-21
+- Removed Request Role menu item from sidebar (now only accessible via button in profile) and optimized profile page padding for cleaner layout
+
+## 2025-10-21
+- Cleaned up unused view files: removed role-change-request-form.blade.php and role-requests directory (replaced by modal system)
+
+## 2025-10-21
+- Updated ROLE_CHANGE_REQUEST_SYSTEM.md documentation to reflect modal implementation instead of full-page form

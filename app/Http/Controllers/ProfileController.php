@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Project;
+use App\Models\RoleChangeRequest;
 use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class ProfileController extends Controller
 {
@@ -19,8 +21,26 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        
+        // Get all available roles
+        $availableRoles = Role::orderBy('name')->get();
+        
+        // Get user's role change requests
+        $roleRequests = RoleChangeRequest::where('user_id', $user->id)
+            ->with('reviewer')
+            ->latest()
+            ->take(5)
+            ->get();
+        
+        // Check if there's a pending request
+        $pendingRequest = $roleRequests->firstWhere('status', 'pending');
+        
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'availableRoles' => $availableRoles,
+            'roleRequests' => $roleRequests,
+            'pendingRequest' => $pendingRequest,
         ]);
     }
 

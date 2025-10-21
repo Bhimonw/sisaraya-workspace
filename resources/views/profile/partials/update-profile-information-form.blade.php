@@ -179,31 +179,48 @@
 
         <!-- Role (Read Only) -->
         <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border-2 border-purple-200 shadow-lg">
-            <label for="role" class="block text-sm font-bold text-gray-700 mb-3">
-                <div class="flex items-center gap-2">
-                    <div class="bg-gradient-to-r from-purple-500 to-pink-600 p-2 rounded-lg">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                        </svg>
+            <div class="flex items-center justify-between mb-3">
+                <label for="role" class="block text-sm font-bold text-gray-700">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-gradient-to-r from-purple-500 to-pink-600 p-2 rounded-lg">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            </svg>
+                        </div>
+                        {{ __('Role') }}
                     </div>
-                    {{ __('Role') }}
-                </div>
-            </label>
-            <div class="flex flex-wrap gap-2">
-                @if(method_exists($user, 'getRoleNames'))
+                </label>
+                
+                <!-- Request Role Change Button -->
+                <button type="button" 
+                        @click="$dispatch('open-role-request-modal')"
+                        class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-xs font-semibold rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Request Role
+                </button>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mb-3">
+                @if(method_exists($user, 'getRoleNames') && $user->getRoleNames()->count() > 0)
                     @foreach($user->getRoleNames() as $role)
                         <span class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-semibold shadow-lg">
                             {{ ucfirst($role) }}
                         </span>
                     @endforeach
                 @else
-                    <span class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-semibold shadow-lg">
-                        {{ $user->role ?? 'User' }}
+                    <span class="px-4 py-2 bg-gray-300 text-gray-600 rounded-full text-sm font-semibold shadow-lg">
+                        Belum ada role
                     </span>
                 @endif
             </div>
-            <p class="text-xs text-gray-500 mt-3">
-                💡 Role tidak dapat diubah sendiri. Hubungi HR untuk perubahan role.
+            
+            <p class="text-xs text-gray-500 flex items-center gap-2">
+                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Klik "Request Role" untuk mengajukan perubahan role. HR akan meninjau permintaan Anda.
             </p>
         </div>
 
