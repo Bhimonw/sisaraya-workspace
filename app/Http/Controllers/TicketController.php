@@ -267,11 +267,14 @@ class TicketController extends Controller
     /**
      * Show ALL user's tickets including history (done tickets)
      * This is "Semua Tiketku" - complete history
+     * 
+     * Privacy filter: Only show tickets that are:
+     * 1. Claimed by user (any status including done)
+     * 2. Specifically targeted to user (target_user_id)
      */
     public function overview(Request $request)
     {
         $user = $request->user();
-        $userRoles = $user->getRoleNames()->toArray();
         
         $tickets = Ticket::with([
             'project', 
@@ -279,13 +282,11 @@ class TicketController extends Controller
             'claimedBy', 
             'projectEvent.project'
         ])
-        ->where(function($q) use ($user, $userRoles) {
-            // Tiket yang sudah diambil user (semua status termasuk done)
+        ->where(function($q) use ($user) {
+            // Case 1: Tiket yang sudah/pernah diambil user (semua status)
             $q->where('claimed_by', $user->id)
-              // Atau tiket yang ditargetkan ke user spesifik
-              ->orWhere('target_user_id', $user->id)
-              // Atau tiket yang ditargetkan ke role user (termasuk yang sudah done)
-              ->orWhereIn('target_role', $userRoles);
+              // Case 2: Tiket yang ditargetkan langsung ke user spesifik
+              ->orWhere('target_user_id', $user->id);
         })
         ->latest()
         ->get();

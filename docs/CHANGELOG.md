@@ -343,3 +343,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Fixed button alignment with status badge min-width, flex-shrink-0 containers, justify-center, and whitespace-nowrap across all ticket cards
+
+## 2025-10-21
+- Fix ticket privacy filter - overview page now only shows tickets claimed by user or specifically targeted to user
