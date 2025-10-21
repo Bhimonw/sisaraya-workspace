@@ -433,3 +433,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - 🎉 PROFILE SYSTEM COMPLETE: All 3 major features implemented (role request, photo crop, desktop layout). Created comprehensive summary document with technical details, user flows, and deployment checklist.
+
+## 2025-10-21
+- Simplified photo upload - removed crop modal feature in favor of simple direct upload

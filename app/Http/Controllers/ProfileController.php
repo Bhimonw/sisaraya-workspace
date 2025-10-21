@@ -52,39 +52,10 @@ class ProfileController extends Controller
         $user = $request->user();
         $user->fill($request->validated());
 
-        // Handle cropped photo from base64
-        if ($request->filled('photo_cropped')) {
-            // Delete old photo if exists
-            if ($user->photo_path && \Storage::disk('public')->exists($user->photo_path)) {
-                \Storage::disk('public')->delete($user->photo_path);
-            }
-
-            // Decode base64 image
-            $imageData = $request->input('photo_cropped');
-            
-            // Remove data:image/jpeg;base64, prefix
-            if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
-                $imageData = substr($imageData, strpos($imageData, ',') + 1);
-                $type = strtolower($type[1]); // jpg, png, gif
-
-                $imageData = base64_decode($imageData);
-
-                if ($imageData === false) {
-                    return back()->withErrors(['photo' => 'Gagal memproses foto.']);
-                }
-
-                // Generate filename
-                $filename = 'photos/' . uniqid() . '-' . time() . '.' . $type;
-
-                // Store the image
-                \Storage::disk('public')->put($filename, $imageData);
-                $user->photo_path = $filename;
-            }
-        }
-        // Fallback to regular file upload (if not using crop)
-        elseif ($request->hasFile('photo_upload')) {
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
             $request->validate([
-                'photo_upload' => ['image', 'max:2048'], // Max 2MB
+                'photo' => ['image', 'max:2048'], // Max 2MB
             ]);
 
             // Delete old photo if exists
@@ -93,7 +64,7 @@ class ProfileController extends Controller
             }
 
             // Store new photo
-            $path = $request->file('photo_upload')->store('photos', 'public');
+            $path = $request->file('photo')->store('photos', 'public');
             $user->photo_path = $path;
         }
 

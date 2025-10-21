@@ -21,23 +21,17 @@
           x-data="{ 
               previewUrl: '{{ $user->photo_path ? asset('storage/' . $user->photo_path) : '' }}',
               userName: '{{ $user->name }}',
-              croppedBlob: null,
               handleFileChange(event) {
                   const file = event.target.files[0];
                   if (file) {
                       const reader = new FileReader();
                       reader.onload = (e) => {
-                          // Open crop modal instead of direct preview
-                          $dispatch('open-crop-modal', { src: e.target.result });
+                          this.previewUrl = e.target.result;
                       };
                       reader.readAsDataURL(file);
                   }
               }
-          }"
-          @photo-cropped.window="
-              previewUrl = $event.detail.url;
-              croppedBlob = $event.detail.blob;
-          ">
+          }">
         @csrf
         @method('patch')
 
@@ -94,13 +88,10 @@
                                 </p>
                             </div>
                         </div>
-                        <input type="file" id="photo" name="photo_upload" accept="image/*" 
+                        <input type="file" id="photo" name="photo" accept="image/*" 
                                @change="handleFileChange($event)"
                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                     </label>
-                    
-                    <!-- Hidden input for cropped image -->
-                    <input type="hidden" name="photo_cropped" id="photo_cropped">
                     
                     <x-input-error class="mt-2" :messages="$errors->get('photo')" />
                 </div>
@@ -235,18 +226,7 @@
 
         <!-- Save Button -->
         <div class="flex items-center gap-4 pt-4">
-            <button type="submit" 
-                    @click="
-                        if (croppedBlob) {
-                            // Convert blob to base64 for form submission
-                            const reader = new FileReader();
-                            reader.onloadend = function() {
-                                document.getElementById('photo_cropped').value = reader.result;
-                            };
-                            reader.readAsDataURL(croppedBlob);
-                        }
-                    "
-                    class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
+            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>

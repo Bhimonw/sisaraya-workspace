@@ -51,7 +51,4 @@
 
     <!-- Role Change Request Modal -->
     @include('profile.partials.role-change-request-modal')
-    
-    <!-- Photo Crop Modal -->
-    @include('profile.partials.photo-crop-modal')
 </x-app-layout>
