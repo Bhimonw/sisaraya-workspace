@@ -11,7 +11,7 @@
     - hr: Blue
     - sekretaris: Amber
     - bendahara: Green
-    - kewirausahaan: Emerald
+    - bisnis_manager: Emerald
     - media: Pink
     - pr: Indigo
     - researcher: Teal
@@ -29,7 +29,7 @@ $roleColors = [
     'hr' => 'bg-blue-100 text-blue-700 border-blue-200',
     'sekretaris' => 'bg-amber-100 text-amber-700 border-amber-200',
     'bendahara' => 'bg-green-100 text-green-700 border-green-200',
-    'kewirausahaan' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    'bisnis_manager' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
     'media' => 'bg-pink-100 text-pink-700 border-pink-200',
     'pr' => 'bg-indigo-100 text-indigo-700 border-indigo-200',
     'researcher' => 'bg-teal-100 text-teal-700 border-teal-200',

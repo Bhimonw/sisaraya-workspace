@@ -237,7 +237,7 @@
     @endif
 
     {{-- 5. Ruang Management (Role-Specific, tidak untuk Guest) --}}
-    @if($user->hasAnyRole(['hr','pm','bendahara','sekretaris','kewirausahaan','head']))
+    @if($user->hasAnyRole(['hr','pm','bendahara','sekretaris','bisnis_manager','head']))
         <li class="pt-2 mt-2 border-t border-gray-200">
             <button @click="openMenus.management = !openMenus.management" class="flex items-center justify-between w-full px-3 py-2 rounded text-gray-600 hover:bg-gray-50">
                 <span class="inline-flex items-center gap-2">

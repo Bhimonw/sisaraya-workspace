@@ -499,3 +499,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Improved project delete action UX: Added disabled state for active/planning projects with tooltip. Enhanced confirmation message to accurately explain what gets deleted (tickets preserved, documents/RABs deleted). Better visual feedback with gray disabled state vs red active state.
+
+## 2025-10-21
+- Rename role 'kewirausahaan' to 'bisnis_manager' across entire codebase - seeders, tests, views, and documentation

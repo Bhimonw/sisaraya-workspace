@@ -16,7 +16,7 @@ class RolePermissionSeeder extends Seeder
         // define roles (lowercase normalized) and permissions
         // 'member' is a universal role - all users should have this role
         $roles = [
-            'member', 'hr', 'pm', 'sekretaris', 'media', 'pr', 'talent_manager', 'researcher', 'talent', 'guest', 'bendahara', 'kewirausahaan', 'head'
+            'member', 'hr', 'pm', 'sekretaris', 'media', 'pr', 'talent_manager', 'researcher', 'talent', 'guest', 'bendahara', 'bisnis_manager', 'head'
         ];
 
         $permissions = [
@@ -35,7 +35,7 @@ class RolePermissionSeeder extends Seeder
             'finance.manage_rab',
             'finance.upload_documents',
             'finance.view_reports',
-            // business / kewirausahaan permissions
+            // business / bisnis_manager permissions
             'business.create',
             'business.view',
             'business.update',
@@ -67,8 +67,8 @@ class RolePermissionSeeder extends Seeder
     Role::where('name', 'guest')->first()?->givePermissionTo([]);
     // bendahara defaults
     Role::where('name', 'bendahara')->first()?->givePermissionTo(['finance.manage_rab', 'finance.upload_documents', 'finance.view_reports', 'documents.upload', 'documents.view_all']);
-        // kewirausahaan defaults
-        Role::where('name', 'kewirausahaan')->first()?->givePermissionTo(['business.create', 'business.view', 'business.update', 'business.manage_talent', 'business.upload_reports', 'documents.upload']);
+        // bisnis_manager defaults
+        Role::where('name', 'bisnis_manager')->first()?->givePermissionTo(['business.create', 'business.view', 'business.update', 'business.manage_talent', 'business.upload_reports', 'documents.upload']);
         
         // head (Head of SISARAYA - Yahya) - Pengawas tertinggi dengan akses view-only
         // Dapat melihat semua proyek, claim tiket, dan aktif di chat, tapi tidak bisa update/delete proyek

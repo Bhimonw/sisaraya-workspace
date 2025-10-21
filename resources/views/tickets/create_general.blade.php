@@ -164,11 +164,11 @@
                                 <label class="flex items-center rounded-lg border border-gray-300 p-3 hover:bg-gray-50 cursor-pointer">
                                     <input type="checkbox" 
                                            name="target_roles[]" 
-                                           value="kewirausahaan"
+                                           value="bisnis_manager"
                                            x-model="selectedRoles"
                                            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                     <div class="ml-3">
-                                        <span class="font-medium text-gray-900">Kewirausahaan</span>
+                                        <span class="font-medium text-gray-900">Bisnis Manager</span>
                                         <p class="text-xs text-gray-500">Pengembangan bisnis</p>
                                     </div>
                                 </label>

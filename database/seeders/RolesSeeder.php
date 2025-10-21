@@ -29,7 +29,7 @@ class RolesSeeder extends Seeder
             'researcher' => 'Researcher',
             'talent_manager' => 'Talent Manager',
             'talent' => 'Talent',
-            'kewirausahaan' => 'Kewirausahaan',
+            'bisnis_manager' => 'Bisnis Manager',
             'guest' => 'Guest',
             'head' => 'Head of SISARAYA',
         ];

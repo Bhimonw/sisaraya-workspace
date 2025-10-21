@@ -85,8 +85,8 @@
                             <p class="text-sm text-gray-600 mt-1">Finance - Mengelola RAB dan keuangan</p>
                         @elseif($role->name === 'sekretaris')
                             <p class="text-sm text-gray-600 mt-1">Secretary - Mengelola dokumen dan administrasi</p>
-                        @elseif($role->name === 'kewirausahaan')
-                            <p class="text-sm text-gray-600 mt-1">Entrepreneurship - Mengelola bisnis dan usaha</p>
+                        @elseif($role->name === 'bisnis_manager')
+                            <p class="text-sm text-gray-600 mt-1">Business Manager - Mengelola bisnis dan usaha</p>
                         @elseif($role->name === 'member')
                             <p class="text-sm text-gray-600 mt-1">Member - Anggota umum organisasi</p>
                         @endif

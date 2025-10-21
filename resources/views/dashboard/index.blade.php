@@ -23,11 +23,11 @@
             @foreach($userRoles as $role)
                 <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold 
                              {{ $role === 'pm' ? 'bg-violet-100 text-violet-700 border border-violet-200' : '' }}
-                             {{ $role === 'kewirausahaan' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : '' }}
+                             {{ $role === 'bisnis_manager' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : '' }}
                              {{ $role === 'hr' ? 'bg-blue-100 text-blue-700 border border-blue-200' : '' }}
                              {{ $role === 'sekretaris' ? 'bg-amber-100 text-amber-700 border border-amber-200' : '' }}
                              {{ $role === 'finance' ? 'bg-green-100 text-green-700 border border-green-200' : '' }}
-                             {{ !in_array($role, ['pm', 'kewirausahaan', 'hr', 'sekretaris', 'finance']) ? 'bg-gray-100 text-gray-700 border border-gray-200' : '' }}">
+                             {{ !in_array($role, ['pm', 'bisnis_manager', 'hr', 'sekretaris', 'finance']) ? 'bg-gray-100 text-gray-700 border border-gray-200' : '' }}">
                     <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
                     </svg>

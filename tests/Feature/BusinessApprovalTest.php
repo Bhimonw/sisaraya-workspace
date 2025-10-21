@@ -33,15 +33,15 @@ class BusinessApprovalTest extends TestCase
         }
         
         // Create roles
-        Role::create(['name' => 'kewirausahaan']);
+        Role::create(['name' => 'bisnis_manager']);
         Role::create(['name' => 'pm']);
     }
 
     /** @test */
-    public function kewirausahaan_can_create_business_with_pending_status()
+    public function bisnis_manager_can_create_business_with_pending_status()
     {
         $user = User::factory()->create();
-        $user->assignRole('kewirausahaan');
+        $user->assignRole('bisnis_manager');
         $user->givePermissionTo('business.create');
 
         $response = $this->actingAs($user)->post('/businesses', [
@@ -64,14 +64,14 @@ class BusinessApprovalTest extends TestCase
     {
         Notification::fake();
 
-        $kewirausahaan = User::factory()->create();
-        $kewirausahaan->assignRole('kewirausahaan');
-        $kewirausahaan->givePermissionTo('business.create');
+        $bisnisManager = User::factory()->create();
+        $bisnisManager->assignRole('bisnis_manager');
+        $bisnisManager->givePermissionTo('business.create');
 
         $pm = User::factory()->create();
         $pm->assignRole('pm');
 
-        $this->actingAs($kewirausahaan)->post('/businesses', [
+        $this->actingAs($bisnisManager)->post('/businesses', [
             'name' => 'Usaha Test',
             'description' => 'Test description',
         ]);
@@ -106,10 +106,10 @@ class BusinessApprovalTest extends TestCase
         $pm->assignRole('pm');
         $pm->givePermissionTo('business.approve');
 
-        $kewirausahaan = User::factory()->create();
+        $bisnisManager = User::factory()->create();
         $business = Business::factory()->create([
             'status' => 'pending',
-            'created_by' => $kewirausahaan->id,
+            'created_by' => $bisnisManager->id,
             'name' => 'Test Business',
             'description' => 'Test Description',
         ]);
@@ -129,9 +129,9 @@ class BusinessApprovalTest extends TestCase
         $this->assertEquals('active', $project->status);
         $this->assertEquals('UMKM', $project->label);
         
-        // Assert kewirausahaan is member with admin role
-        $this->assertTrue($project->members->contains($kewirausahaan));
-        $member = $project->members->find($kewirausahaan->id);
+        // Assert bisnis_manager is member with admin role
+        $this->assertTrue($project->members->contains($bisnisManager));
+        $member = $project->members->find($bisnisManager->id);
         $this->assertEquals('admin', $member->pivot->role);
     }
 
@@ -161,7 +161,7 @@ class BusinessApprovalTest extends TestCase
     public function non_pm_cannot_approve_business()
     {
         $user = User::factory()->create();
-        $user->assignRole('kewirausahaan');
+        $user->assignRole('bisnis_manager');
 
         $business = Business::factory()->create(['status' => 'pending']);
 

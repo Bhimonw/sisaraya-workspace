@@ -102,7 +102,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('rabs/{rab}/reject', [App\Http\Controllers\RabController::class, 'reject'])->name('rabs.reject');
     Route::get('rabs/{rab}/create-ticket', [App\Http\Controllers\TicketController::class, 'createForRab'])->name('tickets.createFromRab');
 
-    // Businesses (Kewirausahaan)
+    // Businesses (Bisnis Manager)
     Route::resource('businesses', App\Http\Controllers\BusinessController::class)->only(['index','create','store','show']);
     Route::post('businesses/{business}/approve', [App\Http\Controllers\BusinessController::class, 'approve'])->name('businesses.approve');
     Route::post('businesses/{business}/reject', [App\Http\Controllers\BusinessController::class, 'reject'])->name('businesses.reject');

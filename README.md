@@ -18,7 +18,7 @@
 
 ## About Laravel
 
-**SISARAYA** adalah platform manajemen workspace yang dirancang khusus untuk komunitas kreatif yang bekerja di berbagai bidang — dari **Event Organizer**, **musik & band**, hingga **kewirausahaan** dan **media kreatif**.
+**SISARAYA** adalah platform manajemen workspace yang dirancang khusus untuk komunitas kreatif yang bekerja di berbagai bidang — dari **Event Organizer**, **musik & band**, hingga **bisnis** dan **media kreatif**.
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
@@ -216,7 +216,7 @@ Docs & implemented features:
 
 ---Key Features yang sudah tersedia:
 
-- ✅ Autentikasi & 11 Role (HR, PM, Bendahara, Sekretaris, Media, PR, Kewirausahaan, Talent Manager, Researcher, Talent, Guest)
+- ✅ Autentikasi & 11 Role (HR, PM, Bendahara, Sekretaris, Media, PR, Bisnis Manager, Talent Manager, Researcher, Talent, Guest)
 
 ## 👥 Test Users- ✅ Dashboard & Kanban Board (drag & drop)
 
@@ -228,7 +228,7 @@ Docs & implemented features:
 
 | Username | Role | Description |- ✅ Voting anggota baru (quorum 50%, duplicate protection)
 
-|----------|------|-------------|- ✅ Kewirausahaan (business tracking)
+|----------|------|-------------|- ✅ Bisnis Manager (business tracking)
 
 | bhimo | PM & Sekretaris | Project Manager dan Sekretaris |- ✅ Ruang Penyimpanan (document upload)
 
@@ -302,7 +302,7 @@ This project uses `spatie/laravel-permission`. The seeder creates a small set of
 
 - **PHP**: 8.4.5	- `finance.*` (e.g., `finance.manage_rab`) — financial operations for Bendahara
 
-- **Database**: SQLite (default), MySQL/PostgreSQL support	- `business.*` (e.g., `business.manage_talent`) — kewirausahaan/business operations
+- **Database**: SQLite (default), MySQL/PostgreSQL support	- `business.*` (e.g., `business.manage_talent`) — bisnis_manager/business operations
 
 - **Authentication**: Laravel Breeze (Username-based)
 
@@ -523,7 +523,7 @@ This software is proprietary and confidential. Unauthorized copying, distributio
 
 **Satu semangat, banyak ekspresi.**
 
-SISARAYA adalah komunitas yang bekerja di berbagai bidang — dari Event Organizer, musik & band, hingga kewirausahaan dan media kreatif. Kami percaya bahwa kolaborasi adalah bahan bakar utama untuk tumbuh bersama.
+SISARAYA adalah komunitas yang bekerja di berbagai bidang — dari Event Organizer, musik & band, hingga bisnis dan media kreatif. Kami percaya bahwa kolaborasi adalah bahan bakar utama untuk tumbuh bersama.
 
 Platform Ruang Kerja ini dikembangkan dengan ❤️ untuk mendukung kolaborasi dan produktivitas komunitas SISARAYA.
 

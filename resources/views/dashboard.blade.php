@@ -13,7 +13,7 @@
                         @elseif($role === 'bendahara') bg-yellow-100 text-yellow-700
                         @elseif($role === 'media') bg-pink-100 text-pink-700
                         @elseif($role === 'pr') bg-indigo-100 text-indigo-700
-                        @elseif($role === 'kewirausahaan') bg-orange-100 text-orange-700
+                        @elseif($role === 'bisnis_manager') bg-orange-100 text-orange-700
                         @elseif($role === 'researcher') bg-teal-100 text-teal-700
                         @elseif($role === 'talent_manager') bg-cyan-100 text-cyan-700
                         @elseif($role === 'talent') bg-lime-100 text-lime-700

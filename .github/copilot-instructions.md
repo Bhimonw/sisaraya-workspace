@@ -15,7 +15,7 @@
 
 Users can have **multiple roles simultaneously** (e.g., `bhimo` = `pm` + `sekretaris`). Roles (lowercase snake_case):
 - Core: `member`, `hr`, `pm`, `sekretaris`, `bendahara`, `media`, `pr`
-- Extended: `talent_manager`, `researcher`, `talent`, `kewirausahaan`, `guest`
+- Extended: `talent_manager`, `researcher`, `talent`, `bisnis_manager`, `guest`
 - Guest role has **minimal permissions** (read-only dashboard, projects, tickets)
 
 **Never assume single-role logic.** Use `$user->hasRole('pm')` or `$user->hasAnyRole(['pm', 'sekretaris'])` for checks.
@@ -90,7 +90,7 @@ Route::middleware(['permission:users.manage'])->group(function () {
 ### Project-Specific Conventions
 
 **Naming**:
-- Roles: lowercase snake_case (`hr`, `pm`, `sekretaris`, `bendahara`, `kewirausahaan`)
+- Roles: lowercase snake_case (`hr`, `pm`, `sekretaris`, `bendahara`, `bisnis_manager`)
 - Permissions: dot notation (`finance.manage_rab`, `projects.create`, `business.approve`)
 - Routes: snake_case with dots (`projects.mine`, `tickets.createGeneral`, `rabs.approve`)
 
