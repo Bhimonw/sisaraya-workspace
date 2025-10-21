@@ -460,3 +460,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Implementasi modal untuk tambah user di HR management - menggantikan full-page form dengan modal dinamis berbasis Alpine.js
+
+## 2025-10-21
+- Removed email field from HR user management (forms, validation, table display) and added delete account functionality with confirmation dialog and relationship cleanup

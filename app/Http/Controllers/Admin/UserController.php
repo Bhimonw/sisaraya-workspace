@@ -38,7 +38,6 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
-            'email' => 'nullable|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'roles' => 'nullable|array',
             'roles.*' => 'exists:roles,name',
@@ -64,7 +63,6 @@ class UserController extends Controller
             $user = User::create([
                 'name' => $data['name'],
                 'username' => $data['username'],
-                'email' => $data['email'],
                 'password' => Hash::make($data['password']),
             ]);
 
@@ -107,7 +105,6 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'roles' => 'nullable|array',
             'roles.*' => 'exists:roles,name',
@@ -133,7 +130,6 @@ class UserController extends Controller
             $user->update([
                 'name' => $data['name'],
                 'username' => $data['username'],
-                'email' => $data['email'],
             ]);
 
             if (!empty($data['password'])) {
@@ -172,11 +168,47 @@ class UserController extends Controller
     {
         // Prevent HR from deleting themselves
         if ($user->id === auth()->id()) {
-            return back()->with('error', 'You cannot delete your own account');
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri. Gunakan menu Pengaturan Akun untuk menghapus akun.');
         }
 
-        $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
+        try {
+            DB::beginTransaction();
+            
+            $userName = $user->name;
+            
+            // Detach relationships before deleting
+            $user->projects()->detach();
+            $user->roles()->detach();
+            
+            // Delete related data
+            $user->skills()->delete();
+            $user->modals()->delete();
+            $user->links()->delete();
+            
+            // Delete user
+            $user->delete();
+            
+            DB::commit();
+            
+            \Log::info('User deleted by HR', [
+                'deleted_user' => $userName,
+                'deleted_by' => auth()->user()->username,
+                'timestamp' => now(),
+            ]);
+            
+            return redirect()->route('admin.users.index')
+                ->with('success', "User {$userName} berhasil dihapus dari sistem");
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            \Log::error('User deletion failed: ' . $e->getMessage(), [
+                'user_id' => $user->id,
+                'admin_id' => auth()->id(),
+            ]);
+            
+            return back()->with('error', 'Gagal menghapus user. Silakan coba lagi.');
+        }
     }
 
     /**
