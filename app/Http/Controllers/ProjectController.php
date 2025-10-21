@@ -357,9 +357,9 @@ class ProjectController extends Controller
             return back()->with('error', 'Role Head tidak dapat menghapus proyek. Hanya dapat melihat informasi proyek.');
         }
         
-        // Check if the authenticated user is the project owner
-        if ($project->owner_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki izin untuk menghapus proyek ini.');
+        // Check if the authenticated user is the project owner OR has PM role
+        if ($project->owner_id !== auth()->id() && !auth()->user()->hasRole('pm')) {
+            abort(403, 'Anda tidak memiliki izin untuk menghapus proyek ini. Hanya owner proyek atau PM yang dapat menghapus.');
         }
         
         // Check if project has active status
@@ -370,8 +370,11 @@ class ProjectController extends Controller
         try {
             DB::beginTransaction();
             
+            $projectId = $project->id;
+            $projectName = $project->name;
+            
             // 1. Release claimed tickets (set to null instead of deleting for audit trail)
-            Ticket::where('project_id', $project->id)
+            $releasedTickets = Ticket::where('project_id', $projectId)
                 ->where('claimed_by', '!=', null)
                 ->update([
                     'claimed_by' => null,
@@ -379,26 +382,59 @@ class ProjectController extends Controller
                 ]);
             
             // 2. Nullify project_id on tickets (keep tickets for audit trail)
-            Ticket::where('project_id', $project->id)->update(['project_id' => null]);
+            $nullifiedTickets = Ticket::where('project_id', $projectId)->update(['project_id' => null]);
             
             // 3. Delete project-related records
+            $deletedDocs = $project->documents()->count();
             $project->documents()->delete(); // Will trigger file cleanup via model event
+            
+            $deletedRabs = $project->rabs()->count();
             $project->rabs()->delete(); // Will trigger file cleanup via model event
+            
+            $deletedEvents = $project->events()->count();
             $project->events()->delete();
+            
+            $deletedRatings = $project->ratings()->count();
             $project->ratings()->delete();
             
             // 4. Delete chat messages
-            \App\Models\ProjectChat::where('project_id', $project->id)->delete();
+            $deletedChats = \App\Models\ProjectChatMessage::where('project_id', $projectId)->count();
+            \App\Models\ProjectChatMessage::where('project_id', $projectId)->delete();
             
-            // 5. Detach all members
+            // 5. Detach all members (remove from pivot table)
+            $detachedMembers = $project->members()->count();
             $project->members()->detach();
             
-            // 6. Delete the project
-            $project->delete();
+            // 6. FORCE DELETE the project from database (HARD DELETE)
+            $deleted = $project->delete();
+            
+            if (!$deleted) {
+                throw new \Exception('Failed to delete project from database');
+            }
+            
+            // Verify deletion
+            $stillExists = \App\Models\Project::find($projectId);
+            if ($stillExists) {
+                throw new \Exception('Project still exists in database after deletion');
+            }
             
             DB::commit();
             
-            return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus!');
+            \Log::info('Project PERMANENTLY deleted from database', [
+                'project_id' => $projectId,
+                'project_name' => $projectName,
+                'deleted_by' => auth()->user()->username,
+                'released_tickets' => $releasedTickets,
+                'nullified_tickets' => $nullifiedTickets,
+                'deleted_documents' => $deletedDocs,
+                'deleted_rabs' => $deletedRabs,
+                'deleted_events' => $deletedEvents,
+                'deleted_ratings' => $deletedRatings,
+                'deleted_chats' => $deletedChats,
+                'detached_members' => $detachedMembers,
+            ]);
+            
+            return redirect()->route('projects.index')->with('success', "Proyek '{$projectName}' berhasil DIHAPUS PERMANEN dari database!");
             
         } catch (\Exception $e) {
             DB::rollBack();

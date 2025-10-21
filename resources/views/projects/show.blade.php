@@ -539,7 +539,7 @@
                         {{-- Kanban Columns --}}
                         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 @foreach([
-                    'blackout' => ['label' => 'Blackout', 'color' => 'gray', 'icon' => 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 715.636 5.636m12.728 12.728L5.636 5.636'],
+                    'blackout' => ['label' => 'Blackout', 'color' => 'gray', 'icon' => 'M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 0 5.636 5.636m12.728 12.728L5.636 5.636'],
                     'todo' => ['label' => 'To Do', 'color' => 'yellow', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],
                     'doing' => ['label' => 'Doing', 'color' => 'blue', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
                     'done' => ['label' => 'Done', 'color' => 'green', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z']
@@ -870,7 +870,7 @@
                         {{-- Kanban Columns --}}
                         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 @foreach([
-                    'blackout' => ['label' => 'Blackout', 'color' => 'gray', 'icon' => 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 715.636 5.636m12.728 12.728L5.636 5.636'],
+                    'blackout' => ['label' => 'Blackout', 'color' => 'gray', 'icon' => 'M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 0 5.636 5.636m12.728 12.728L5.636 5.636'],
                     'todo' => ['label' => 'To Do', 'color' => 'yellow', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],
                     'doing' => ['label' => 'Doing', 'color' => 'blue', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
                     'done' => ['label' => 'Done', 'color' => 'green', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z']

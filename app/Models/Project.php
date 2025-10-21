@@ -100,6 +100,16 @@ class Project extends Model
         return $this->hasMany(Ticket::class);
     }
 
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
+    public function rabs()
+    {
+        return $this->hasMany(Rab::class);
+    }
+
     public function events()
     {
         return $this->hasMany(ProjectEvent::class);

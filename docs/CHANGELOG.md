@@ -484,3 +484,18 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - HEAD role UI enhancement: Hidden 'Buat Tiket Umum' button and create-modal component for HEAD users. Added 'Mode Monitoring - View Only' badge instead. Only PM can see and use the create general ticket button.
+
+## 2025-10-21
+- Fixed SVG path error in project tickets kanban view (blackout icon arc flag). Fixed PM delete permission: PM can now delete any project (not just owned projects). Owner OR PM can delete completed/archived projects.
+
+## 2025-10-21
+- Fixed PM delete project UI: Changed menu visibility from 'PM AND owner' to 'PM OR owner'. PM can now see delete button for all projects, not just their own.
+
+## 2025-10-21
+- Enhanced project deletion: Added verification to ensure project is HARD DELETED from database. Added detailed logging of all deleted related records. Project deletion now properly removes project from database, not just detaching members.
+
+## 2025-10-21
+- FIXED project deletion bug: Added missing documents() and rabs() relations to Project model. Fixed ProjectChat class name to ProjectChatMessage. Project deletion now works correctly.
+
+## 2025-10-21
+- Improved project delete action UX: Added disabled state for active/planning projects with tooltip. Enhanced confirmation message to accurately explain what gets deleted (tickets preserved, documents/RABs deleted). Better visual feedback with gray disabled state vs red active state.
