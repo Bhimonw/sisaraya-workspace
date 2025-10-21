@@ -1,71 +1,57 @@
-<!-- Modal untuk Tambah Data -->
+<!-- Modal untuk Edit Data -->
 <div x-data="{ 
-        showModal: false, 
-        activeTab: 'skills',
+        showEditModal: false,
+        editType: '',
+        editId: null,
+        editData: {},
         jenis: 'uang',
         jumlahUang: '',
         isSubmitting: false,
         formatRupiah(value) {
-            // Hapus karakter non-digit
             let number = value.replace(/[^,\d]/g, '');
-            
-            // Format dengan titik sebagai pemisah ribuan
             let formatted = number.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            
             return formatted;
         },
         updateJumlahUang(event) {
             const input = event.target;
             const value = input.value;
-            
-            // Hapus format dan ambil hanya angka
             const numbers = value.replace(/[^0-9]/g, '');
-            
-            // Update nilai asli (untuk submit)
             this.jumlahUang = numbers;
-            
-            // Format untuk tampilan
             if (numbers) {
                 input.value = 'Rp ' + this.formatRupiah(numbers);
             } else {
                 input.value = '';
             }
         },
-        disableInactiveTabs(event) {
-            if (this.isSubmitting) return;
-            this.isSubmitting = true;
-            
-            // Disable semua input di tab yang tidak aktif sebelum submit
-            const form = event.target;
-            const tabs = form.querySelectorAll('[x-show]');
-            
-            tabs.forEach(tab => {
-                const isVisible = tab.style.display !== 'none';
-                if (!isVisible) {
-                    // Disable semua input/select/textarea di tab yang hidden
-                    tab.querySelectorAll('input, select, textarea').forEach(field => {
-                        field.disabled = true;
-                    });
-                }
-            });
+        openEdit(type, id, data) {
+            this.editType = type;
+            this.editId = id;
+            this.editData = {...data};
+            if (type === 'modal') {
+                this.jenis = data.jenis || 'uang';
+                this.jumlahUang = data.jumlah_uang || '';
+            }
+            this.showEditModal = true;
         },
-        resetForm() {
-            this.activeTab = 'skills';
+        resetEditForm() {
+            this.editType = '';
+            this.editId = null;
+            this.editData = {};
             this.jenis = 'uang';
             this.jumlahUang = '';
             this.isSubmitting = false;
         }
     }" 
-     @open-add-modal.window="showModal = true; resetForm(); activeTab = $event.detail || 'skills';"
-     @keydown.escape.window="showModal = false"
-     x-show="showModal"
+     @open-edit-modal.window="openEdit($event.detail.type, $event.detail.id, $event.detail.data)"
+     @keydown.escape.window="showEditModal = false"
+     x-show="showEditModal"
      x-cloak
      class="fixed inset-0 z-50 overflow-y-auto"
      style="display: none;">
     
     <!-- Backdrop -->
     <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" 
-         @click="showModal = false"></div>
+         @click="showEditModal = false"></div>
 
     <!-- Modal Container -->
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -76,62 +62,35 @@
             <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5 flex items-center justify-between">
                 <h3 class="text-xl font-bold text-white flex items-center gap-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
-                    Tambah Data Anggota
+                    <span x-text="editType === 'skill' ? 'Edit Keahlian' : (editType === 'modal' ? 'Edit Modal' : 'Edit Link')"></span>
                 </h3>
-                <button @click="showModal = false" class="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition">
+                <button @click="showEditModal = false; resetEditForm();" class="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
 
-            <!-- Tab Navigation -->
-            <div class="flex border-b border-gray-200 bg-gray-50 px-6">
-                <button @click="activeTab = 'skills'" 
-                        :class="activeTab === 'skills' ? 'border-blue-500 text-blue-600 bg-white' : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'"
-                        class="flex items-center gap-2 px-4 py-3 border-b-2 font-semibold text-sm transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                    </svg>
-                    Keahlian
-                </button>
-                <button @click="activeTab = 'modal'" 
-                        :class="activeTab === 'modal' ? 'border-green-500 text-green-600 bg-white' : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'"
-                        class="flex items-center gap-2 px-4 py-3 border-b-2 font-semibold text-sm transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Modal
-                </button>
-                <button @click="activeTab = 'links'" 
-                        :class="activeTab === 'links' ? 'border-purple-500 text-purple-600 bg-white' : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'"
-                        class="flex items-center gap-2 px-4 py-3 border-b-2 font-semibold text-sm transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                    </svg>
-                    Link & Kontak
-                </button>
-            </div>
-
             <!-- Modal Content -->
             <div class="overflow-y-auto max-h-[calc(90vh-180px)]">
-                <form method="POST" action="{{ route('member-data.store') }}" class="p-6" 
-                      @submit="disableInactiveTabs($event)">
+                <form :action="`/member-data/${editType}/${editId}`" method="POST" class="p-6"
+                      @submit="isSubmitting = true">
                     @csrf
+                    @method('PATCH')
 
-                    <!-- Skills Tab -->
-                    <div x-show="activeTab === 'skills'" x-cloak>
+                    <!-- Edit Skill Form -->
+                    <div x-show="editType === 'skill'" x-cloak>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Keahlian *</label>
-                                <input type="text" name="skills[0][nama_skill]" :required="activeTab === 'skills'"
+                                <input type="text" name="nama_skill" x-model="editData.nama_skill" required
                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Tingkat Keahlian *</label>
-                                <select name="skills[0][tingkat_keahlian]" :required="activeTab === 'skills'"
+                                <select name="tingkat_keahlian" x-model="editData.tingkat_keahlian" required
                                         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                                     <option value="">Pilih Tingkat</option>
                                     <option value="pemula">🌱 Pemula</option>
@@ -142,29 +101,29 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
-                                <textarea name="skills[0][deskripsi]" rows="3"
+                                <textarea name="deskripsi" x-model="editData.deskripsi" rows="3"
                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"></textarea>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Modal Tab -->
-                    <div x-show="activeTab === 'modal'" x-cloak>
+                    <!-- Edit Modal Form -->
+                    <div x-show="editType === 'modal'" x-cloak>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Modal *</label>
                                 <div class="grid grid-cols-2 gap-3">
                                     <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition hover:bg-green-50"
-                                           :class="jenis === 'uang' ? 'border-green-500 bg-green-50' : 'border-gray-200'">
-                                        <input type="radio" name="modals[0][jenis]" value="uang" x-model="jenis" :required="activeTab === 'modal'" class="text-green-600 focus:ring-green-500">
+                                           :class="editData.jenis === 'uang' ? 'border-green-500 bg-green-50' : 'border-gray-200'">
+                                        <input type="radio" name="jenis" value="uang" x-model="editData.jenis" required class="text-green-600 focus:ring-green-500">
                                         <div>
                                             <div class="font-semibold text-gray-900">💵 Uang</div>
                                             <div class="text-xs text-gray-600">Modal dana tunai</div>
                                         </div>
                                     </label>
                                     <label class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition hover:bg-purple-50"
-                                           :class="jenis === 'alat' ? 'border-purple-500 bg-purple-50' : 'border-gray-200'">
-                                        <input type="radio" name="modals[0][jenis]" value="alat" x-model="jenis" :required="activeTab === 'modal'" class="text-purple-600 focus:ring-purple-500">
+                                           :class="editData.jenis === 'alat' ? 'border-purple-500 bg-purple-50' : 'border-gray-200'">
+                                        <input type="radio" name="jenis" value="alat" x-model="editData.jenis" required class="text-purple-600 focus:ring-purple-500">
                                         <div>
                                             <div class="font-semibold text-gray-900">🛠️ Alat</div>
                                             <div class="text-xs text-gray-600">Peralatan kerja</div>
@@ -172,35 +131,32 @@
                                     </label>
                                 </div>
                             </div>
-                            <div x-show="jenis === 'alat'" x-cloak>
+                            <div x-show="editData.jenis === 'alat'" x-cloak>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Alat/Barang *</label>
-                                <input type="text" name="modals[0][nama_item]" :required="activeTab === 'modal' && jenis === 'alat'" placeholder="Contoh: Kamera Canon, Laptop Dell"
+                                <input type="text" name="nama_item" x-model="editData.nama_item" :required="editData.jenis === 'alat'"
                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
                             </div>
-                            <div x-show="jenis === 'uang'" x-cloak>
-                                <!-- Hidden input untuk nama_item ketika jenis uang (diisi otomatis) -->
-                                <input type="hidden" name="modals[0][nama_item]" value="Modal Uang Tunai">
+                            <div x-show="editData.jenis === 'uang'" x-cloak>
+                                <input type="hidden" name="nama_item" value="Modal Uang Tunai">
                             </div>
-                            <div x-show="jenis === 'uang'" x-cloak>
+                            <div x-show="editData.jenis === 'uang'" x-cloak>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Jumlah Uang</label>
                                 <div class="relative">
                                     <input type="text" 
+                                           :value="editData.jumlah_uang ? 'Rp ' + formatRupiah(String(editData.jumlah_uang)) : ''"
                                            @input="updateJumlahUang($event)"
-                                           placeholder="Rp 0"
                                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition font-semibold text-lg text-green-700">
-                                    <!-- Hidden input untuk value asli -->
-                                    <input type="hidden" name="modals[0][jumlah_uang]" :value="jumlahUang">
+                                    <input type="hidden" name="jumlah_uang" :value="jumlahUang || editData.jumlah_uang">
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">Format akan otomatis menjadi: Rp 1.000.000</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi</label>
-                                <textarea name="modals[0][deskripsi]" rows="3"
+                                <textarea name="deskripsi" x-model="editData.deskripsi" rows="3"
                                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"></textarea>
                             </div>
                             <div>
                                 <label class="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer hover:bg-blue-100 transition">
-                                    <input type="checkbox" name="modals[0][dapat_dipinjam]" value="1" class="text-blue-600 focus:ring-blue-500 w-5 h-5">
+                                    <input type="checkbox" name="dapat_dipinjam" value="1" :checked="editData.dapat_dipinjam" class="text-blue-600 focus:ring-blue-500 w-5 h-5">
                                     <div>
                                         <div class="font-semibold text-gray-900">Dapat Dipinjam</div>
                                         <div class="text-xs text-gray-600">Item ini bisa dipinjam oleh anggota lain</div>
@@ -210,27 +166,27 @@
                         </div>
                     </div>
 
-                    <!-- Links Tab -->
-                    <div x-show="activeTab === 'links'" x-cloak>
+                    <!-- Edit Link Form -->
+                    <div x-show="editType === 'link'" x-cloak>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Orang/Pemilik *</label>
-                                <input type="text" name="links[0][nama]" :required="activeTab === 'links'" placeholder="Contoh: John Doe, PT. Maju Jaya"
+                                <input type="text" name="nama" x-model="editData.nama" required
                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Bidang</label>
-                                <input type="text" name="links[0][bidang]" placeholder="Contoh: Portfolio, GitHub, LinkedIn"
+                                <input type="text" name="bidang" x-model="editData.bidang"
                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">URL</label>
-                                <input type="url" name="links[0][url]" placeholder="https://..."
+                                <input type="url" name="url" x-model="editData.url"
                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Kontak</label>
-                                <input type="text" name="links[0][contact]" placeholder="Email, nomor WA, atau kontak lain"
+                                <input type="text" name="contact" x-model="editData.contact"
                                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
                             </div>
                         </div>
@@ -238,7 +194,7 @@
 
                     <!-- Submit Button -->
                     <div class="mt-6 flex gap-3">
-                        <button type="button" @click="showModal = false; resetForm();"
+                        <button type="button" @click="showEditModal = false; resetEditForm();"
                                 :disabled="isSubmitting"
                                 class="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed">
                             Batal
@@ -250,7 +206,7 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span x-text="isSubmitting ? 'Menyimpan...' : 'Simpan Data'"></span>
+                            <span x-text="isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'"></span>
                         </button>
                     </div>
                 </form>

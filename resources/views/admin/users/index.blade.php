@@ -37,13 +37,13 @@
                         </span>
                     @endif
                 </a>
-                <a href="{{ route('admin.users.create') }}" 
+                <button @click="$dispatch('open-create-user-modal')"
                    class="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     <span>Tambah User Baru</span>
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -91,6 +91,11 @@
          USER TABLE
          ======================================== --}}
     <x-users.user-table :users="$users" />
+
+    {{-- ========================================
+         CREATE USER MODAL
+         ======================================== --}}
+    @include('admin.users._create-modal')
 
 </div>
 @endsection

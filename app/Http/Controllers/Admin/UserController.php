@@ -21,7 +21,9 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('roles')->orderBy('name')->get();
-        return view('admin.users.index', compact('users'));
+        $roles = Role::orderBy('name')->get();
+        $projects = Project::where('status', 'active')->orderBy('name')->get();
+        return view('admin.users.index', compact('users', 'roles', 'projects'));
     }
 
     public function create()

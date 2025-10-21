@@ -454,3 +454,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Fixed responsive layout for role request button in user management page - now visible on all screen sizes
+
+## 2025-10-21
+- Perbaikan manajemen anggota: tambah validasi lengkap, error handling, fitur edit inline dengan modal dinamis, dan UI feedback yang lebih baik
+
+## 2025-10-21
+- Implementasi modal untuk tambah user di HR management - menggantikan full-page form dengan modal dinamis berbasis Alpine.js
