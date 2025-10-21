@@ -168,28 +168,41 @@ class="relative z-50">
                                 <label class="block text-sm font-bold text-gray-700 mb-3">
                                     Pilih Role yang Diminta <span class="text-red-500">*</span>
                                 </label>
-                                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    @foreach($availableRoles as $role)
-                                        <label class="relative cursor-pointer group">
-                                            <input type="checkbox" name="requested_roles[]" value="{{ $role->name }}" 
-                                                   x-model="selectedRoles"
-                                                   class="sr-only peer">
-                                            <div class="p-3 bg-white border-2 border-gray-200 rounded-xl transition-all duration-300 peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 hover:shadow-md">
-                                                <div class="flex items-center justify-between">
-                                                    <span class="font-semibold text-sm text-gray-700 peer-checked:text-purple-700">
-                                                        {{ ucfirst($role->name) }}
-                                                    </span>
-                                                    <svg class="w-5 h-5 text-purple-600 opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                                    </svg>
+                                
+                                @if($availableRoles->count() > 0)
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        @foreach($availableRoles as $role)
+                                            <label class="relative cursor-pointer group">
+                                                <input type="checkbox" name="requested_roles[]" value="{{ $role->name }}" 
+                                                       x-model="selectedRoles"
+                                                       class="sr-only peer">
+                                                <div class="p-3 bg-white border-2 border-gray-200 rounded-xl transition-all duration-300 peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 hover:shadow-md">
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="font-semibold text-sm text-gray-700 peer-checked:text-purple-700">
+                                                            {{ ucfirst($role->name) }}
+                                                        </span>
+                                                        <svg class="w-5 h-5 text-purple-600 opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </label>
-                                    @endforeach
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">
-                                    💡 Guest tidak dapat digabung dengan role lainnya.
-                                </p>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2">
+                                        💡 Pilih satu atau lebih role yang Anda butuhkan.
+                                    </p>
+                                @else
+                                    <div class="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-xl p-6 text-center">
+                                        <svg class="w-12 h-12 text-blue-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <p class="text-gray-700 font-semibold mb-1">Tidak Ada Role yang Tersedia</p>
+                                        <p class="text-sm text-gray-500">
+                                            Anda sudah memiliki semua role yang tersedia di sistem.
+                                        </p>
+                                    </div>
+                                @endif
                             </div>
 
                             <!-- Reason -->
@@ -212,12 +225,18 @@ class="relative z-50">
                                         class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-colors">
                                     Batal
                                 </button>
-                                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                                    </svg>
-                                    Ajukan Permintaan
-                                </button>
+                                @if($availableRoles->count() > 0)
+                                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                        </svg>
+                                        Ajukan Permintaan
+                                    </button>
+                                @else
+                                    <button type="button" disabled class="px-6 py-3 bg-gray-300 text-gray-500 font-semibold rounded-xl cursor-not-allowed">
+                                        Tidak Ada Role Tersedia
+                                    </button>
+                                @endif
                             </div>
                         </form>
                     @endif

@@ -23,8 +23,14 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         
-        // Get all available roles
-        $availableRoles = Role::orderBy('name')->get();
+        // Get current user role names
+        $currentRoleNames = $user->getRoleNames()->toArray();
+        
+        // Get available roles (exclude 'guest' and roles user already has)
+        $availableRoles = Role::orderBy('name')
+            ->where('name', '!=', 'guest')
+            ->whereNotIn('name', $currentRoleNames)
+            ->get();
         
         // Get user's role change requests
         $roleRequests = RoleChangeRequest::where('user_id', $user->id)

@@ -16,10 +16,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // Role Change Requests
-    Route::post('/role-change-requests', [RoleChangeRequestController::class, 'store'])->name('role-requests.store');
-    Route::delete('/role-change-requests/{roleChangeRequest}', [RoleChangeRequestController::class, 'cancel'])->name('role-requests.cancel');
-    
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
@@ -42,6 +38,10 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/app-dashboard', [DashboardController::class, 'index'])->name('app.dashboard');
+
+    // Role Change Requests (User can submit/cancel from profile)
+    Route::post('/role-change-requests', [RoleChangeRequestController::class, 'store'])->name('role-requests.store');
+    Route::delete('/role-change-requests/{roleChangeRequest}', [RoleChangeRequestController::class, 'cancel'])->name('role-requests.cancel');
 
     // Workspace (Meja Kerja) - Proyek aktif yang diikuti user
     Route::get('/workspace', [ProjectController::class, 'workspace'])->name('workspace');

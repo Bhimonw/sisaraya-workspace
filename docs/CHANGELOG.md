@@ -436,3 +436,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Simplified photo upload - removed crop modal feature in favor of simple direct upload
+
+## 2025-10-21
+- Fixed role change request modal - filter guest role and exclude roles user already has, fixed routing issue
+
+## 2025-10-21
+- Updated role_change_requests table structure - migrated from single role to multiple roles (JSON array)
+
+## 2025-10-21
+- Cleaned duplicate and non-standard roles - removed capitalized duplicates (HR, PM, Sekretaris, Bendahara, Guest) and non-standard roles (head, Anggota)
