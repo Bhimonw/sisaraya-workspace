@@ -379,3 +379,18 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Changed terminology from 'Data Kepegawaian' to 'Data Anggota' throughout the system (views, menu, documentation)
+
+## 2025-10-21
+- Modernized Data Anggota page with gradient headers, better card designs, hover effects, and improved visual hierarchy
+
+## 2025-10-21
+- Implemented tab-based modal system for adding member data, replacing full-page form with modern popup and event-driven Alpine.js approach
+
+## 2025-10-21
+- Separated modal component to _add-data-modal.blade.php and added auto-formatting for Rupiah input with thousands separator (Rp 1.000.000)
+
+## 2025-10-21
+- Changed Links label to 'Nama Orang/Pemilik' and made 'Nama Item' conditional (only for 'alat', hidden for 'uang')
+
+## 2025-10-21
+- Fixed 'invalid form control not focusable' error by making required attributes conditional based on active tab
