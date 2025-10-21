@@ -6,6 +6,7 @@ use App\Models\Rab;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\RabApprovedNotification;
 
 class RabController extends Controller
 {
@@ -89,6 +90,11 @@ class RabController extends Controller
             'approved_by' => $request->user()->id,
             'approved_at' => now(),
         ]);
+
+        // Send push notification to RAB creator
+        if ($rab->created_by) {
+            $rab->creator->notify(new RabApprovedNotification($rab));
+        }
 
         return redirect()->route('rabs.show', $rab)->with('success', 'RAB approved');
     }

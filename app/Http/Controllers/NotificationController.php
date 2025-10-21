@@ -53,4 +53,38 @@ class NotificationController extends Controller
         
         return back()->with('success', 'Notifikasi dihapus');
     }
+
+    /**
+     * Store push subscription
+     */
+    public function storePushSubscription(Request $request)
+    {
+        $validated = $request->validate([
+            'endpoint' => 'required|string',
+            'keys.p256dh' => 'required|string',
+            'keys.auth' => 'required|string',
+        ]);
+
+        Auth::user()->updatePushSubscription(
+            $validated['endpoint'],
+            $validated['keys']['p256dh'],
+            $validated['keys']['auth']
+        );
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Delete push subscription
+     */
+    public function deletePushSubscription(Request $request)
+    {
+        $validated = $request->validate([
+            'endpoint' => 'required|string',
+        ]);
+
+        Auth::user()->deletePushSubscription($validated['endpoint']);
+
+        return response()->json(['success' => true]);
+    }
 }

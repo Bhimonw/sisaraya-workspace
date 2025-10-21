@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketAssigned;
+use App\Notifications\TicketAssignedNotification;
 
 class TicketController extends Controller
 {
@@ -344,6 +345,9 @@ class TicketController extends Controller
             'claimed_by' => $user->id,
             'claimed_at' => now(),
         ]);
+
+        // Send push notification to user who claimed the ticket
+        $user->notify(new TicketAssignedNotification($ticket));
 
         return back()->with('success', 'Anda berhasil mengambil tiket ini');
     }

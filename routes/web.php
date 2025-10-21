@@ -21,6 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
     Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    
+    // Push Notifications
+    Route::post('/push-subscriptions', [NotificationController::class, 'storePushSubscription'])->name('push-subscriptions.store');
+    Route::delete('/push-subscriptions', [NotificationController::class, 'deletePushSubscription'])->name('push-subscriptions.delete');
 });
 
 require __DIR__.'/auth.php';
