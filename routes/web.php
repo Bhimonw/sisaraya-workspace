@@ -148,6 +148,7 @@ Route::middleware(['auth'])->group(function () {
                     'id' => $user->id,
                     'name' => $user->name,
                     'username' => $user->username,
+                    'photo_path' => $user->photo_path,
                     'roles' => $user->getRoleNames(),
                     'last_seen_at' => $user->last_seen_at ? $user->last_seen_at->diffForHumans() : 'Baru saja',
                     'is_online' => $user->isOnline(),

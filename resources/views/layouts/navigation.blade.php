@@ -269,22 +269,29 @@
                                     <div class="px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0">
                                         <div class="flex items-center gap-3">
                                             <div class="relative flex-shrink-0">
-                                                <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold" x-text="user.name.charAt(0).toUpperCase()"></div>
-                                                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                                                <template x-if="user.photo_path">
+                                                    <img :src="'/storage/' + user.photo_path" 
+                                                         :alt="user.name" 
+                                                         class="w-12 h-12 rounded-xl object-cover border-2 border-green-200 shadow-md">
+                                                </template>
+                                                <template x-if="!user.photo_path">
+                                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md border-2 border-green-200" x-text="user.name.charAt(0).toUpperCase()"></div>
+                                                </template>
+                                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <p class="text-sm font-semibold text-gray-900 truncate" x-text="user.name"></p>
                                                 <p class="text-xs text-gray-600 truncate" x-text="'@' + user.username"></p>
                                                 <div class="flex flex-wrap gap-1 mt-1">
                                                     <template x-for="role in user.roles.slice(0, 2)" :key="role">
-                                                        <span class="px-1.5 py-0.5 bg-violet-100 text-violet-700 rounded text-xs font-medium" x-text="role.toUpperCase()"></span>
+                                                        <span class="px-2 py-0.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-[10px] font-semibold shadow-sm" x-text="role.toUpperCase()"></span>
                                                     </template>
                                                 </div>
                                             </div>
                                             <div class="flex-shrink-0 text-right">
                                                 <div class="flex items-center gap-1 text-green-600">
-                                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                                                    <span class="text-xs font-medium">Online</span>
+                                                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                                    <span class="text-xs font-semibold">Online</span>
                                                 </div>
                                                 <p class="text-xs text-gray-500 mt-0.5" x-text="user.last_seen_at"></p>
                                             </div>
@@ -441,14 +448,20 @@
                 <!-- User Dropdown -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center gap-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition ease-in-out duration-150">
-                            <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                                <span class="text-sm font-semibold text-indigo-600">
-                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                                </span>
-                            </div>
+                        <button class="inline-flex items-center gap-2 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 hover:shadow-lg focus:outline-none transition-all ease-in-out duration-300">
+                            @if(Auth::user()->photo_path)
+                                <img src="{{ asset('storage/' . Auth::user()->photo_path) }}" 
+                                     alt="{{ Auth::user()->name }}" 
+                                     class="h-10 w-10 rounded-xl object-cover border-2 border-blue-200 shadow-md">
+                            @else
+                                <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md border-2 border-blue-200">
+                                    <span class="text-sm font-bold text-white">
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                    </span>
+                                </div>
+                            @endif
                             <div class="hidden sm:block text-left">
-                                <div class="text-sm font-medium text-gray-800">{{ Str::limit(Auth::user()->name, 15) }}</div>
+                                <div class="text-sm font-semibold text-gray-800">{{ Str::limit(Auth::user()->name, 15) }}</div>
                                 <div class="text-xs text-gray-500">
                                     @if(method_exists(Auth::user(), 'getRoleNames'))
                                         {{ ucfirst(Auth::user()->getRoleNames()->first() ?? 'User') }}
@@ -462,13 +475,28 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <div class="px-4 py-3 border-b border-gray-100">
-                            <div class="font-medium text-sm text-gray-800">{{ Auth::user()->name }}</div>
-                            <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
-                            <div class="mt-1">
+                        <div class="px-4 py-4 border-b border-gray-100 bg-gradient-to-br from-white to-blue-50">
+                            <div class="flex items-center gap-3 mb-3">
+                                @if(Auth::user()->photo_path)
+                                    <img src="{{ asset('storage/' . Auth::user()->photo_path) }}" 
+                                         alt="{{ Auth::user()->name }}" 
+                                         class="h-14 w-14 rounded-xl object-cover border-2 border-blue-200 shadow-lg">
+                                @else
+                                    <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg border-2 border-blue-200">
+                                        <span class="text-xl font-bold text-white">
+                                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                        </span>
+                                    </div>
+                                @endif
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-semibold text-sm text-gray-900 truncate">{{ Auth::user()->name }}</div>
+                                    <div class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5">
                                 @if(method_exists(Auth::user(), 'getRoleNames'))
                                     @foreach(Auth::user()->getRoleNames() as $role)
-                                        <span class="inline-block px-2 py-0.5 text-xs bg-indigo-100 text-indigo-700 rounded mr-1">
+                                        <span class="inline-block px-2.5 py-1 text-xs bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-semibold shadow-md">
                                             {{ ucfirst($role) }}
                                         </span>
                                     @endforeach
