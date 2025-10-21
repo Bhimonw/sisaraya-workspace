@@ -13,18 +13,27 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         
-        // Get projects where user is owner or member, and status is active
-        $myProjects = Project::withCount('tickets')
-            ->with(['owner', 'members'])
-            ->where(function($q) use ($user) {
-                $q->where('owner_id', $user->id)
-                  ->orWhereHas('members', function($q2) use ($user) {
-                      $q2->where('user_id', $user->id);
-                  });
-            })
-            ->whereIn('status', ['planning', 'active'])
-            ->latest()
-            ->get();
+        // Head (Yahya) dapat melihat SEMUA proyek aktif (auto-viewer)
+        if ($user->hasRole('head')) {
+            $myProjects = Project::withCount('tickets')
+                ->with(['owner', 'members'])
+                ->whereIn('status', ['planning', 'active'])
+                ->latest()
+                ->get();
+        } else {
+            // Get projects where user is owner or member, and status is active
+            $myProjects = Project::withCount('tickets')
+                ->with(['owner', 'members'])
+                ->where(function($q) use ($user) {
+                    $q->where('owner_id', $user->id)
+                      ->orWhereHas('members', function($q2) use ($user) {
+                          $q2->where('user_id', $user->id);
+                      });
+                })
+                ->whereIn('status', ['planning', 'active'])
+                ->latest()
+                ->get();
+        }
         
         // Get available public projects (not owner, not member yet)
         $availableProjects = Project::withCount('tickets')
@@ -46,32 +55,49 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         
-        // Get blackout projects where user is owner OR member (CRITICAL - shown first)
-        $blackoutProjects = Project::withCount('tickets')
-            ->with(['owner', 'members'])
-            ->where(function($q) use ($user) {
-                $q->where('owner_id', $user->id)
-                  ->orWhereHas('members', function($q2) use ($user) {
-                      $q2->where('user_id', $user->id);
-                  });
-            })
-            ->where('status', 'blackout')
-            ->latest()
-            ->get();
-        
-        // Get active projects where user is owner OR member
-        // This is "Projectku" - only ACTIVE projects user is participating in
-        $projects = Project::withCount('tickets')
-            ->with(['owner', 'members'])
-            ->where(function($q) use ($user) {
-                $q->where('owner_id', $user->id)
-                  ->orWhereHas('members', function($q2) use ($user) {
-                      $q2->where('user_id', $user->id);
-                  });
-            })
-            ->where('status', 'active')
-            ->latest()
-            ->get();
+        // Head (Yahya) dapat melihat SEMUA proyek (auto-viewer)
+        if ($user->hasRole('head')) {
+            // Get blackout projects (CRITICAL - shown first)
+            $blackoutProjects = Project::withCount('tickets')
+                ->with(['owner', 'members'])
+                ->where('status', 'blackout')
+                ->latest()
+                ->get();
+            
+            // Get active projects
+            $projects = Project::withCount('tickets')
+                ->with(['owner', 'members'])
+                ->where('status', 'active')
+                ->latest()
+                ->get();
+        } else {
+            // Get blackout projects where user is owner OR member (CRITICAL - shown first)
+            $blackoutProjects = Project::withCount('tickets')
+                ->with(['owner', 'members'])
+                ->where(function($q) use ($user) {
+                    $q->where('owner_id', $user->id)
+                      ->orWhereHas('members', function($q2) use ($user) {
+                          $q2->where('user_id', $user->id);
+                      });
+                })
+                ->where('status', 'blackout')
+                ->latest()
+                ->get();
+            
+            // Get active projects where user is owner OR member
+            // This is "Projectku" - only ACTIVE projects user is participating in
+            $projects = Project::withCount('tickets')
+                ->with(['owner', 'members'])
+                ->where(function($q) use ($user) {
+                    $q->where('owner_id', $user->id)
+                      ->orWhereHas('members', function($q2) use ($user) {
+                          $q2->where('user_id', $user->id);
+                      });
+                })
+                ->where('status', 'active')
+                ->latest()
+                ->get();
+        }
         
         return view('projects.workspace', compact('projects', 'blackoutProjects'));
     }
@@ -81,17 +107,25 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         
-        // Get ALL projects where user is owner OR member (including completed)
-        $projects = Project::withCount('tickets')
-            ->with(['owner', 'members'])
-            ->where(function($q) use ($user) {
-                $q->where('owner_id', $user->id)
-                  ->orWhereHas('members', function($q2) use ($user) {
-                      $q2->where('user_id', $user->id);
-                  });
-            })
-            ->latest()
-            ->get();
+        // Head (Yahya) dapat melihat SEMUA proyek (auto-viewer)
+        if ($user->hasRole('head')) {
+            $projects = Project::withCount('tickets')
+                ->with(['owner', 'members'])
+                ->latest()
+                ->get();
+        } else {
+            // Get ALL projects where user is owner OR member (including completed)
+            $projects = Project::withCount('tickets')
+                ->with(['owner', 'members'])
+                ->where(function($q) use ($user) {
+                    $q->where('owner_id', $user->id)
+                      ->orWhereHas('members', function($q2) use ($user) {
+                          $q2->where('user_id', $user->id);
+                      });
+                })
+                ->latest()
+                ->get();
+        }
         
         return view('projects.all-mine', compact('projects'));
     }

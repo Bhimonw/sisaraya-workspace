@@ -349,3 +349,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Add comprehensive project privacy system documentation - verified no debug output in production code
+
+## 2025-10-21
+- Add head-yahya role - project oversight with view-only access, can claim tickets and participate in all project chats
+
+## 2025-10-21
+- Rename head-yahya to ketua - role for Yahya as Chairman/Ketua SISARAYA with highest oversight access
+
+## 2025-10-21
+- Final naming: use 'head' role for Head of SISARAYA (Yahya) - highest oversight with view-only access

@@ -134,6 +134,7 @@ class Ticket extends Model
             'talent_manager' => 'Talent Manager',
             'talent' => 'Talent',
             'kewirausahaan' => 'Kewirausahaan',
+            'head' => 'Head of SISARAYA',
         ];
     }
 

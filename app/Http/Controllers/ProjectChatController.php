@@ -150,10 +150,12 @@ class ProjectChatController extends Controller
 
     /**
      * Check if user is member or owner of project
+     * Head (Yahya) role can participate in all project chats
      */
     private function isMember(Project $project, $user): bool
     {
         return $project->owner_id === $user->id || 
-               $project->members()->where('user_id', $user->id)->exists();
+               $project->members()->where('user_id', $user->id)->exists() ||
+               $user->hasRole('head'); // Head dapat aktif di semua chat proyek
     }
 }
