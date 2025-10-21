@@ -331,3 +331,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Enhanced project tickets board - modern gradients, icons, custom scrollbar, improved card UX
+
+## 2025-10-21
+- Added General Tickets section and standardized all button sizes (py-2, h-3.5 w-3.5 icons)
