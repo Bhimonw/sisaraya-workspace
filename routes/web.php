@@ -13,6 +13,41 @@ Route::get('/portfolio', function () {
     return view('portfolio');
 })->name('portfolio');
 
+Route::get('/portfolio/{slug}', function ($slug) {
+    // Sample data - nanti bisa diganti dengan data dari database
+    $portfolioData = [
+        'sample-event-2024' => [
+            'title' => 'Sample Event 2024',
+            'description' => 'Event kolaboratif pertama SISARAYA yang menampilkan berbagai talenta dari berbagai bidang kreatif. Event ini mempertemukan musisi, kreator konten, dan pelaku bisnis kreatif dalam satu panggung.',
+            'date' => 'Desember 2024',
+            'category' => 'Event',
+            'tags' => ['Musik', 'Performance', 'Kolaborasi', 'Live Show', 'Networking'],
+            'images' => [],
+            'headerImage' => null,
+            'details' => 'Event ini merupakan kolaborasi lintas disiplin yang menampilkan:
+
+• Live performance dari band lokal
+• Showcase karya media kreatif
+• Networking session untuk kreator
+• Workshop singkat tentang kolaborasi kreatif
+
+Acara berlangsung selama 2 hari dengan partisipasi lebih dari 100 kreator dari berbagai bidang. Event ini menjadi momentum penting bagi SISARAYA untuk membangun jejaring yang lebih luas dan menunjukkan potensi kolaborasi lintas bidang.
+
+Highlights:
+• 10+ Band dan musisi tampil
+• 50+ Karya media kreatif dipamerkan
+• 100+ Peserta dari berbagai bidang
+• Networking session dengan industry leaders
+
+Event ini sukses membangun koneksi antar kreator dan membuka peluang kolaborasi baru yang berkelanjutan.'
+        ]
+    ];
+    
+    $data = $portfolioData[$slug] ?? abort(404);
+    
+    return view('portfolio-detail', $data);
+})->name('portfolio.detail');
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

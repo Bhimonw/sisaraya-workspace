@@ -120,9 +120,12 @@
                             <span class="px-3 py-1 bg-emerald-100 text-emerald-600 text-xs font-semibold rounded-full">Kolaborasi</span>
                         </div>
                         
-                        <button class="w-full px-6 py-3 bg-gradient-to-r from-violet-600 to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300">
-                            Lihat Detail
-                        </button>
+                        <a href="{{ route('portfolio.detail', ['slug' => 'sample-event-2024']) }}" class="group/btn w-full px-6 py-3 bg-gradient-to-r from-violet-600 to-blue-600 text-white font-semibold rounded-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2">
+                            <span>Lihat Detail</span>
+                            <svg class="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </a>
                     </div>
                 </div>
 
