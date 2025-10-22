@@ -65,7 +65,7 @@ class DashboardController extends Controller
                   ->whereIn('status', ['todo', 'doing', 'blackout']);
             })
             ->whereDoesntHave('personalActivities', function($q) use ($today) {
-                $q->whereDate('date', $today);
+                $q->whereDate('start_time', $today);
             })
             ->get();
         
