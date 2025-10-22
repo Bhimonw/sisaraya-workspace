@@ -502,3 +502,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Rename role 'kewirausahaan' to 'bisnis_manager' across entire codebase - seeders, tests, views, and documentation
+
+## 2025-10-21
+- Fixed event_project migration order issue - table now created after events table exists
