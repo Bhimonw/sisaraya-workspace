@@ -541,3 +541,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - Rebuilt welcome page from scratch based on new copywriting focused on Cosmycfest 2024 with cleaner structure
+
+## 2025-10-22
+- Complete rebuild landing page with Cosmycfest 2024 focus - clean structure, prominent login buttons, professional design
+
+## 2025-10-22
+- Complete rebuild landing page with Cosmycfest 2024 focus - clean structure, prominent login buttons, professional design
