@@ -21,29 +21,13 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Left Column: Main Profile (Spans 2 columns on desktop) -->
                 <div class="lg:col-span-2 space-y-4 sm:space-y-6">
-                    <!-- Profile Information -->
-                    <div class="bg-white shadow-xl rounded-2xl overflow-hidden transform hover:shadow-2xl transition-all duration-300">
-                        <div class="p-6 sm:p-8">
-                            @include('profile.partials.update-profile-information-form')
-                        </div>
-                    </div>
+                    @include('profile.cards.profile-information-card')
                 </div>
 
                 <!-- Right Column: Security & Danger Zone -->
                 <div class="lg:col-span-1 space-y-4 sm:space-y-6">
-                    <!-- Update Password -->
-                    <div class="bg-gradient-to-br from-white to-blue-50 shadow-xl rounded-2xl overflow-hidden border-2 border-blue-100 transform hover:shadow-2xl transition-all duration-300">
-                        <div class="p-6">
-                            @include('profile.partials.update-password-form')
-                        </div>
-                    </div>
-
-                    <!-- Delete Account -->
-                    <div class="bg-gradient-to-br from-white to-red-50 shadow-xl rounded-2xl overflow-hidden border-2 border-red-100 transform hover:shadow-2xl transition-all duration-300">
-                        <div class="p-6">
-                            @include('profile.partials.delete-user-form')
-                        </div>
-                    </div>
+                    @include('profile.cards.update-password-card')
+                    @include('profile.cards.delete-account-card')
                 </div>
             </div>
         </div>
