@@ -58,6 +58,7 @@
                     <a href="#about" class="text-gray-700 hover:text-violet-600 transition-colors font-medium">Tentang</a>
                     <a href="#values" class="text-gray-700 hover:text-violet-600 transition-colors font-medium">Nilai Kami</a>
                     <a href="#portfolio" class="text-gray-700 hover:text-violet-600 transition-colors font-medium">Pilar</a>
+                    <a href="{{ route('portfolio') }}" class="text-gray-700 hover:text-violet-600 transition-colors font-medium">Portofolio</a>
                     <a href="#collaboration" class="text-gray-700 hover:text-violet-600 transition-colors font-medium">Kolaborasi</a>
                 </div>
                 
@@ -81,6 +82,7 @@
                 <a href="#about" @click="mobileMenuOpen = false" class="block py-2 text-gray-700 hover:text-violet-600 font-medium">Tentang</a>
                 <a href="#values" @click="mobileMenuOpen = false" class="block py-2 text-gray-700 hover:text-violet-600 font-medium">Nilai Kami</a>
                 <a href="#portfolio" @click="mobileMenuOpen = false" class="block py-2 text-gray-700 hover:text-violet-600 font-medium">Pilar</a>
+                <a href="{{ route('portfolio') }}" @click="mobileMenuOpen = false" class="block py-2 text-gray-700 hover:text-violet-600 font-medium">Portofolio</a>
                 <a href="#collaboration" @click="mobileMenuOpen = false" class="block py-2 text-gray-700 hover:text-violet-600 font-medium">Kolaborasi</a>
             </div>
         </div>
