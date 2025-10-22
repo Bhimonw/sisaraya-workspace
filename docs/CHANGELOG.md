@@ -511,3 +511,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - Successfully migrated to MySQL - event_project table created with proper foreign keys
+
+## 2025-10-22
+- Updated .env.example to use MySQL by default and added VAPID keys placeholder
