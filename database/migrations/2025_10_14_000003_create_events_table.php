@@ -25,10 +25,21 @@ return new class extends Migration
             $table->string('role')->nullable(); // e.g., guest, participant, staff
             $table->timestamps();
         });
+
+        Schema::create('event_project', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
+            $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
+            $table->timestamps();
+            
+            // Unique constraint to prevent duplicate associations
+            $table->unique(['event_id', 'project_id']);
+        });
     }
 
     public function down()
     {
+        Schema::dropIfExists('event_project');
         Schema::dropIfExists('event_user');
         Schema::dropIfExists('events');
     }

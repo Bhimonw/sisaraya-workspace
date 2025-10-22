@@ -505,3 +505,9 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-21
 - Fixed event_project migration order issue - table now created after events table exists
+
+## 2025-10-22
+- Cleaned up event tables migration - consolidated into single migration 2025_10_14_000003_create_events_table.php
+
+## 2025-10-22
+- Successfully migrated to MySQL - event_project table created with proper foreign keys

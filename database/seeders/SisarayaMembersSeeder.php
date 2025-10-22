@@ -52,7 +52,7 @@ class SisarayaMembersSeeder extends Seeder
             ],
             [
                 'name' => 'Robby',
-                'username' => 'robby',
+                'username' => 'muhammad_bulat',
                 'roles' => ['media'],
                 'bio' => 'Main Designer - Memimpin seluruh tim desain visual dan menjaga identitas visual Sisaraya.'
             ],

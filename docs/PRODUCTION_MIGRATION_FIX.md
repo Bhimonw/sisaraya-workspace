@@ -18,46 +18,27 @@ SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'event_project' a
 
 ### Option 1: SQL Script (Recommended for MySQL Production)
 
-**Step 1:** Connect to MySQL database
+**Step 1:** Backup database first
 ```bash
-mysql -u your_username -p your_database_name
+mysqldump -u root -p sisaraya_workspace > backup_$(date +%Y%m%d_%H%M%S).sql
 ```
 
 **Step 2:** Run the fix SQL script
 ```bash
-mysql -u your_username -p your_database_name < database/migrations/FIX_PRODUCTION_EVENT_PROJECT.sql
+mysql -u root -p sisaraya_workspace < database/migrations/FIX_PRODUCTION_EVENT_PROJECT.sql
 ```
 
-Or manually:
-```sql
--- Drop orphaned table
-DROP TABLE IF EXISTS `event_project`;
+This script will:
+- Drop broken event tables
+- Recreate `events` table
+- Create `event_user` pivot table
+- Create `event_project` pivot table with proper foreign keys
+- Clean up migration records
+- Mark migration as completed
 
--- Recreate with proper foreign keys (after events table exists)
-CREATE TABLE `event_project` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-    `event_id` bigint unsigned NOT NULL,
-    `project_id` bigint unsigned NOT NULL,
-    `created_at` timestamp NULL DEFAULT NULL,
-    `updated_at` timestamp NULL DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `event_project_event_id_project_id_unique` (`event_id`, `project_id`),
-    KEY `event_project_event_id_foreign` (`event_id`),
-    KEY `event_project_project_id_foreign` (`project_id`),
-    CONSTRAINT `event_project_event_id_foreign` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `event_project_project_id_foreign` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-```
-
-**Step 3:** Mark migration as complete
-```sql
-INSERT INTO migrations (migration, batch) 
-VALUES ('2025_10_13_050223_create_event_project_table', (SELECT MAX(batch) + 1 FROM (SELECT MAX(batch) AS batch FROM migrations) AS temp));
-```
-
-**Step 4:** Continue with remaining migrations
+**Step 3:** Continue with remaining migrations
 ```bash
-php artisan migrate
+php artisan migrate --force
 ```
 
 ### Option 2: Fresh Migration (Use only if database is empty/test environment)
