@@ -94,6 +94,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('projects/{project}/events', [App\Http\Controllers\ProjectEventController::class, 'store'])->name('projects.events.store');
     Route::delete('project-events/{projectEvent}', [App\Http\Controllers\ProjectEventController::class, 'destroy'])->name('project-events.destroy');
     
+    // Project Calendar API (AJAX)
+    Route::get('api/projects/{project}/calendar', [ProjectController::class, 'getCalendar'])->name('projects.calendar');
+    
     // Project Member Management (PM only)
     Route::post('projects/{project}/members', [App\Http\Controllers\ProjectMemberController::class, 'store'])->name('projects.members.store');
     Route::put('projects/{project}/members/{user}/role', [App\Http\Controllers\ProjectMemberController::class, 'updateRole'])->name('projects.members.updateRole');

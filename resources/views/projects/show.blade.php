@@ -381,38 +381,39 @@
                                     
                                     {{-- Footer: Status + Actions (Always at bottom) --}}
                                     <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-100 mt-auto">
-                                        <div class="flex items-center gap-2 min-w-0 flex-shrink">
-                                            {{-- Status Badge --}}
+                                        {{-- Status Badge --}}
+                                        <div class="flex-shrink-0">
                                             @if($ticket->status === 'todo')
-                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 rounded-full font-bold border border-amber-200 min-w-[70px]">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 rounded-full font-bold border border-amber-200">
                                                     <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                     </svg>
                                                     To Do
                                                 </span>
                                             @elseif($ticket->status === 'doing')
-                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full font-bold border border-purple-200 min-w-[70px]">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full font-bold border border-purple-200">
                                                     <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                                     </svg>
                                                     Doing
                                                 </span>
                                             @elseif($ticket->status === 'done')
-                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-bold border border-blue-200 min-w-[70px]">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-bold border border-blue-200">
                                                     <svg class="h-3 w-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                     </svg>
                                                     Done
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-bold border border-blue-200 min-w-[70px]">
+                                                <span class="inline-flex items-center justify-center gap-1 text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-bold border border-blue-200">
                                                     {{ ucfirst($ticket->status) }}
                                                 </span>
                                             @endif
                                         </div>
                                         
-                                        <div class="flex items-center gap-2 flex-shrink-0">
-                                            {{-- Detail Button - CONSISTENT SIZE --}}
+                                        {{-- Action Buttons - Fixed width container for alignment --}}
+                                        <div class="flex items-center gap-2 ml-auto">
+                                            {{-- Detail Button - Fixed Size --}}
                                             <button 
                                                 @click="showTicket({
                                                     id: {{ $ticket->id }},
@@ -428,24 +429,24 @@
                                                     created_at: '{{ $ticket->created_at->format('d M Y H:i') }}',
                                                     event_title: {{ \Illuminate\Support\Js::from($ticket->projectEvent?->title) }}
                                                 })"
-                                                class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 hover:shadow-sm transition-all font-medium whitespace-nowrap">
+                                                class="inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 hover:shadow-sm transition-all font-medium min-w-[70px]">
                                                 <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                 </svg>
-                                                Detail
+                                                <span>Detail</span>
                                             </button>
 
-                                            {{-- Action Buttons - CONSISTENT SIZE --}}
+                                            {{-- Action Button - Fixed Size with consistent width --}}
                                             @if(!$ticket->isClaimed())
                                                 {{-- Unclaimed: Show Ambil button --}}
                                                 <form method="POST" action="{{ route('tickets.claim', $ticket) }}">
                                                     @csrf
-                                                    <button type="submit" class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 hover:shadow-md transition-all font-semibold whitespace-nowrap">
+                                                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 hover:shadow-md transition-all font-semibold min-w-[70px]">
                                                         <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                         </svg>
-                                                        Ambil
+                                                        <span>Ambil</span>
                                                     </button>
                                                 </form>
                                             @elseif($ticket->claimed_by === auth()->id())
@@ -453,39 +454,39 @@
                                                 @if($ticket->status === 'todo')
                                                     <form method="POST" action="{{ route('tickets.start', $ticket) }}">
                                                         @csrf
-                                                        <button type="submit" class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 hover:shadow-md transition-all font-semibold whitespace-nowrap">
+                                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 hover:shadow-md transition-all font-semibold min-w-[70px]">
                                                             <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                             </svg>
-                                                            Mulai
+                                                            <span>Mulai</span>
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'doing')
                                                     <form method="POST" action="{{ route('tickets.complete', $ticket) }}">
                                                         @csrf
-                                                        <button type="submit" class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 hover:shadow-md transition-all font-semibold whitespace-nowrap">
+                                                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 hover:shadow-md transition-all font-semibold min-w-[80px]">
                                                             <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                             </svg>
-                                                            Selesai
+                                                            <span>Selesai</span>
                                                         </button>
                                                     </form>
                                                 @elseif($ticket->status === 'done')
-                                                    <span class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-green-100 text-green-700 rounded-lg font-semibold border border-green-300 whitespace-nowrap">
+                                                    <span class="inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 bg-green-100 text-green-700 rounded-lg font-semibold border border-green-300 min-w-[80px]">
                                                         <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                         </svg>
-                                                        Selesai
+                                                        <span>Selesai</span>
                                                     </span>
                                                 @endif
                                             @else
-                                                {{-- Claimed by other user --}}
-                                                <span class="inline-flex items-center justify-center gap-1 text-xs px-3 py-2 bg-gray-100 text-gray-600 rounded-lg border border-gray-200 whitespace-nowrap">
+                                                {{-- Claimed by other user - Show username with truncation --}}
+                                                <span class="inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg border border-gray-200 min-w-[70px] max-w-[120px]" title="{{ $ticket->claimedBy?->name }}">
                                                     <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                                     </svg>
-                                                    {{ $ticket->claimedBy?->name }}
+                                                    <span class="truncate">{{ $ticket->claimedBy?->name }}</span>
                                                 </span>
                                             @endif
                                         </div>
@@ -1172,104 +1173,34 @@
                         </div>
                         
                         {{-- Simple PHP Calendar (No JS Library!) --}}
-                        <div class="bg-white rounded-lg border border-gray-200">
+                        <div class="bg-white rounded-lg border border-gray-200" x-data="calendarNavigation({{ $calendar['year'] }}, {{ $calendar['monthNum'] }}, {{ $project->id }})">
                             {{-- Calendar Header --}}
                             <div class="flex items-center justify-between p-4 border-b">
-                                <button class="p-2 hover:bg-gray-100 rounded">
+                                <button @click="prevMonth()" 
+                                        :disabled="loading"
+                                        class="p-2 hover:bg-gray-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                                     </svg>
                                 </button>
-                                <h3 class="font-semibold text-lg">{{ $calendar['month'] }} {{ $calendar['year'] }}</h3>
-                                <button class="p-2 hover:bg-gray-100 rounded">
+                                <div class="text-center">
+                                    <h3 class="font-semibold text-lg" x-text="monthName + ' ' + year"></h3>
+                                    <template x-if="loading">
+                                        <p class="text-xs text-gray-500 mt-1">Memuat...</p>
+                                    </template>
+                                </div>
+                                <button @click="nextMonth()" 
+                                        :disabled="loading"
+                                        class="p-2 hover:bg-gray-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>
                                 </button>
                             </div>
                             
-                            {{-- Calendar Grid --}}
-                            <div class="p-4">
-                                {{-- Day Names --}}
-                                <div class="grid grid-cols-7 gap-1 mb-2">
-                                    @foreach(['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $dayName)
-                                        <div class="text-center font-semibold text-sm text-gray-600 py-2">
-                                            {{ $dayName }}
-                                        </div>
-                                    @endforeach
-                                </div>
-                                
-                                {{-- Calendar Weeks --}}
-                                @foreach($calendar['weeks'] as $week)
-                                    <div class="grid grid-cols-7 gap-1">
-                                        @foreach($week as $day)
-                                            @php
-                                                // Check if this day is within project timeline
-                                                $isInTimeline = false;
-                                                $isTimelineStart = false;
-                                                $isTimelineEnd = false;
-                                                
-                                                if ($day['day'] && $project->start_date && $project->end_date && $day['date']) {
-                                                    $currentDate = $day['date']->format('Y-m-d');
-                                                    $startDate = $project->start_date->format('Y-m-d');
-                                                    $endDate = $project->end_date->format('Y-m-d');
-                                                    
-                                                    $isInTimeline = $currentDate >= $startDate && $currentDate <= $endDate;
-                                                    $isTimelineStart = $currentDate === $startDate;
-                                                    $isTimelineEnd = $currentDate === $endDate;
-                                                }
-                                            @endphp
-                                            
-                                            <div class="min-h-24 border rounded p-1 relative
-                                                {{ $day['day'] ? ($isInTimeline ? 'bg-indigo-50 border-indigo-300' : 'bg-white') : 'bg-gray-50' }} 
-                                                {{ isset($day['isToday']) && $day['isToday'] ? 'ring-2 ring-blue-500' : '' }}
-                                                {{ $isTimelineStart ? 'border-l-4 border-l-indigo-600' : '' }}
-                                                {{ $isTimelineEnd ? 'border-r-4 border-r-indigo-600' : '' }}">
-                                                
-                                                @if($day['day'])
-                                                    {{-- Timeline indicator --}}
-                                                    @if($isInTimeline)
-                                                        <div class="absolute top-0 left-0 right-0 h-1 bg-indigo-400"></div>
-                                                    @endif
-                                                    
-                                                    {{-- Day Number --}}
-                                                    <div class="text-right">
-                                                        <span class="inline-flex items-center justify-center w-6 h-6 text-sm font-medium 
-                                                            {{ isset($day['isToday']) && $day['isToday'] ? 'bg-blue-500 text-white rounded-full' : ($isInTimeline ? 'text-indigo-900 font-bold' : 'text-gray-700') }}">
-                                                            {{ $day['day'] }}
-                                                        </span>
-                                                    </div>
-                                                    
-                                                    {{-- Timeline labels --}}
-                                                    @if($isTimelineStart)
-                                                        <div class="text-[10px] font-bold text-indigo-700 px-1 mb-1">
-                                                            Mulai
-                                                        </div>
-                                                    @endif
-                                                    @if($isTimelineEnd)
-                                                        <div class="text-[10px] font-bold text-indigo-700 px-1 mb-1">
-                                                            Selesai
-                                                        </div>
-                                                    @endif
-                                                    
-                                                    {{-- Events for this day --}}
-                                                    <div class="mt-1 space-y-1">
-                                                        @foreach(array_slice($day['events'], 0, 2) as $event)
-                                                            <div class="text-xs px-1 py-0.5 rounded {{ \App\Helpers\CalendarHelper::getEventColorClass($event['type'], $event['status'] ?? null) }} text-white truncate" title="{{ $event['title'] }}">
-                                                                {{ $event['title'] }}
-                                                            </div>
-                                                        @endforeach
-                                                        @if(count($day['events']) > 2)
-                                                            <div class="text-xs text-gray-500 px-1">
-                                                                +{{ count($day['events']) - 2 }} lagi
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endforeach
+                            {{-- Calendar Grid Container --}}
+                            <div id="calendar-grid-container">
+                                @include('projects.partials.calendar-grid', ['calendar' => $calendar, 'project' => $project])
                             </div>
                         </div>
                         
@@ -3905,6 +3836,74 @@
         </div>
     </template>
 </div>
+
+<script>
+// Calendar Navigation Component
+function calendarNavigation(currentYear, currentMonth, projectId) {
+    return {
+        year: currentYear,
+        month: currentMonth,
+        projectId: projectId,
+        loading: false,
+        monthNames: [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ],
+        
+        get monthName() {
+            return this.monthNames[this.month - 1];
+        },
+        
+        prevMonth() {
+            this.month--;
+            if (this.month < 1) {
+                this.month = 12;
+                this.year--;
+            }
+            this.loadCalendar();
+        },
+        
+        nextMonth() {
+            this.month++;
+            if (this.month > 12) {
+                this.month = 1;
+                this.year++;
+            }
+            this.loadCalendar();
+        },
+        
+        async loadCalendar() {
+            this.loading = true;
+            
+            try {
+                const url = `/api/projects/${this.projectId}/calendar?month=${this.month}&year=${this.year}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load calendar');
+                }
+                
+                const html = await response.text();
+                
+                // Update calendar grid with smooth transition
+                const container = document.getElementById('calendar-grid-container');
+                container.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    container.innerHTML = html;
+                    container.style.opacity = '1';
+                }, 150);
+                
+            } catch (error) {
+                console.error('Error loading calendar:', error);
+                alert('Gagal memuat kalender. Silakan coba lagi.');
+            } finally {
+                this.loading = false;
+            }
+        }
+    }
+}
+</script>
 
 {{-- Calendar rendered server-side with PHP - No JavaScript needed! --}}
 

@@ -295,6 +295,14 @@ class ProjectController extends Controller
             'events.tickets.creator'
         ]);
         
+        // Get month and year from request, default to current
+        $month = request('month', date('n'));
+        $year = request('year', date('Y'));
+        
+        // Validate month and year
+        $month = max(1, min(12, intval($month)));
+        $year = max(2020, min(2100, intval($year)));
+        
         // Prepare calendar data
         $calendarEvents = [];
         
@@ -341,12 +349,84 @@ class ProjectController extends Controller
         
         // Generate calendar HTML
         $calendar = \App\Helpers\CalendarHelper::generateMonthCalendar(
-            date('Y'),
-            date('n'),
+            $year,
+            $month,
             $calendarEvents
         );
         
         return view('projects.show', compact('project', 'calendar'));
+    }
+
+    /**
+     * Get calendar data via AJAX (for interactive navigation)
+     */
+    public function getCalendar(Project $project)
+    {
+        $project->load([
+            'tickets',
+            'events'
+        ]);
+        
+        // Get month and year from request
+        $month = request('month', date('n'));
+        $year = request('year', date('Y'));
+        
+        // Validate month and year
+        $month = max(1, min(12, intval($month)));
+        $year = max(2020, min(2100, intval($year)));
+        
+        // Prepare calendar data
+        $calendarEvents = [];
+        
+        // Add project timeline if it has start and end dates
+        if ($project->start_date && $project->end_date) {
+            $calendarEvents[] = [
+                'id' => 'project-' . $project->id,
+                'title' => '[Proyek] ' . $project->name,
+                'start' => $project->start_date->format('Y-m-d'),
+                'end' => $project->end_date->format('Y-m-d'),
+                'type' => 'Project',
+                'status' => $project->status,
+                'description' => 'Timeline Proyek',
+            ];
+        }
+        
+        // Add project events to calendar
+        foreach ($project->events as $event) {
+            $startDateTime = $event->start_date . ' ' . $event->start_time;
+            
+            $calendarEvents[] = [
+                'id' => 'event-' . $event->id,
+                'title' => $event->title,
+                'start' => $startDateTime,
+                'type' => 'Event',
+                'description' => $event->description,
+                'location' => $event->location,
+            ];
+        }
+        
+        // Add tickets with due_date to calendar
+        foreach ($project->tickets as $ticket) {
+            if ($ticket->due_date) {
+                $calendarEvents[] = [
+                    'id' => 'ticket-' . $ticket->id,
+                    'title' => $ticket->title,
+                    'start' => $ticket->due_date,
+                    'type' => 'Tiket',
+                    'status' => $ticket->status,
+                ];
+            }
+        }
+        
+        // Generate calendar HTML
+        $calendar = \App\Helpers\CalendarHelper::generateMonthCalendar(
+            $year,
+            $month,
+            $calendarEvents
+        );
+        
+        // Return calendar HTML as partial view
+        return view('projects.partials.calendar-grid', compact('calendar', 'project'))->render();
     }
 
     public function destroy(Project $project)

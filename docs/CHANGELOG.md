@@ -557,3 +557,12 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - Refactor landing page - split into 7 modular components for better maintainability. Added comprehensive documentation.
+
+## 2025-10-22
+- Add calendar month navigation in project detail page - users can now slide between months
+
+## 2025-10-22
+- Make calendar navigation interactive with AJAX - no page refresh when switching months
+
+## 2025-10-22
+- Improve ticket card button layout - aligned buttons with consistent sizing and better visual hierarchy
