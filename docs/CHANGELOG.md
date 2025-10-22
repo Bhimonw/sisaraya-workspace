@@ -529,3 +529,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - Fixed CI/CD workflows to use correct secret names: SERVER_IP, SERVER_USER instead of SSH_HOST, SSH_USERNAME
+
+## 2025-10-22
+- Fixed CI/CD tests workflow - added Node.js setup and asset building before running tests
