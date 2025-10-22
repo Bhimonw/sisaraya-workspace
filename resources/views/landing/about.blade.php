@@ -10,7 +10,7 @@
         <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
             <div class="order-2 md:order-1">
                 <p class="text-lg text-gray-700 leading-relaxed mb-6">
-                    <span class="font-bold text-violet-600">Sisaraya</span> adalah komunitas kolektif yang menghubungkan individu dari berbagai latar belakang kreatif, media, musik, dan kewirausahaan. Kami percaya bahwa ide terbaik lahir dari kolaborasi, pertemuan perspektif berbeda, dan semangat untuk menciptakan karya bermakna.
+                    <span class="font-bold text-violet-600">Sisaraya</span> adalah komunitas kolektif yang menghubungkan individu dari berbagai latar belakang kreatif, media, dan musik. Kami percaya bahwa ide terbaik lahir dari kolaborasi, pertemuan perspektif berbeda, dan semangat untuk menciptakan karya bermakna.
                 </p>
                 
                 <p class="text-lg text-gray-700 leading-relaxed mb-6">

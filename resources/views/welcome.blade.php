@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SISARAYA - Komunitas Kreatif, Kolaboratif, dan Inovatif</title>
-    <meta name="description" content="Tempat para kreator, musisi, pelaku media, dan wirausahawan berkumpul untuk berkolaborasi dan menciptakan karya yang berdampak.">
+    <meta name="description" content="Tempat para kreator, musisi, dan pelaku media berkumpul untuk berkolaborasi dan menciptakan karya yang berdampak.">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -59,11 +59,6 @@
                     <a href="#values" class="text-gray-700 hover:text-violet-600 transition-colors font-medium">Nilai Kami</a>
                     <a href="#portfolio" class="text-gray-700 hover:text-violet-600 transition-colors font-medium">Pilar</a>
                     <a href="#collaboration" class="text-gray-700 hover:text-violet-600 transition-colors font-medium">Kolaborasi</a>
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="px-6 py-2 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full hover:shadow-lg transition-all duration-300 font-semibold">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="px-6 py-2 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full hover:shadow-lg transition-all duration-300 font-semibold">Masuk</a>
-                    @endauth
                 </div>
                 
                 <!-- Mobile Menu Button -->
@@ -87,11 +82,6 @@
                 <a href="#values" @click="mobileMenuOpen = false" class="block py-2 text-gray-700 hover:text-violet-600 font-medium">Nilai Kami</a>
                 <a href="#portfolio" @click="mobileMenuOpen = false" class="block py-2 text-gray-700 hover:text-violet-600 font-medium">Pilar</a>
                 <a href="#collaboration" @click="mobileMenuOpen = false" class="block py-2 text-gray-700 hover:text-violet-600 font-medium">Kolaborasi</a>
-                @auth
-                    <a href="{{ route('dashboard') }}" class="block py-2 px-4 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full text-center font-semibold">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="block py-2 px-4 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full text-center font-semibold">Masuk</a>
-                @endauth
             </div>
         </div>
     </nav>

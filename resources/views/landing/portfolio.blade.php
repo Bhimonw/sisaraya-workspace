@@ -42,7 +42,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 group-hover:text-white mb-3 transition-colors duration-300">Kewirausahaan</h3>
+                    <h3 class="text-xl font-bold text-gray-900 group-hover:text-white mb-3 transition-colors duration-300">Bisnis Kolaboratif</h3>
                     <p class="text-gray-600 group-hover:text-white/90 transition-colors duration-300">Mengembangkan ide menjadi peluang bisnis yang berdampak.</p>
                 </div>
             </div>

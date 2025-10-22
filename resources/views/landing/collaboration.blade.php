@@ -67,21 +67,12 @@
         </div>
         
         <div class="text-center">
-            @auth
-            <a href="{{ url('/dashboard') }}" class="inline-flex items-center px-10 py-4 bg-white text-violet-600 text-lg font-bold rounded-full hover:bg-gray-50 hover:scale-105 transition-all duration-300 shadow-2xl">
+            <a href="#contact" class="inline-flex items-center px-10 py-4 bg-white text-violet-600 text-lg font-bold rounded-full hover:bg-gray-50 hover:scale-105 transition-all duration-300 shadow-2xl">
                 <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                 </svg>
-                Masuk ke Ruang Kerja
+                Hubungi Kami
             </a>
-            @else
-            <a href="{{ route('login') }}" class="inline-flex items-center px-10 py-4 bg-white text-violet-600 text-lg font-bold rounded-full hover:bg-gray-50 hover:scale-105 transition-all duration-300 shadow-2xl">
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                </svg>
-                Login untuk Bergabung
-            </a>
-            @endauth
             <p class="mt-6 text-white/70 text-sm">Tertarik untuk berkolaborasi? Hubungi kami untuk informasi lebih lanjut</p>
         </div>
     </div>
