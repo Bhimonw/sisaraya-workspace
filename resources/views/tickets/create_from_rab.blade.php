@@ -21,6 +21,7 @@
                 <option value="todo">To Do</option>
                 <option value="doing">Doing</option>
                 <option value="done">Done</option>
+                <option value="blackout">Blackout</option>
             </select>
         </div>
         <div>
