@@ -2,6 +2,9 @@
 
 All notable changes to this project should be documented in this file.
 
+## 2025-10-22
+- **Modern Landing Page** - Implementasi landing page SISARAYA dengan design modern menggunakan Tailwind CSS dan Alpine.js. Fitur: fixed navbar dengan mobile menu, hero section dengan gradient pattern, 4 section nilai inti (Kolaborasi, Inovasi, Profesionalisme, Dampak), showcase Cosmycfest 2024, CTA authentication-aware, dan responsive footer. Assets: logo-no-bg.png (navbar), Logo.png (section), Asset.jpg (hero & showcase). Copywriting dari `docs/Copywritting.md`. Dokumentasi lengkap di `docs/LANDING_PAGE_IMPLEMENTATION.md`.
+
 ## 2025-10-14
 - **Voting protections & quorum rules** - Duplicate vote prevention, quorum 50%, finalize endpoint. Lihat `docs/IMPLEMENTED.md` dan `docs/PROGRESS_IMPLEMENTASI.md` untuk detail.
 - **Permission-based project views** - PM melihat full Kanban, anggota lain hanya melihat kalender & tiket mereka. Tombol "New Project" hanya untuk role dengan permission `projects.create`.
