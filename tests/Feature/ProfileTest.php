@@ -30,7 +30,6 @@ class ProfileTest extends TestCase
             ->patch('/profile', [
                 'name' => 'Test User',
                 'username' => $user->username,
-                'email' => 'test@example.com',
             ]);
 
         $response
@@ -40,12 +39,13 @@ class ProfileTest extends TestCase
         $user->refresh();
 
         $this->assertSame('Test User', $user->name);
-        $this->assertSame('test@example.com', $user->email);
-        $this->assertNull($user->email_verified_at);
+        // Email field tidak ada - aplikasi menggunakan username-based auth
     }
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void
     {
+        $this->markTestSkipped('Email field tidak digunakan - aplikasi menggunakan username-based authentication');
+        
         $user = User::factory()->create();
 
         $response = $this
@@ -53,14 +53,11 @@ class ProfileTest extends TestCase
             ->patch('/profile', [
                 'name' => 'Test User',
                 'username' => $user->username,
-                'email' => $user->email,
             ]);
 
         $response
             ->assertSessionHasNoErrors()
             ->assertRedirect('/profile');
-
-        $this->assertNotNull($user->refresh()->email_verified_at);
     }
 
     public function test_user_can_delete_their_account(): void

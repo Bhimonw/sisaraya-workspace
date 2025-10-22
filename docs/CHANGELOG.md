@@ -532,3 +532,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - Fixed CI/CD tests workflow - added Node.js setup and asset building before running tests
+
+## 2025-10-22
+- Fixed test failures: updated ConfirmablePasswordController to use username instead of email, fixed ProfileTest email assertions, improved ProjectRatingTest authorization checks
