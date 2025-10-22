@@ -538,3 +538,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - Redesigned welcome page menjadi landing page lengkap dengan section Filosofi, Portofolio, dan Kesempatan Kolaborasi - tombol login tetap ada
+
+## 2025-10-22
+- Rebuilt welcome page from scratch based on new copywriting focused on Cosmycfest 2024 with cleaner structure
