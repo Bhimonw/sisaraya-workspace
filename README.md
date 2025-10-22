@@ -1,18 +1,15 @@
-# SISARAYA - Ruang Kerja Platform<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SISARAYA - Ruang Kerja Platform
 
+![SISARAYA Logo](public/logo-no-bg.png)
 
+**Kolektif Kreatif Lintas Bidang**
 
-![SISARAYA Logo](public/logo-no-bg.png)<p align="center">
-
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-
-**Kolektif Kreatif Lintas Bidang**<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-
----<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-
-</p>
+[![Tests](https://github.com/Bhimonw/sisaraya-workspace/workflows/Tests/badge.svg)](https://github.com/Bhimonw/sisaraya-workspace/actions)
+[![Code Quality](https://github.com/Bhimonw/sisaraya-workspace/workflows/Code%20Quality/badge.svg)](https://github.com/Bhimonw/sisaraya-workspace/actions)
+[![Deploy](https://github.com/Bhimonw/sisaraya-workspace/workflows/Deploy%20to%20Production/badge.svg)](https://github.com/Bhimonw/sisaraya-workspace/actions)
+![PHP 8.4](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white)
+![Laravel 12](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
 
 ## 📋 Tentang SISARAYA
 
@@ -496,6 +493,41 @@ Default: SQLite (file-based, no server needed)
 - Location: `database/database.sqlite`
 - Easy backup (just copy the file)
 - For production: consider MySQL/PostgreSQL
+
+---
+
+## 🚀 CI/CD & Deployment
+
+### Automated Testing & Deployment
+
+Project ini menggunakan **GitHub Actions** untuk automated testing dan deployment:
+
+- ✅ **Tests** - Automated testing pada setiap push/PR
+- ✅ **Code Quality** - Code quality checks dan security audit  
+- ✅ **Deploy** - Automated deployment ke production server
+
+### Quick Deploy (Production Server)
+
+```bash
+# Automated via GitHub Actions (on push to main)
+# Or manually:
+cd ~/projects/sisaraya-workspace
+bash scripts/deploy.sh
+```
+
+### Rollback (if needed)
+
+```bash
+cd ~/projects/sisaraya-workspace
+bash scripts/rollback.sh [commit-hash]
+```
+
+### Documentation
+
+- 📚 **Full CI/CD Guide**: [`docs/CI_CD_SETUP.md`](docs/CI_CD_SETUP.md)
+- 🔐 **GitHub Secrets Setup**: [`.github/SECRETS_SETUP.md`](.github/SECRETS_SETUP.md)
+- 🔧 **Deploy Script**: [`scripts/deploy.sh`](scripts/deploy.sh)
+- ⏪ **Rollback Script**: [`scripts/rollback.sh`](scripts/rollback.sh)
 
 ---
 

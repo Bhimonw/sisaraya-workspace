@@ -39,6 +39,49 @@ This folder contains project documentation.
 
 ---
 
+### 🚀 CI/CD & DEPLOYMENT
+
+#### `CI_CD_SETUP.md` ⭐⭐⭐
+**Complete CI/CD Configuration Guide**
+- GitHub Actions workflows setup
+- Automated testing, code quality checks, and deployment
+- SSH keys configuration
+- Production server preparation
+- Troubleshooting guide
+- **Essential for DevOps setup**
+
+#### `CI_CD_SETUP_SUMMARY.md` ⭐⭐
+**CI/CD Quick Summary**
+- What has been set up
+- Next steps checklist
+- Quick usage examples
+- Success metrics
+- **Read this first for CI/CD overview**
+
+#### `CI_CD_QUICK_REFERENCE.md` ⭐
+**Quick Reference Card**
+- Files created overview
+- Quick commands
+- GitHub Secrets reference
+- Emergency contacts
+- **Keep this handy for daily operations**
+
+#### `PRODUCTION_MIGRATION_FIX.md`
+**Production Database Migration Fix Guide**
+- Fix for event_project migration order issue
+- SQL scripts for production
+- Step-by-step recovery procedures
+- Rollback instructions
+
+#### `../github/SECRETS_SETUP.md` ⭐
+**GitHub Secrets Configuration**
+- Detailed SSH keys setup
+- Step-by-step secrets configuration
+- Troubleshooting SSH issues
+- Security best practices
+
+---
+
 ### 1. `PROGRESS_IMPLEMENTASI.md` ⭐ (BACA INI DULU)
 **Dokumen Progress Lengkap dalam Bahasa Indonesia**
 - Checklist lengkap dari 6 dokumen requirement (doc.md - doc6.md)

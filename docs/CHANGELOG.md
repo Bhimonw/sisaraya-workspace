@@ -514,3 +514,15 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - Updated .env.example to use MySQL by default and added VAPID keys placeholder
+
+## 2025-10-22
+- Fixed SQL error in DashboardController - changed whereDate date to whereDate start_time for personal_activities table
+
+## 2025-10-22
+- Setup CI/CD with GitHub Actions - automated testing, code quality checks, and deployment workflows
+
+## 2025-10-22
+- Completed CI/CD setup with full documentation, deployment scripts, and GitHub Actions workflows
+
+## 2025-10-22
+- CI/CD setup complete - 3 workflows, 2 scripts, 5 documentation files created
