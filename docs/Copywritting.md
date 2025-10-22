@@ -1,99 +1,75 @@
-Landing Page Panjang Sisaraya – Versi Rapi
+Landing Page Sisaraya – Versi Final (Fokus pada Cosmycfest 2024)
 1. Hero / Pembuka
 
-Headline
-Sisaraya: Komunitas Kreatif Kolaboratif dan Inovatif
+Headline:
+Sisaraya: Komunitas Kreatif, Kolaboratif, dan Inovatif
 
-Subheadline
-Tempat para kreator musisi media dan wirausahawan berkumpul berkolaborasi dan menciptakan karya berdampak
+Subheadline:
+Tempat para kreator, musisi, pelaku media, dan wirausahawan berkumpul untuk berkolaborasi dan menciptakan karya yang berdampak.
 
-CTA
-
-Kenali Kami → scroll ke About
-
-Bergabung Sekarang → formulir pendaftaran
-
-Visual
-Foto anggota komunitas beraktivitas video highlight event atau ilustrasi kolaboratif
+Visual:
+Gunakan foto-foto kegiatan Sisaraya: dokumentasi anggota beraktivitas, suasana kolaborasi, atau video highlight acara.
 
 2. Tentang Sisaraya
 
-Judul
+Judul:
 Siapa Kami
 
-Isi
-Sisaraya adalah komunitas kolektif yang menghubungkan individu dari berbagai latar belakang kreatif media musik dan kewirausahaan Kami percaya bahwa ide terbaik lahir dari kolaborasi pertemuan perspektif berbeda dan semangat untuk menciptakan karya bermakna
+Isi:
+Sisaraya adalah komunitas kolektif yang menghubungkan individu dari berbagai latar belakang kreatif, media, musik, dan kewirausahaan.
+Kami percaya bahwa ide terbaik lahir dari kolaborasi, pertemuan perspektif yang beragam, dan semangat untuk menciptakan karya bermakna.
 
-Highlight
+Highlight:
 
-Didirikan untuk memfasilitasi kolaborasi lintas disiplin
+Didirikan untuk memfasilitasi kolaborasi lintas disiplin.
 
-Fokus pada pengembangan karya dan portofolio anggota
+Fokus pada pengembangan karya dan portofolio anggota.
 
-Membangun jejaring kreator profesional di Indonesia
+Membangun jejaring kreator profesional di Indonesia.
 
-CTA
-Pelajari Lebih Lanjut → scroll ke Portofolio
+Visual:
+Gunakan foto dokumentasi kegiatan internal, pertemuan anggota, atau aktivitas kreatif lintas bidang.
 
 3. Nilai & Filosofi Komunitas
 
-Judul
+Judul:
 Apa yang Kami Percaya
 
-Isi
-Sisaraya berdiri di atas nilai nilai inti
+Isi:
+Sisaraya berdiri di atas empat nilai inti yang menjadi dasar setiap langkah kami:
 
-Kolaborasi: Semua orang punya keunikan dan ketika digabung tercipta karya luar biasa
+Kolaborasi — Setiap individu memiliki keunikan, dan ketika digabung, lahirlah karya luar biasa.
 
-Inovasi: Kreativitas harus diiringi dengan ide baru dan solusi segar
+Inovasi — Kreativitas harus diiringi dengan ide baru dan solusi segar.
 
-Profesionalisme: Semua proyek dijalankan dengan standar tinggi untuk hasil maksimal
+Profesionalisme — Setiap proyek dijalankan dengan standar tinggi untuk hasil maksimal.
 
-Dampak: Karya kami tidak hanya untuk portofolio tapi juga memberi kontribusi positif bagi masyarakat dan industri kreatif
+Dampak — Karya yang dihasilkan bukan hanya untuk portofolio, tetapi juga memberi kontribusi positif bagi masyarakat dan industri kreatif.
 
-Visual
-Infografis filosofi ikon nilai atau kutipan inspiratif dari anggota
+Visual:
+Infografis nilai-nilai inti, ikon representatif, atau kutipan inspiratif dari anggota komunitas.
 
 4. Portofolio & Proyek Unggulan
 
-Judul
+Judul:
 Karya Kami
 
-Isi
-Setiap proyek yang lahir di Sisaraya menunjukkan bagaimana kolaborasi lintas bidang menghasilkan hasil luar biasa Mulai dari produksi media musik event kreatif hingga inisiatif wirausaha
+Isi:
+Salah satu karya kolaboratif terbesar yang lahir dari Sisaraya adalah Cosmycfest 2024, sebuah festival kreatif yang mempertemukan para seniman, musisi, kreator media, dan wirausahawan dalam satu ruang ekspresi.
 
-Contoh Portofolio
+Cosmycfest 2024 menjadi wujud nyata dari semangat kolaborasi lintas disiplin yang menjadi identitas Sisaraya. Melalui festival ini, berbagai komunitas kreatif berkontribusi dalam menghadirkan pertunjukan musik, pameran seni, sesi diskusi, dan pasar kreatif lokal yang memperkuat jejaring antar kreator di Indonesia.
 
-Proyek kreatif Art & Music Collab 2025
+Visual:
+Gunakan foto-foto Cosmycfest 2024 — suasana acara, panggung musik, pameran, dan interaksi antar peserta.
 
-Media & Konten Siaran Live Dokumenter Kreator
+5. Penutup / Filosofi Dampak
 
-Startup & Wirausaha Marketplace Kreatif Lokal
+Judul:
+Lebih dari Sekadar Komunitas
 
-Visual
-Slider galeri foto video highlight logo proyek
+Isi:
+Sisaraya adalah ruang tempat ide tumbuh menjadi aksi, dan aksi memberi makna.
+Kami percaya bahwa setiap karya yang diciptakan bersama memiliki kekuatan untuk menginspirasi, memperkaya, dan memberi dampak positif bagi masyarakat luas.
 
-CTA
-Lihat Semua Proyek
-
-5. Kesempatan Kolaborasi
-
-Judul
-Bergabung dan Berkolaborasi
-
-Isi
-Sisaraya membuka pintu untuk semua kreator yang ingin
-
-Bertemu profesional dari berbagai bidang
-
-Mengembangkan portofolio dan keterampilan
-
-Mengikuti workshop dan program kreatif
-
-Menciptakan proyek yang memberi dampak positif
-
-CTA
-Daftar Bergabung Sekarang
-
-Visual
-Ilustrasi brainstorming meeting atau kegiatan workshop
+Visual:
+Gunakan foto-foto momen berkesan dari Cosmycfest 2024 dan kegiatan komunitas yang menggambarkan semangat kolaboratif Sisaraya.
