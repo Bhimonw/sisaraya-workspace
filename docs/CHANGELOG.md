@@ -526,3 +526,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - CI/CD setup complete - 3 workflows, 2 scripts, 5 documentation files created
+
+## 2025-10-22
+- Fixed CI/CD workflows to use correct secret names: SERVER_IP, SERVER_USER instead of SSH_HOST, SSH_USERNAME

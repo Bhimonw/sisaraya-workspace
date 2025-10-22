@@ -40,10 +40,9 @@ Repository → Settings → Secrets and variables → Actions → New repository
 ```
 
 Required secrets:
-- `SSH_HOST` - Production server hostname (e.g., `srv1045082.hosting.com`)
-- `SSH_USERNAME` - SSH username (e.g., `root`)
+- `SERVER_IP` - Production server hostname (e.g., `srv1045082.hosting.com`)
+- `SERVER_USER` - SSH username (e.g., `root`)
 - `SSH_PRIVATE_KEY` - SSH private key for authentication
-- `SSH_PORT` - SSH port (optional, default: 22)
 
 **📖 Detailed instructions:** [`.github/SECRETS_SETUP.md`](.github/SECRETS_SETUP.md)
 

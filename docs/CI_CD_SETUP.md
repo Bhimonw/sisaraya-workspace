@@ -81,10 +81,9 @@ Untuk deployment workflow, tambahkan secrets berikut di GitHub repository:
 
 | Secret Name | Description | Example Value |
 |------------|-------------|---------------|
-| `SSH_HOST` | Production server hostname atau IP | `srv1045082.hosting.com` atau `123.456.789.0` |
-| `SSH_USERNAME` | SSH username | `root` |
+| `SERVER_IP` | Production server hostname atau IP | `srv1045082.hosting.com` atau `123.456.789.0` |
+| `SERVER_USER` | SSH username | `root` |
 | `SSH_PRIVATE_KEY` | SSH private key untuk authentication | `-----BEGIN OPENSSH PRIVATE KEY-----\n...` |
-| `SSH_PORT` | SSH port (optional, default: 22) | `22` |
 
 #### Cara Generate SSH Key Pair:
 
@@ -196,9 +195,8 @@ Tambahkan badges ini ke `README.md`:
 ### Deployment Failing
 
 **Issue:** SSH connection refused
-**Solution:** 
-- Verify SSH_HOST secret is correct
-- Check SSH_PORT (default 22)
+**Solution:**
+- Verify SERVER_IP secret is correct
 - Verify SSH key is added to server's `~/.ssh/authorized_keys`
 
 **Issue:** Permission denied errors

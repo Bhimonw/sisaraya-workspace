@@ -52,10 +52,9 @@ bash scripts/rollback.sh [commit-hash]
 
 | Secret Name | Example Value |
 |------------|---------------|
-| `SSH_HOST` | `srv1045082.hosting.com` |
-| `SSH_USERNAME` | `root` |
+| `SERVER_IP` | `srv1045082.hosting.com` |
+| `SERVER_USER` | `root` |
 | `SSH_PRIVATE_KEY` | `-----BEGIN OPENSSH PRIVATE KEY-----\n...` |
-| `SSH_PORT` | `22` (optional) |
 
 **Setup:** Repository → Settings → Secrets and variables → Actions
 

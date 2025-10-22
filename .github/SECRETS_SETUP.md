@@ -6,12 +6,12 @@ Add these secrets to your GitHub repository for automated deployment:
 
 **Location:** Repository → Settings → Secrets and variables → Actions → New repository secret
 
-### 1. SSH_HOST
+### 1. SERVER_IP
 - **Description:** Production server hostname or IP address
 - **Example:** `srv1045082.hosting.com` or `123.45.67.89`
 - **How to find:** Check your hosting provider dashboard or SSH connection command
 
-### 2. SSH_USERNAME
+### 2. SERVER_USER
 - **Description:** SSH username for the production server
 - **Example:** `root` or `sisaraya`
 - **How to find:** Use the username you normally use to SSH into the server
@@ -27,12 +27,6 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
 ...
 -----END OPENSSH PRIVATE KEY-----
 ```
-
-### 4. SSH_PORT (Optional)
-- **Description:** SSH port number
-- **Default:** `22`
-- **Example:** `22` or `2222`
-- **Only needed if:** Your server uses a non-standard SSH port
 
 ## How to Generate SSH Key Pair
 
@@ -119,24 +113,19 @@ cat ~/.ssh/sisaraya_deploy
 4. Click **New repository secret** button
 5. Add each secret:
 
-   **SSH_HOST:**
-   - Name: `SSH_HOST`
+   **SERVER_IP:**
+   - Name: `SERVER_IP`
    - Value: `srv1045082.hosting.com` (your server hostname/IP)
    - Click **Add secret**
 
-   **SSH_USERNAME:**
-   - Name: `SSH_USERNAME`
+   **SERVER_USER:**
+   - Name: `SERVER_USER`
    - Value: `root` (your SSH username)
    - Click **Add secret**
 
    **SSH_PRIVATE_KEY:**
    - Name: `SSH_PRIVATE_KEY`
    - Value: Paste entire private key including headers
-   - Click **Add secret**
-
-   **SSH_PORT (Optional):**
-   - Name: `SSH_PORT`
-   - Value: `22` (only if using non-standard port)
    - Click **Add secret**
 
 ## Verification
@@ -146,10 +135,9 @@ cat ~/.ssh/sisaraya_deploy
 1. Go to Repository → Settings → Secrets and variables → Actions
 2. You should see all secrets listed (values are hidden)
 3. Secrets should show:
-   - ✅ SSH_HOST
-   - ✅ SSH_USERNAME
+   - ✅ SERVER_IP
+   - ✅ SERVER_USER
    - ✅ SSH_PRIVATE_KEY
-   - ✅ SSH_PORT (optional)
 
 ### Test Deployment
 
@@ -202,9 +190,8 @@ script: |
 **Cause:** Wrong hostname, port, or firewall blocking
 
 **Solution:**
-1. Verify `SSH_HOST` secret is correct
-2. Verify `SSH_PORT` (default 22)
-3. Check server firewall allows GitHub Actions IPs
+1. Verify `SERVER_IP` secret is correct
+2. Check server firewall allows GitHub Actions IPs
 
 ### Error: bash: line 1: cd: ~/projects/sisaraya-workspace: No such file or directory
 
