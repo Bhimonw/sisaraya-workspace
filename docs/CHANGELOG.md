@@ -535,3 +535,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - Fixed test failures: updated ConfirmablePasswordController to use username instead of email, fixed ProfileTest email assertions, improved ProjectRatingTest authorization checks
+
+## 2025-10-22
+- Redesigned welcome page menjadi landing page lengkap dengan section Filosofi, Portofolio, dan Kesempatan Kolaborasi - tombol login tetap ada
