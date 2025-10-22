@@ -1,100 +1,198 @@
-<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
 
 <html lang="id" class="scroll-smooth">
 
-<head><html lang="id" class="scroll-smooth"><html lang="id" class="scroll-smooth">
+<head><html lang="id" class="scroll-smooth">
 
     <meta charset="utf-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1"><head><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"><head><html lang="id" class="scroll-smooth"><html lang="id" class="scroll-smooth">
 
     <title>SISARAYA - Komunitas Kreatif Indonesia</title>
 
-    <meta name="description" content="Komunitas kolektif kreator, musisi, media, dan wirausahawan. Tempat kolaborasi dan karya berdampak. Home of Cosmycfest 2024.">    <meta charset="utf-8"><meta charset="utf-8">
+    <meta name="description" content="Komunitas kolektif kreator, musisi, media, dan wirausahawan. Tempat kolaborasi dan karya berdampak. Home of Cosmycfest 2024.">    <meta charset="utf-8">
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
-    <link rel="preconnect" href="https://fonts.bunny.net">    <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.bunny.net">    <meta name="viewport" content="width=device-width, initial-scale=1"><head><head>
 
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900|playfair-display:700,900" rel="stylesheet" />
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])    <title>SISARAYA - Komunitas Kreatif, Kolaboratif, dan Inovatif</title><title>SISARAYA - Komunitas Kreatif, Kolaboratif, dan Inovatif</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])    <title>SISARAYA - Komunitas Kreatif Indonesia</title>
 
     <style>
 
-        .font-display { font-family: 'Playfair Display', serif; }    <meta name="description" content="Tempat para kreator, musisi, pelaku media, dan wirausahawan berkumpul untuk berkolaborasi dan menciptakan karya yang berdampak. Home of Cosmycfest 2024."><meta name="description" content="Tempat para kreator, musisi, pelaku media, dan wirausahawan berkumpul untuk berkolaborasi dan menciptakan karya yang berdampak. Cosmycfest 2024.">
+        .font-display { font-family: 'Playfair Display', serif; }    <meta name="description" content="Komunitas kolektif kreator, musisi, media, dan wirausahawan. Tempat kolaborasi dan karya berdampak. Home of Cosmycfest 2024.">    <meta charset="utf-8"><meta charset="utf-8">
 
         .font-body { font-family: 'Inter', sans-serif; }
 
-        .gradient-hero { background: linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.85) 20%, rgba(139,92,246,0.85) 50%, rgba(59,130,246,0.85) 80%, rgba(16,185,129,0.80) 100%); }    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"><link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        .gradient-hero { background: linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.85) 20%, rgba(139,92,246,0.85) 50%, rgba(59,130,246,0.85) 80%, rgba(16,185,129,0.80) 100%); }    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
         .gradient-section { background: linear-gradient(135deg, rgba(139,92,246,0.95) 0%, rgba(59,130,246,0.95) 50%, rgba(16,185,129,0.90) 100%); }
 
-        .pattern-dots { background-image: radial-gradient(rgba(255,255,255,0.12) 1.5px, transparent 1.5px); background-size: 24px 24px; }    <link rel="preconnect" href="https://fonts.bunny.net"><link rel="preconnect" href="https://fonts.bunny.net">
+        .pattern-dots { background-image: radial-gradient(rgba(255,255,255,0.12) 1.5px, transparent 1.5px); background-size: 24px 24px; }    <link rel="preconnect" href="https://fonts.bunny.net">    <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="viewport" content="width=device-width, initial-scale=1">
 
         .text-shadow-strong { text-shadow: 0 2px 10px rgba(0,0,0,0.6), 0 4px 20px rgba(0,0,0,0.5), 0 8px 30px rgba(0,0,0,0.4); }
 
-        .animate-float { animation: float 7s ease-in-out infinite; }    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900|playfair-display:700,900" rel="stylesheet" /><link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900|playfair-display:700,900" rel="stylesheet" />
+        .animate-float { animation: float 7s ease-in-out infinite; }    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900|playfair-display:700,900" rel="stylesheet" />
 
         .animate-fade-in { animation: fadeIn 1s ease-in; }
 
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-25px); } }    @vite(['resources/css/app.css', 'resources/js/app.js'])@vite(['resources/css/app.css', 'resources/js/app.js'])
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-25px); } }    @vite(['resources/css/app.css', 'resources/js/app.js'])    <title>SISARAYA - Komunitas Kreatif, Kolaboratif, dan Inovatif</title><title>SISARAYA - Komunitas Kreatif, Kolaboratif, dan Inovatif</title>
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    </style>    <style><style>
+    </style>    <style>
 
 </head>
 
-<body class="font-body antialiased bg-gray-50">        .font-display { font-family: 'Playfair Display', serif; }.font-display { font-family: 'Playfair Display', serif; }
+<body class="font-body antialiased bg-gray-50">        .font-display { font-family: 'Playfair Display', serif; }    <meta name="description" content="Tempat para kreator, musisi, pelaku media, dan wirausahawan berkumpul untuk berkolaborasi dan menciptakan karya yang berdampak. Home of Cosmycfest 2024."><meta name="description" content="Tempat para kreator, musisi, pelaku media, dan wirausahawan berkumpul untuk berkolaborasi dan menciptakan karya yang berdampak. Cosmycfest 2024.">
 
 
 
-<!-- Navigation -->        .font-body { font-family: 'Inter', sans-serif; }.font-body { font-family: 'Inter', sans-serif; }
+<!-- Navigation -->        .font-body { font-family: 'Inter', sans-serif; }
 
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-200">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">        .gradient-hero { background: linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.85) 20%, rgba(139,92,246,0.88) 50%, rgba(59,130,246,0.88) 80%, rgba(16,185,129,0.85) 100%); }.gradient-hero { background: linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.85) 20%, rgba(139,92,246,0.85) 50%, rgba(59,130,246,0.85) 80%, rgba(16,185,129,0.80) 100%); }
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">        .gradient-hero { background: linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.85) 20%, rgba(139,92,246,0.85) 50%, rgba(59,130,246,0.85) 80%, rgba(16,185,129,0.80) 100%); }    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"><link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
         <div class="flex items-center justify-between h-20">
 
-            <div class="flex items-center space-x-3">        .pattern-dots { background-image: radial-gradient(rgba(255,255,255,0.12) 1.5px, transparent 1.5px); background-size: 24px 24px; }.gradient-section { background: linear-gradient(135deg, rgba(139,92,246,0.95) 0%, rgba(59,130,246,0.95) 50%, rgba(16,185,129,0.90) 100%); }
+            <div class="flex items-center space-x-3">        .gradient-section { background: linear-gradient(135deg, rgba(139,92,246,0.95) 0%, rgba(59,130,246,0.95) 50%, rgba(16,185,129,0.90) 100%); }
 
                 <img src="{{ asset('logo-no-bg.png') }}" alt="SISARAYA Logo" class="h-14 w-auto">
 
-                <div>        .text-shadow-strong { text-shadow: 0 2px 12px rgba(0,0,0,0.7), 0 4px 24px rgba(0,0,0,0.6); }.pattern-dots { background-image: radial-gradient(rgba(255,255,255,0.12) 1.5px, transparent 1.5px); background-size: 24px 24px; }
+                <div>        .pattern-dots { background-image: radial-gradient(rgba(255,255,255,0.12) 1.5px, transparent 1.5px); background-size: 24px 24px; }    <link rel="preconnect" href="https://fonts.bunny.net"><link rel="preconnect" href="https://fonts.bunny.net">
 
                     <span class="text-2xl font-black bg-gradient-to-r from-violet-600 via-blue-600 to-emerald-500 bg-clip-text text-transparent">SISARAYA</span>
 
-                    <p class="text-xs text-gray-500 font-medium">Komunitas Kreatif Indonesia</p>        .animate-float { animation: float 7s ease-in-out infinite; }.text-shadow-strong { text-shadow: 0 2px 10px rgba(0,0,0,0.6), 0 4px 20px rgba(0,0,0,0.5), 0 8px 30px rgba(0,0,0,0.4); }
+                    <p class="text-xs text-gray-500 font-medium">Komunitas Kreatif Indonesia</p>        .text-shadow-strong { text-shadow: 0 2px 10px rgba(0,0,0,0.6), 0 4px 20px rgba(0,0,0,0.5), 0 8px 30px rgba(0,0,0,0.4); }
 
                 </div>
 
-            </div>        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-25px); } }.animate-float { animation: float 7s ease-in-out infinite; }
+            </div>        .animate-float { animation: float 7s ease-in-out infinite; }    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900|playfair-display:700,900" rel="stylesheet" /><link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900|playfair-display:700,900" rel="stylesheet" />
 
             
 
-            <div class="hidden md:flex items-center space-x-6">    </style>.animate-fade-in { animation: fadeIn 1s ease-in; }
+            <div class="hidden md:flex items-center space-x-6">        .animate-fade-in { animation: fadeIn 1s ease-in; }
 
                 <a href="#about" class="text-gray-700 hover:text-violet-600 font-semibold text-sm transition-colors duration-200">Tentang</a>
 
-                <a href="#values" class="text-gray-700 hover:text-violet-600 font-semibold text-sm transition-colors duration-200">Filosofi</a></head>@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-25px); } }
+                <a href="#values" class="text-gray-700 hover:text-violet-600 font-semibold text-sm transition-colors duration-200">Filosofi</a>        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-25px); } }    @vite(['resources/css/app.css', 'resources/js/app.js'])@vite(['resources/css/app.css', 'resources/js/app.js'])
 
                 <a href="#portfolio" class="text-gray-700 hover:text-violet-600 font-semibold text-sm transition-colors duration-200">Portofolio</a>
 
-            </div><body class="font-body antialiased bg-gray-50">@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+            </div>        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
             
 
-            @if (Route::has('login'))</style>
+            @if (Route::has('login'))    </style>    <style><style>
 
             <div class="flex items-center space-x-3">
 
-                @auth<!-- Navigation --></head>
+                @auth</head>
 
                 <a href="{{ url('/dashboard') }}" class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-violet-600 via-blue-600 to-emerald-500 text-white text-sm font-bold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300">
 
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100"><body class="font-body antialiased bg-gray-50">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><body class="font-body antialiased bg-gray-50">        .font-display { font-family: 'Playfair Display', serif; }.font-display { font-family: 'Playfair Display', serif; }
+
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+
+                    </svg>
+
+                    Dashboard
+
+                </a><!-- Navigation -->        .font-body { font-family: 'Inter', sans-serif; }.font-body { font-family: 'Inter', sans-serif; }
+
+                @else
+
+                <a href="{{ route('login') }}" class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-violet-600 via-blue-600 to-emerald-500 text-white text-sm font-bold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"><nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-200">
+
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">        .gradient-hero { background: linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.85) 20%, rgba(139,92,246,0.88) 50%, rgba(59,130,246,0.88) 80%, rgba(16,185,129,0.85) 100%); }.gradient-hero { background: linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.85) 20%, rgba(139,92,246,0.85) 50%, rgba(59,130,246,0.85) 80%, rgba(16,185,129,0.80) 100%); }
+
+                    </svg>
+
+                    Login        <div class="flex items-center justify-between h-20">
+
+                </a>
+
+                @endauth            <div class="flex items-center space-x-3">        .pattern-dots { background-image: radial-gradient(rgba(255,255,255,0.12) 1.5px, transparent 1.5px); background-size: 24px 24px; }.gradient-section { background: linear-gradient(135deg, rgba(139,92,246,0.95) 0%, rgba(59,130,246,0.95) 50%, rgba(16,185,129,0.90) 100%); }
+
+            </div>
+
+            @endif                <img src="{{ asset('logo-no-bg.png') }}" alt="SISARAYA Logo" class="h-14 w-auto">
+
+        </div>
+
+    </div>                <div>        .text-shadow-strong { text-shadow: 0 2px 12px rgba(0,0,0,0.7), 0 4px 24px rgba(0,0,0,0.6); }.pattern-dots { background-image: radial-gradient(rgba(255,255,255,0.12) 1.5px, transparent 1.5px); background-size: 24px 24px; }
+
+</nav>
+
+                    <span class="text-2xl font-black bg-gradient-to-r from-violet-600 via-blue-600 to-emerald-500 bg-clip-text text-transparent">SISARAYA</span>
+
+{{-- Hero Section --}}
+
+@include('landing.hero')                    <p class="text-xs text-gray-500 font-medium">Komunitas Kreatif Indonesia</p>        .animate-float { animation: float 7s ease-in-out infinite; }.text-shadow-strong { text-shadow: 0 2px 10px rgba(0,0,0,0.6), 0 4px 20px rgba(0,0,0,0.5), 0 8px 30px rgba(0,0,0,0.4); }
+
+
+
+{{-- About Section --}}                </div>
+
+@include('landing.about')
+
+            </div>        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-25px); } }.animate-float { animation: float 7s ease-in-out infinite; }
+
+{{-- Values Section --}}
+
+@include('landing.values')            
+
+
+
+{{-- Portfolio Section --}}            <div class="hidden md:flex items-center space-x-6">    </style>.animate-fade-in { animation: fadeIn 1s ease-in; }
+
+@include('landing.portfolio')
+
+                <a href="#about" class="text-gray-700 hover:text-violet-600 font-semibold text-sm transition-colors duration-200">Tentang</a>
+
+{{-- Collaboration Section --}}
+
+@include('landing.collaboration')                <a href="#values" class="text-gray-700 hover:text-violet-600 font-semibold text-sm transition-colors duration-200">Filosofi</a></head>@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-25px); } }
+
+
+
+{{-- Contact Section --}}                <a href="#portfolio" class="text-gray-700 hover:text-violet-600 font-semibold text-sm transition-colors duration-200">Portofolio</a>
+
+@include('landing.contact')
+
+            </div><body class="font-body antialiased bg-gray-50">@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+<!-- Footer -->
+
+<footer class="bg-gray-900 text-white py-12">            
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
+        <div class="flex items-center justify-center space-x-3 mb-4">            @if (Route::has('login'))</style>
+
+            <img src="{{ asset('logo-no-bg.png') }}" alt="SISARAYA Logo" class="h-10 w-auto">
+
+            <span class="text-xl font-bold">SISARAYA</span>            <div class="flex items-center space-x-3">
+
+        </div>
+
+        <p class="text-gray-400 text-sm">&copy; {{ date('Y') }} SISARAYA. Satu semangat, banyak ekspresi.</p>                @auth<!-- Navigation --></head>
+
+    </div>
+
+</footer>                <a href="{{ url('/dashboard') }}" class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-violet-600 via-blue-600 to-emerald-500 text-white text-sm font-bold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300">
+
+
+
+</body>                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100"><body class="font-body antialiased bg-gray-50">
+
+</html>
 
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
 
