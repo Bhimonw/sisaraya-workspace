@@ -581,3 +581,30 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-23
 - Major refactoring: Extract large tabs from projects/show.blade.php into 12 partial components. File reduced from 3196 to 1340 lines (58% reduction). Created partials: events-tab, settings-tab, members-tab (962 lines), project-header, ticket-modal, events-quick-view, and existing partials. All tabs functional with Alpine.js state preserved.
+
+## 2025-10-23
+- Fixed orphan code after members-tab extraction: removed stray closing brace and wrapped projectChatPopup function in proper script tag. File validated with no syntax errors.
+
+## 2025-10-23
+- Fixed orphan code after members-tab extraction
+
+## 2025-10-23
+- Added event details popover in calendar - shows all events when clicking '+X lagi' button on dates with 2+ events
+
+## 2025-10-23
+- Fixed calendar popover error - changed monthName to month in event details popover header
+
+## 2025-10-23
+- Fixed calendar popover positioning - changed from absolute to fixed with dynamic positioning to prevent overflow
+
+## 2025-10-23
+- Fixed projectChatPopup undefined error - moved function definition before @include project-header to ensure proper load order
+
+## 2025-10-23
+- Fixed targetUserFilter undefined error - moved function definition to top of show.blade.php before Create Ticket Tab usage
+
+## 2025-10-23
+- Fixed memberManagement and showManageMembers undefined errors - moved memberManagement function to top of show.blade.php before Members Tab usage
+
+## 2025-10-23
+- Fixed addMemberFilter and selectedRoles undefined errors - moved addMemberFilter function to top of show.blade.php before Members Tab usage

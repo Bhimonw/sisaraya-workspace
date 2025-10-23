@@ -1,6 +1,463 @@
 @extends('layouts.app')
 
 @section('content')
+
+{{-- Define Alpine.js functions BEFORE they are used --}}
+<script>
+function projectChatPopup(projectId) {
+    return {
+        projectId: projectId,
+        showChat: false,
+        messages: [],
+        newMessage: '',
+        loading: false,
+        sending: false,
+        lastId: 0,
+        pollInterval: null,
+        unreadCount: 0,
+        
+        init() {
+            console.log('Project chat popup initialized for project:', this.projectId);
+            // Start background polling for notifications even when chat is closed
+            this.startBackgroundPolling();
+        },
+        
+        toggleChat() {
+            this.showChat = !this.showChat;
+            if (this.showChat) {
+                this.unreadCount = 0; // Reset unread when opening
+                this.loadInitialMessages();
+            } else {
+                // Don't stop polling, keep checking for new messages
+            }
+        },
+        
+        async loadInitialMessages() {
+            this.loading = true;
+            try {
+                const response = await fetch(`/api/projects/${this.projectId}/chat/messages/initial`);
+                if (!response.ok) throw new Error('Failed to load messages');
+                
+                const data = await response.json();
+                this.messages = data.messages;
+                this.lastId = data.last_id;
+                
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                });
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                alert('Gagal memuat pesan. Silakan coba lagi.');
+            } finally {
+                this.loading = false;
+            }
+        },
+        
+        async pollNewMessages() {
+            try {
+                const response = await fetch(`/api/projects/${this.projectId}/chat/messages?last_id=${this.lastId}`);
+                if (!response.ok) return;
+                
+                const data = await response.json();
+                if (data.messages.length > 0) {
+                    this.messages = [...this.messages, ...data.messages];
+                    this.lastId = data.last_id;
+                    
+                    // Update unread count if chat is closed
+                    if (!this.showChat) {
+                        this.unreadCount += data.messages.length;
+                    }
+                    
+                    this.$nextTick(() => {
+                        if (this.showChat) {
+                            this.scrollToBottom();
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error polling messages:', error);
+            }
+        },
+        
+        async sendMessage() {
+            if (!this.newMessage.trim() || this.sending) return;
+            
+            this.sending = true;
+            const messageText = this.newMessage.trim();
+            this.newMessage = '';
+            
+            try {
+                const response = await fetch(`/api/projects/${this.projectId}/chat/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ message: messageText })
+                });
+                
+                if (!response.ok) throw new Error('Failed to send message');
+                
+                const data = await response.json();
+                this.messages.push(data.message);
+                this.lastId = data.message.id;
+                
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                });
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Gagal mengirim pesan. Silakan coba lagi.');
+                this.newMessage = messageText; // Restore message
+            } finally {
+                this.sending = false;
+            }
+        },
+        
+        startBackgroundPolling() {
+            this.pollInterval = setInterval(() => {
+                this.pollNewMessages();
+            }, 5000); // Poll every 5 seconds
+        },
+        
+        scrollToBottom() {
+            const container = this.$refs.messagesContainer;
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        },
+        
+        handleScroll() {
+            // Future: implement load more on scroll to top
+        }
+    }
+}
+
+function targetUserFilter() {
+    return {
+        searchQuery: '',
+        roleFilter: 'all',
+        visibleCount: 0,
+        selectedCount: 0,
+        
+        init() {
+            this.updateCounts();
+            this.$watch('searchQuery', () => this.updateCounts());
+            this.$watch('roleFilter', () => this.updateCounts());
+            // Listen for selection changes
+            window.addEventListener('target-user-changed', () => this.updateCounts());
+        },
+        
+        isVisible(memberName, isAdmin, hasPermanentRole, hasEventRole) {
+            // Search filter
+            const matchesSearch = !this.searchQuery || 
+                                memberName.toLowerCase().includes(this.searchQuery.toLowerCase());
+            
+            // Role filter
+            let matchesRole = true;
+            if (this.roleFilter === 'admin') {
+                matchesRole = isAdmin;
+            } else if (this.roleFilter === 'permanent') {
+                matchesRole = hasPermanentRole;
+            } else if (this.roleFilter === 'event') {
+                matchesRole = hasEventRole;
+            }
+            // 'all' matches everything
+            
+            return matchesSearch && matchesRole;
+        },
+        
+        updateCounts() {
+            const items = document.querySelectorAll('.target-user-item');
+            let visible = 0;
+            let selected = 0;
+            
+            items.forEach(item => {
+                const memberName = item.dataset.memberName;
+                const isAdmin = item.dataset.isAdmin === 'true';
+                const hasPermanent = item.dataset.hasPermanent === 'true';
+                const hasEvent = item.dataset.hasEvent === 'true';
+                
+                if (this.isVisible(memberName, isAdmin, hasPermanent, hasEvent)) {
+                    visible++;
+                    const checkbox = item.querySelector('.target-user-checkbox');
+                    if (checkbox && checkbox.checked) {
+                        selected++;
+                    }
+                }
+            });
+            
+            this.visibleCount = visible;
+            this.selectedCount = selected;
+        },
+        
+        selectAllVisible() {
+            const items = document.querySelectorAll('.target-user-item');
+            
+            items.forEach(item => {
+                const memberName = item.dataset.memberName;
+                const isAdmin = item.dataset.isAdmin === 'true';
+                const hasPermanent = item.dataset.hasPermanent === 'true';
+                const hasEvent = item.dataset.hasEvent === 'true';
+                
+                if (this.isVisible(memberName, isAdmin, hasPermanent, hasEvent)) {
+                    const checkbox = item.querySelector('.target-user-checkbox');
+                    if (checkbox && !checkbox.checked) {
+                        checkbox.click(); // Trigger Alpine's x-model
+                    }
+                }
+            });
+        }
+    }
+}
+
+function memberManagement() {
+    return {
+        showAddMember: false,
+        showManageMembers: false,
+        selectedMembers: [],
+        searchQuery: '',
+        projectRoleFilter: 'all',
+        visibleMembersCount: 0,
+        
+        init() {
+            // Update visible count initially
+            this.updateVisibleCount();
+            // Watch for filter changes
+            this.$watch('searchQuery', () => this.updateVisibleCount());
+            this.$watch('projectRoleFilter', () => this.updateVisibleCount());
+        },
+        
+        isMemberVisible(memberName, memberRole) {
+            // Search filter
+            const matchesSearch = !this.searchQuery || 
+                                memberName.toLowerCase().includes(this.searchQuery.toLowerCase());
+            
+            // Role filter
+            const matchesRole = this.projectRoleFilter === 'all' || 
+                               this.projectRoleFilter === memberRole;
+            
+            return matchesSearch && matchesRole;
+        },
+        
+        updateVisibleCount() {
+            // Count visible member cards
+            const cards = document.querySelectorAll('.member-card');
+            let visible = 0;
+            
+            cards.forEach(card => {
+                const memberName = card.dataset.memberName;
+                const memberRole = card.dataset.memberRole;
+                
+                if (this.isMemberVisible(memberName, memberRole)) {
+                    visible++;
+                }
+            });
+            
+            this.visibleMembersCount = visible;
+        },
+        
+        toggleMemberSelection(memberId, isChecked, isPermanent) {
+            if (isPermanent) return; // Don't allow selection of permanent role members
+            
+            if (isChecked) {
+                if (!this.selectedMembers.includes(memberId)) {
+                    this.selectedMembers.push(memberId);
+                }
+            } else {
+                this.selectedMembers = this.selectedMembers.filter(id => id !== memberId);
+            }
+        },
+        
+        toggleSelectAll(isChecked) {
+            // Only select checkboxes in member cards (not in add member form)
+            const checkboxes = document.querySelectorAll('.member-card input[type="checkbox"][value]:not([disabled])');
+            this.selectedMembers = [];
+            
+            checkboxes.forEach(cb => {
+                if (cb.hasAttribute('value')) {
+                    cb.checked = isChecked;
+                    if (isChecked) {
+                        const memberId = parseInt(cb.value);
+                        if (!this.selectedMembers.includes(memberId)) {
+                            this.selectedMembers.push(memberId);
+                        }
+                    }
+                }
+            });
+        },
+        
+        async bulkChangeRole(newRole) {
+            if (this.selectedMembers.length === 0) {
+                alert('Pilih minimal 1 member terlebih dahulu');
+                return;
+            }
+            
+            const roleLabel = newRole === 'admin' ? 'Admin Project' : 'Member';
+            if (!confirm(`Ubah ${this.selectedMembers.length} member menjadi ${roleLabel}?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('{{ route("projects.members.bulkUpdateRole", $project) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        member_ids: this.selectedMembers,
+                        role: newRole
+                    })
+                });
+                
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Gagal mengubah role members');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan');
+            }
+        },
+        
+        async bulkDeleteMembers() {
+            if (this.selectedMembers.length === 0) {
+                alert('Pilih minimal 1 member terlebih dahulu');
+                return;
+            }
+            
+            if (!confirm(`Hapus ${this.selectedMembers.length} member dari project ini?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('{{ route("projects.members.bulkDelete", $project) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        member_ids: this.selectedMembers
+                    })
+                });
+                
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Gagal menghapus members');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan');
+            }
+        }
+    }
+}
+
+function addMemberFilter() {
+    return {
+        searchQuery: '',
+        selectedRoles: [],
+        selectedCount: 0,
+        visibleCount: 0,
+        availableRoles: [
+            { value: 'hr', label: 'HR', color: 'bg-purple-100 text-purple-700', count: 0 },
+            { value: 'pm', label: 'PM', color: 'bg-blue-100 text-blue-700', count: 0 },
+            { value: 'sekretaris', label: 'Sekretaris', color: 'bg-cyan-100 text-cyan-700', count: 0 },
+            { value: 'bendahara', label: 'Bendahara', color: 'bg-green-100 text-green-700', count: 0 },
+            { value: 'media', label: 'Media', color: 'bg-pink-100 text-pink-700', count: 0 },
+            { value: 'pr', label: 'PR', color: 'bg-orange-100 text-orange-700', count: 0 },
+            { value: 'bisnis_manager', label: 'Bisnis Manager', color: 'bg-yellow-100 text-yellow-700', count: 0 },
+            { value: 'talent_manager', label: 'Talent Manager', color: 'bg-indigo-100 text-indigo-700', count: 0 },
+            { value: 'researcher', label: 'Researcher', color: 'bg-teal-100 text-teal-700', count: 0 },
+            { value: 'talent', label: 'Talent', color: 'bg-rose-100 text-rose-700', count: 0 },
+            { value: 'member', label: 'Member', color: 'bg-gray-100 text-gray-700', count: 0 },
+            { value: 'guest', label: 'Guest', color: 'bg-gray-100 text-gray-500', count: 0 },
+        ],
+
+        init() {
+            // Count users per role
+            this.countRoles();
+            // Update counts initially
+            this.updateCounts();
+            // Listen for member changes
+            window.addEventListener('add-member-changed', () => this.updateCounts());
+            // Watch for search and filter changes
+            this.$watch('searchQuery', () => this.updateCounts());
+            this.$watch('selectedRoles', () => this.updateCounts());
+        },
+
+        countRoles() {
+            const rows = document.querySelectorAll('.add-member-row');
+            rows.forEach(row => {
+                const roles = JSON.parse(row.dataset.userRoles || '[]');
+                roles.forEach(role => {
+                    const roleObj = this.availableRoles.find(r => r.value === role);
+                    if (roleObj) roleObj.count++;
+                });
+            });
+        },
+
+        isVisible(userName, userRoles) {
+            // Search filter
+            const matchesSearch = !this.searchQuery || 
+                                userName.toLowerCase().includes(this.searchQuery.toLowerCase());
+            
+            // Role filter
+            const matchesRole = this.selectedRoles.length === 0 || 
+                               userRoles.some(role => this.selectedRoles.includes(role));
+            
+            return matchesSearch && matchesRole;
+        },
+
+        updateCounts() {
+            // Count visible members
+            const rows = document.querySelectorAll('.add-member-row');
+            let visible = 0;
+            let selected = 0;
+            
+            rows.forEach(row => {
+                const userName = row.dataset.userName;
+                const userRoles = JSON.parse(row.dataset.userRoles || '[]');
+                const isVisible = this.isVisible(userName, userRoles);
+                
+                if (isVisible) {
+                    visible++;
+                    const checkbox = row.querySelector('.add-member-checkbox');
+                    if (checkbox && checkbox.checked) {
+                        selected++;
+                    }
+                }
+            });
+            
+            this.visibleCount = visible;
+            this.selectedCount = selected;
+        },
+
+        toggleAllMembers() {
+            const selectAllCheckbox = document.getElementById('select-all-add-members');
+            const memberCheckboxes = document.querySelectorAll('.add-member-checkbox');
+            
+            selectAllCheckbox.checked = !selectAllCheckbox.checked;
+            const isChecked = selectAllCheckbox.checked;
+            
+            // Only toggle visible checkboxes
+            memberCheckboxes.forEach(checkbox => {
+                const row = checkbox.closest('.add-member-row');
+                const isVisible = row && window.getComputedStyle(row).display !== 'none';
+                
+                if (isVisible && checkbox.checked !== isChecked) {
+                    checkbox.click(); // Trigger click to maintain Alpine.js state
+                }
+            });
+        }
+    }
+}
+</script>
+
 <div class="relative" x-data="{ 
     activeTab: 'overview',
     showTicketModal: false,
@@ -1078,140 +1535,9 @@
     
         {{-- MEMBERS TAB --}}
         @include('projects.partials.members-tab', ['project' => $project])
-    }
     
-    function projectChatPopup(projectId) {
-        return {
-            projectId: projectId,
-            showChat: false,
-            messages: [],
-            newMessage: '',
-            loading: false,
-            sending: false,
-            lastId: 0,
-            pollInterval: null,
-            unreadCount: 0,
-            
-            init() {
-                console.log('Project chat popup initialized for project:', this.projectId);
-                // Start background polling for notifications even when chat is closed
-                this.startBackgroundPolling();
-            },
-            
-            toggleChat() {
-                this.showChat = !this.showChat;
-                if (this.showChat) {
-                    this.unreadCount = 0; // Reset unread when opening
-                    this.loadInitialMessages();
-                } else {
-                    // Don't stop polling, keep checking for new messages
-                }
-            },
-            
-            async loadInitialMessages() {
-                this.loading = true;
-                try {
-                    const response = await fetch(`/api/projects/${this.projectId}/chat/messages/initial`);
-                    if (!response.ok) throw new Error('Failed to load messages');
-                    
-                    const data = await response.json();
-                    this.messages = data.messages;
-                    this.lastId = data.last_id;
-                    
-                    this.$nextTick(() => {
-                        this.scrollToBottom();
-                    });
-                } catch (error) {
-                    console.error('Error loading messages:', error);
-                    alert('Gagal memuat pesan. Silakan coba lagi.');
-                } finally {
-                    this.loading = false;
-                }
-            },
-            
-            async pollNewMessages() {
-                try {
-                    const response = await fetch(`/api/projects/${this.projectId}/chat/messages?last_id=${this.lastId}`);
-                    if (!response.ok) return;
-                    
-                    const data = await response.json();
-                    if (data.messages.length > 0) {
-                        this.messages = [...this.messages, ...data.messages];
-                        this.lastId = data.last_id;
-                        
-                        // Update unread count if chat is closed
-                        if (!this.showChat) {
-                            this.unreadCount += data.messages.length;
-                        }
-                        
-                        this.$nextTick(() => {
-                            if (this.showChat) {
-                                this.scrollToBottom();
-                            }
-                        });
-                    }
-                } catch (error) {
-                    console.error('Error polling messages:', error);
-                }
-            },
-            
-            async sendMessage() {
-                if (!this.newMessage.trim() || this.sending) return;
-                
-                this.sending = true;
-                const messageText = this.newMessage.trim();
-                this.newMessage = '';
-                
-                try {
-                    const response = await fetch(`/api/projects/${this.projectId}/chat/messages`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({ message: messageText })
-                    });
-                    
-                    if (!response.ok) throw new Error('Failed to send message');
-                    
-                    const data = await response.json();
-                    this.messages.push(data.message);
-                    this.lastId = data.message.id;
-                    
-                    this.$nextTick(() => {
-                        this.scrollToBottom();
-                    });
-                } catch (error) {
-                    console.error('Error sending message:', error);
-                    alert('Gagal mengirim pesan. Silakan coba lagi.');
-                    this.newMessage = messageText; // Restore message
-                } finally {
-                    this.sending = false;
-                }
-            },
-            
-            startBackgroundPolling() {
-                this.pollInterval = setInterval(() => {
-                    this.pollNewMessages();
-                }, 5000); // Poll every 5 seconds
-            },
-            
-            scrollToBottom() {
-                const container = this.$refs.messagesContainer;
-                if (container) {
-                    container.scrollTop = container.scrollHeight;
-                }
-            },
-            
-            handleScroll() {
-                // Future: implement load more on scroll to top
-            }
-        }
-    }
-    </script>
-    
-    {{-- EVENTS TAB --}}
-    @include('projects.partials.events-tab', ['project' => $project])
+        {{-- EVENTS TAB --}}
+        @include('projects.partials.events-tab', ['project' => $project])
     
     {{-- Modal Detail Tiket - MOVED INSIDE x-data scope --}}
     
