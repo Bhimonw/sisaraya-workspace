@@ -566,3 +566,15 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-22
 - Improve ticket card button layout - aligned buttons with consistent sizing and better visual hierarchy
+
+## 2025-10-22
+- Fix button vertical alignment - add inline-flex to form wrappers for perfect alignment
+
+## 2025-10-22
+- Fix button alignment with fixed height and consistent font-weight - all buttons now perfectly aligned
+
+## 2025-10-22
+- Fix button vertical alignment - add inline-flex to form wrappers for perfect alignment
+
+## 2025-10-22
+- Improve ticket card button layout - aligned buttons with consistent sizing and better visual hierarchy
