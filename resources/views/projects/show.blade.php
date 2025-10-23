@@ -363,20 +363,8 @@ function addMemberFilter() {
         selectedRoles: [],
         selectedCount: 0,
         visibleCount: 0,
-        availableRoles: [
-            { value: 'hr', label: 'HR', color: 'bg-purple-100 text-purple-700', count: 0 },
-            { value: 'pm', label: 'PM', color: 'bg-blue-100 text-blue-700', count: 0 },
-            { value: 'sekretaris', label: 'Sekretaris', color: 'bg-cyan-100 text-cyan-700', count: 0 },
-            { value: 'bendahara', label: 'Bendahara', color: 'bg-green-100 text-green-700', count: 0 },
-            { value: 'media', label: 'Media', color: 'bg-pink-100 text-pink-700', count: 0 },
-            { value: 'pr', label: 'PR', color: 'bg-orange-100 text-orange-700', count: 0 },
-            { value: 'bisnis_manager', label: 'Bisnis Manager', color: 'bg-yellow-100 text-yellow-700', count: 0 },
-            { value: 'talent_manager', label: 'Talent Manager', color: 'bg-indigo-100 text-indigo-700', count: 0 },
-            { value: 'researcher', label: 'Researcher', color: 'bg-teal-100 text-teal-700', count: 0 },
-            { value: 'talent', label: 'Talent', color: 'bg-rose-100 text-rose-700', count: 0 },
-            { value: 'member', label: 'Member', color: 'bg-gray-100 text-gray-700', count: 0 },
-            { value: 'guest', label: 'Guest', color: 'bg-gray-100 text-gray-500', count: 0 },
-        ],
+        // Load roles from config via RoleHelper
+        availableRoles: @json(\App\Helpers\RoleHelper::getRolesForAlpine()),
 
         init() {
             // Count users per role
@@ -1375,17 +1363,17 @@ function addMemberFilter() {
                                             </div>
                                         </div>
                                         <div class="flex flex-wrap gap-1 ml-10">
-                                            {{-- Permanent Roles Badges (Multiple) --}}
+                                            {{-- Permanent Roles Badges (Multiple) - Using Helper --}}
                                             @foreach($permanentRoles as $roleKey)
-                                                <span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full border border-blue-200 font-medium">
-                                                    {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
+                                                <span class="{{ role_badge_class($roleKey) }}">
+                                                    {{ role_label($roleKey) }}
                                                 </span>
                                             @endforeach
                                             
-                                            {{-- Event Roles Badges (Multiple) --}}
+                                            {{-- Event Roles Badges (Multiple) - Using Helper with amber color --}}
                                             @foreach($eventRolesArray as $roleKey)
                                                 <span class="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full border border-amber-200 font-medium">
-                                                    {{ $allRoles[$roleKey] ?? ucfirst($roleKey) }}
+                                                    {{ role_label($roleKey) }}
                                                 </span>
                                             @endforeach
                                             

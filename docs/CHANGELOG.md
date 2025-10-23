@@ -608,3 +608,6 @@ All notable changes to this project should be documented in this file.
 
 ## 2025-10-23
 - Fixed addMemberFilter and selectedRoles undefined errors - moved addMemberFilter function to top of show.blade.php before Members Tab usage
+
+## 2025-10-23
+- Refactor: Centralized role definitions and CSS classes - added config/roles.php, RoleHelper class, and global helper functions for consistent role management

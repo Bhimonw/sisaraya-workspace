@@ -163,10 +163,8 @@ class Ticket extends Model
     // Get all roles (permanent + event)
     public static function getAllRoles(): array
     {
-        return array_merge(
-            self::getAvailableRoles(),
-            self::getEventRoles()
-        );
+        // Use RoleHelper for consistency
+        return \App\Helpers\RoleHelper::getRoleLabels();
     }
 
     public function project()
